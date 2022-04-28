@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 10:39:02 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/04/28 13:00:28 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/04/28 16:55:11 by leon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,11 +44,94 @@ void	handle_signals(int signo)
 		exit(0);
 }
 
+int	init_env(t_env_var **e_v)
+{
+	(*e_v) = NULL;
+	(*e_v) = malloc(sizeof(t_env_var));
+	(*e_v)->key = "$";
+	(*e_v)->val = "86545";	
+	(*e_v)->next = NULL;
+	return (0);
+}
+
+int	is_space(char c)
+{
+	if (c == ' ' || c == '\t' || c == '\r' || c == '\n' || c == '\v' || c == '\f')
+		return (1);
+	return (0);
+}
+
+char	*find_in_env(char *key, t_env_var *env_vars)
+{
+	while (env_vars && strcmp(env_vars->key, key) != 0)
+	{
+		env_vars = env_vars->next;
+	}
+	if (env_vars)
+		return (env_vars->val);
+	return (NULL);
+}
+
+char	*replace_word(char *str, char *key, char *val)
+{
+	char	*result;
+	char	*start;
+	size_t	offset;
+
+	offset = 0;
+
+	result = malloc(sizeof(char) * (strlen(str) * strlen(val)));
+       	
+	start = strstr(str, key);
+	strncpy(result, str, (start - str));
+	offset = start - str;
+       	strcpy(result + offset, val);
+	offset += strlen(val);
+	strcpy(result + offset, start + strlen(key));
+	free(str);
+	return (result);		
+}
+
+int	expand_env_vars(char **input, t_env_var *env_vars)
+{
+	int	i;
+	char	*mark;
+	int	k;
+	char	*var_key;
+	char	*var_val;
+	char	*in;
+
+	in = *input;
+	i = 0;
+	while (in[i])
+	{
+		if (in[i] == '$')
+		{
+			mark = &(in[i + 1]);
+			k = 0;
+			while (mark[k] && !is_space(mark[k])) 	
+				k++;
+			var_key = malloc(sizeof(char) * (k + 1));
+			strncpy(var_key, mark, k);
+			var_key[k] = '\0';
+			var_val = find_in_env(var_key, env_vars);
+			in = replace_word(in, ft_strjoin("$", var_key), var_val);
+			i = i + k;
+			free(var_key);
+		}
+		i++;
+	}
+	*input = in;
+	return(0);
+}
+
 int	main(void)
 {
 	char	*input;
+	t_env_var	*env_vars; 
 
 	// init env
+	init_env(&env_vars);
 	signal(SIGINT, &handle_signals);
 	while (1)
 	{
@@ -61,6 +144,8 @@ int	main(void)
 			break ;
 		}
 		add_history(input);
+		// transform env_vars
+		expand_env_vars(&input, env_vars);
 		// check syntax
 		// parse / analyse
 		// execute

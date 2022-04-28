@@ -6,7 +6,7 @@
 #    By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/01/18 12:03:48 by chelmerd          #+#    #+#              #
-#    Updated: 2022/04/28 11:37:58 by chelmerd         ###   ########.fr        #
+#    Updated: 2022/04/28 16:40:39 by leon             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,7 +29,7 @@ OBJS_MANDATORY	= $(patsubst %.c, %.o, $(SRCS_MANDATORY))
 all: $(NAME)
 
 $(NAME): $(OBJS_MANDATORY) $(LIBS)
-	$(CC) $(LFLAGS) $^ -o $@ -lreadline -L$(READLINE_PATH)
+	$(CC) $(LFLAGS) $^ -o $@ -lreadline 
 
 # $(LIBS):
 # 	make -C pipex/
