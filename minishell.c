@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 10:39:02 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/04/28 16:55:11 by leon             ###   ########.fr       */
+/*   Updated: 2022/04/28 17:43:30 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,14 +49,15 @@ int	init_env(t_env_var **e_v)
 	(*e_v) = NULL;
 	(*e_v) = malloc(sizeof(t_env_var));
 	(*e_v)->key = "$";
-	(*e_v)->val = "86545";	
+	(*e_v)->val = "86545";
 	(*e_v)->next = NULL;
 	return (0);
 }
 
 int	is_space(char c)
 {
-	if (c == ' ' || c == '\t' || c == '\r' || c == '\n' || c == '\v' || c == '\f')
+	if (c == ' ' || c == '\t' || c == '\r'
+		|| c == '\n' || c == '\v' || c == '\f')
 		return (1);
 	return (0);
 }
@@ -81,7 +82,7 @@ char	*replace_word(char *str, char *key, char *val)
 	offset = 0;
 
 	result = malloc(sizeof(char) * (strlen(str) * strlen(val)));
-       	
+
 	start = strstr(str, key);
 	strncpy(result, str, (start - str));
 	offset = start - str;
@@ -89,14 +90,14 @@ char	*replace_word(char *str, char *key, char *val)
 	offset += strlen(val);
 	strcpy(result + offset, start + strlen(key));
 	free(str);
-	return (result);		
+	return (result);
 }
 
 int	expand_env_vars(char **input, t_env_var *env_vars)
 {
-	int	i;
+	int		i;
 	char	*mark;
-	int	k;
+	int		k;
 	char	*var_key;
 	char	*var_val;
 	char	*in;
@@ -109,7 +110,7 @@ int	expand_env_vars(char **input, t_env_var *env_vars)
 		{
 			mark = &(in[i + 1]);
 			k = 0;
-			while (mark[k] && !is_space(mark[k])) 	
+			while (mark[k] && !is_space(mark[k]))
 				k++;
 			var_key = malloc(sizeof(char) * (k + 1));
 			strncpy(var_key, mark, k);
@@ -122,13 +123,13 @@ int	expand_env_vars(char **input, t_env_var *env_vars)
 		i++;
 	}
 	*input = in;
-	return(0);
+	return (0);
 }
 
 int	main(void)
 {
-	char	*input;
-	t_env_var	*env_vars; 
+	char		*input;
+	t_env_var	*env_vars;
 
 	// init env
 	init_env(&env_vars);
@@ -152,6 +153,5 @@ int	main(void)
 		execute(input);
 		free(input);
 	}
-
 	return (0);
 }

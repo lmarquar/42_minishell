@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 10:29:16 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/04/28 16:49:44 by leon             ###   ########.fr       */
+/*   Updated: 2022/04/28 17:42:32 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,13 +26,9 @@
 
 typedef struct s_env_var
 {
-	char			*key;
-	char			*val;
+	char				*key;
+	char				*val;
 	struct s_env_var	*next;
-} t_env_var;
-
-
+}	t_env_var;
 
 #endif
-
-
