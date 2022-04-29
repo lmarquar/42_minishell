@@ -6,12 +6,12 @@
 #    By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/01/18 12:03:48 by chelmerd          #+#    #+#              #
-#    Updated: 2022/04/29 09:37:36 by chelmerd         ###   ########.fr        #
+#    Updated: 2022/04/29 12:48:16 by chelmerd         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -g
 
 NAME = minishell
 HEADER = minishell.h
@@ -29,7 +29,7 @@ LIBFT = libft/libft.a
 
 INCLUDES = $(READLINE_INCLUDE)
 
-SRCS_MANDATORY	= minishell.c
+SRCS_MANDATORY	= minishell.c execute.c
 OBJS_MANDATORY	= $(patsubst %.c, %.o, $(SRCS_MANDATORY))
 
 all: $(NAME)
@@ -44,7 +44,7 @@ debug: CFLAGS := $(CFLAGS) -g
 debug: all
 
 $(OBJS_MANDATORY): $(SRCS_MANDATORY)
-	$(CC) $(CFLAGS) -c $< -I$(INCLUDES) -o $@
+	$(CC) $(CFLAGS) -c $^ -I$(INCLUDES)
 
 $(LIBFT):
 	make -C libft

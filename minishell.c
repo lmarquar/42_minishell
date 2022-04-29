@@ -6,34 +6,11 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 10:39:02 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/04/29 11:00:08 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/04/29 13:58:02 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-int	execute(char *arg)
-{
-	int		fd[2];
-	char	*cmd;
-	int		pid;
-	char	*args[3];
-	int		exit_code;
-
-	args[0] = "echo";
-	args[1] = arg;
-	args[2] = 0;
-	cmd = "/bin/echo";
-	if (pipe(fd) == 1)
-		return (1);
-	pid = fork();
-	if (pid == 0)
-		execve(cmd, args, NULL);
-	waitpid(pid, &exit_code, 0);
-	if (exit_code != 0 && exit_code != 256)
-		perror("program failed");
-	return (0);
-}
 
 void	handle_signals(int signo)
 {
@@ -46,11 +23,16 @@ void	handle_signals(int signo)
 
 int	init_env(t_env_var **e_v)
 {
+	t_env_var	*var;
+
 	(*e_v) = NULL;
 	(*e_v) = malloc(sizeof(t_env_var));
-	(*e_v)->key = "$";
-	(*e_v)->val = "86545";
-	(*e_v)->next = NULL;
+	(*e_v)->key = "PATH";
+	(*e_v)->val = getenv("PATH");
+	var = malloc(sizeof(t_env_var));
+	var->key = "PWD";
+	var->val = getcwd(NULL, 0);
+	(*e_v)->next = var;
 	return (0);
 }
 
@@ -82,7 +64,7 @@ char	*replace_word(char *str, char *key, char *val)
 	if (!val)
 		val = "";
 	offset = 0;
-	result = malloc(sizeof(char) * (ft_strlen(str) + ft_strlen(val)));
+	result = ft_calloc((ft_strlen(str) + ft_strlen(val)), sizeof(char));
 
 	start = ft_strnstr(str, key, ft_strlen(str));
 	ft_strlcpy(result, str, (start - str) + 1);
@@ -116,12 +98,14 @@ int	expand_env_vars(char **input, t_env_var *env_vars)
 				k++;
 			var_key = malloc(sizeof(char) * (k + 1));
 			ft_strlcpy(var_key, mark, k + 1);
-			var_key[k] = '\0';
 			var_val = find_in_env(var_key, env_vars);
 			needle = ft_strjoin("$", var_key);
 			in = replace_word(in, needle, var_val);
 			free(needle);
-			i = i + k;
+			if (var_val)
+				i = i + ft_strlen(var_val);
+			else
+				i--;
 			free(var_key);
 		}
 		i++;
@@ -130,33 +114,47 @@ int	expand_env_vars(char **input, t_env_var *env_vars)
 	return (0);
 }
 
+int	init_dumpster(t_dumpster **dump, t_env_var *env_vars)
+{
+	*dump = ft_calloc(1, sizeof(t_dumpster));
+	(*dump)->env = env_vars;
+	return (0);
+}
+
 int	main(void)
 {
 	char		*input;
+	char		**cmd_with_args;
 	t_env_var	*env_vars;
+	t_dumpster	*dump;
 
 	// init env
 	init_env(&env_vars);
+	init_dumpster(&dump, env_vars);
 	signal(SIGINT, &handle_signals);
 	while (1)
 	{
-		input = readline(SHELL_PROMT);
-		if (!input)
+		dump->in = readline(SHELL_PROMT);
+		if (!dump->in)
 		{
 			// printf("exit");
 			rl_replace_line("minishell>exit", 0);
 			rl_redisplay();
 			break ;
 		}
-		add_history(input);
+		add_history(dump->in);
 		// transform env_vars
-		expand_env_vars(&input, env_vars);
+		expand_env_vars(&(dump->in), env_vars);
 		// check syntax
-		// parse / analyse
-		// execute
-		execute(input);
+		while (1)
+		{
+			// parse / analyse
+			// execute
+			execute(dump, env_vars);
+		}
 		free(input);
 	}
 	// clear list of env_vars
+
 	return (0);
 }

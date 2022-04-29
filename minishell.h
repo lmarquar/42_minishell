@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 10:29:16 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/04/29 09:39:11 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/04/29 13:58:40 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,5 +30,17 @@ typedef struct s_env_var
 	char				*val;
 	struct s_env_var	*next;
 }	t_env_var;
+
+typedef struct s_dumpster
+{
+	char		*in;
+	int			is_builtin;
+	char		*cmd;
+	char		**args;
+	t_env_var	*env;
+	int			exit_code;
+}	t_dumpster;
+
+int	execute(t_dumpster *dump, t_env_var *env_vars);
 
 #endif
