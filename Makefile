@@ -6,7 +6,7 @@
 #    By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/01/18 12:03:48 by chelmerd          #+#    #+#              #
-#    Updated: 2022/04/29 09:25:54 by chelmerd         ###   ########.fr        #
+#    Updated: 2022/04/29 09:37:36 by chelmerd         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -55,9 +55,11 @@ show:
 
 clean:
 	rm -f $(OBJS_MANDATORY)
+	make -C libft clean
 
 fclean: clean
 	rm -f $(NAME)
+	make -C libft fclean
 
 re: fclean
 	make all

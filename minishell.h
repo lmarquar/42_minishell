@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 10:29:16 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/04/28 17:42:32 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/04/29 09:39:11 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,10 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <stdio.h>
-# include <string.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 
+# include "libft/libft.h"
 # include "pipex/pipex.h"
 
 typedef struct s_env_var

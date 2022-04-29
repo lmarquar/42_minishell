@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 10:39:02 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/04/28 17:43:30 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/04/29 11:00:08 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ int	is_space(char c)
 
 char	*find_in_env(char *key, t_env_var *env_vars)
 {
-	while (env_vars && strcmp(env_vars->key, key) != 0)
+	while (env_vars && ft_strncmp(env_vars->key, key, ft_strlen(key)) != 0)
 	{
 		env_vars = env_vars->next;
 	}
@@ -79,16 +79,17 @@ char	*replace_word(char *str, char *key, char *val)
 	char	*start;
 	size_t	offset;
 
+	if (!val)
+		val = "";
 	offset = 0;
+	result = malloc(sizeof(char) * (ft_strlen(str) + ft_strlen(val)));
 
-	result = malloc(sizeof(char) * (strlen(str) * strlen(val)));
-
-	start = strstr(str, key);
-	strncpy(result, str, (start - str));
+	start = ft_strnstr(str, key, ft_strlen(str));
+	ft_strlcpy(result, str, (start - str) + 1);
 	offset = start - str;
-       	strcpy(result + offset, val);
-	offset += strlen(val);
-	strcpy(result + offset, start + strlen(key));
+	ft_strlcpy(result + offset, val, ft_strlen(val) + 1);
+	offset += ft_strlen(val);
+	ft_strlcpy(result + offset, start + ft_strlen(key), ft_strlen(result));
 	free(str);
 	return (result);
 }
@@ -100,6 +101,7 @@ int	expand_env_vars(char **input, t_env_var *env_vars)
 	int		k;
 	char	*var_key;
 	char	*var_val;
+	char	*needle;
 	char	*in;
 
 	in = *input;
@@ -113,10 +115,12 @@ int	expand_env_vars(char **input, t_env_var *env_vars)
 			while (mark[k] && !is_space(mark[k]))
 				k++;
 			var_key = malloc(sizeof(char) * (k + 1));
-			strncpy(var_key, mark, k);
+			ft_strlcpy(var_key, mark, k + 1);
 			var_key[k] = '\0';
 			var_val = find_in_env(var_key, env_vars);
-			in = replace_word(in, ft_strjoin("$", var_key), var_val);
+			needle = ft_strjoin("$", var_key);
+			in = replace_word(in, needle, var_val);
+			free(needle);
 			i = i + k;
 			free(var_key);
 		}
@@ -153,5 +157,6 @@ int	main(void)
 		execute(input);
 		free(input);
 	}
+	// clear list of env_vars
 	return (0);
 }
