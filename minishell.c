@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 10:39:02 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/04/29 09:55:25 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/04/29 10:44:19 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,12 +82,12 @@ char	*replace_word(char *str, char *key, char *val)
 	if (!val)
 		return (str);
 	offset = 0;
-	result = malloc(sizeof(char) * (ft_strlen(str) * ft_strlen(val)));
+	result = malloc(sizeof(char) * (ft_strlen(str) + ft_strlen(val)));
 
 	start = ft_strnstr(str, key, ft_strlen(str));
-	ft_strlcpy(result, str, (start - str));
+	ft_strlcpy(result, str, (start - str) + 1);
 	offset = start - str;
-	ft_strlcpy(result + offset, val, ft_strlen(val));
+	ft_strlcpy(result + offset, val, ft_strlen(val) + 1);
 	offset += ft_strlen(val);
 	ft_strlcpy(result + offset, start + ft_strlen(key), ft_strlen(result));
 	free(str);
@@ -115,7 +115,7 @@ int	expand_env_vars(char **input, t_env_var *env_vars)
 			while (mark[k] && !is_space(mark[k]))
 				k++;
 			var_key = malloc(sizeof(char) * (k + 1));
-			ft_strlcpy(var_key, mark, k);
+			ft_strlcpy(var_key, mark, k + 1);
 			var_key[k] = '\0';
 			var_val = find_in_env(var_key, env_vars);
 			needle = ft_strjoin("$", var_key);
@@ -157,5 +157,6 @@ int	main(void)
 		execute(input);
 		free(input);
 	}
+	// clear list of env_vars
 	return (0);
 }
