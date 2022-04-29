@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 10:39:02 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/04/29 10:44:19 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/04/29 11:00:08 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ char	*replace_word(char *str, char *key, char *val)
 	size_t	offset;
 
 	if (!val)
-		return (str);
+		val = "";
 	offset = 0;
 	result = malloc(sizeof(char) * (ft_strlen(str) + ft_strlen(val)));
 
