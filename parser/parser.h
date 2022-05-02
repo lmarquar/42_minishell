@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 13:20:00 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/02 15:54:48 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/02 17:08:18 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,10 @@ typedef struct s_cmd_line
 	char		*infile;
 	char		*outfile;
 	size_t		pipe_count;
+	size_t		cmd_count;
 	t_smp_cmd	**simple_commands;
 	int			append;
-	int			heredoc;
+	char		*heredoc_delimiter;
 }	t_cmd_line;
 
 int	is_space(char c);

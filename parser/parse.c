@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 10:17:17 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/02 15:53:38 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/02 17:09:55 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,17 +81,37 @@ char	*next_token(const char *s, int reset)
 int	parse(const char *input, t_cmd_line *cmd_line)
 {
 	int	error;
-	char *t;
+	char *token;
+	t_smp_cmd	smp_cmd;
 
 	error = 0;
-	(void) cmd_line;
-	t = next_token(input, 1);
-	while (t)
+	token = next_token(input, 1);
+	while (token)
 	{
-		printf("token:%s\n", t);
-		t = next_token(input, 0);
-	}
+		printf("token:%s\n", token);
+		if (is_ctrlchr(token[0]))
+		{
+			if (token[0] == '<' && token[1] == '\0')
+				cmd_line->infile = next_token(input, 0);
+			else if (token[0] == '<' && token[1] == '<')
+				cmd_line->heredoc_delimiter = next_token(input, 0);
+			else if (token[0] == '>')
+			{
+				cmd_line->outfile = next_token(input, 0);
+				if (token[1] == '>')
+					cmd_line->append = 1;
+			}
+			else if (token[0] == '|' && token[1] == '\0')
+			{
+				cmd_line->pipe_count++;
+			}
+			else
+				printf("Control charater ('%s') not regonized.\n", token);
+		}
 
+		token = next_token(input, 0);
+	}
+	cmd_line->simple_commands = ft_calloc(cmd_line->cmd_count + 1, sizeof (t_smp_cmd));
 
 	return (error);
 }
