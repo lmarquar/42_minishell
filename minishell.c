@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 10:39:02 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/04/29 13:58:02 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/02 13:53:01 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,13 +36,13 @@ int	init_env(t_env_var **e_v)
 	return (0);
 }
 
-int	is_space(char c)
-{
-	if (c == ' ' || c == '\t' || c == '\r'
-		|| c == '\n' || c == '\v' || c == '\f')
-		return (1);
-	return (0);
-}
+// int	is_space(char c)
+// {
+// 	if (c == ' ' || c == '\t' || c == '\r'
+// 		|| c == '\n' || c == '\v' || c == '\f')
+// 		return (1);
+// 	return (0);
+// }
 
 char	*find_in_env(char *key, t_env_var *env_vars)
 {
@@ -123,10 +123,9 @@ int	init_dumpster(t_dumpster **dump, t_env_var *env_vars)
 
 int	main(void)
 {
-	char		*input;
-	char		**cmd_with_args;
 	t_env_var	*env_vars;
 	t_dumpster	*dump;
+	t_cmd_line	cmd_line;
 
 	// init env
 	init_env(&env_vars);
@@ -146,13 +145,11 @@ int	main(void)
 		// transform env_vars
 		expand_env_vars(&(dump->in), env_vars);
 		// check syntax
-		while (1)
-		{
-			// parse / analyse
-			// execute
-			execute(dump, env_vars);
-		}
-		free(input);
+		// parse / analyse
+		parse(dump->in, &cmd_line);
+		// execute
+		// execute(dump, env_vars);
+		free(dump->in);
 	}
 	// clear list of env_vars
 

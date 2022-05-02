@@ -6,7 +6,7 @@
 #    By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/01/18 12:03:48 by chelmerd          #+#    #+#              #
-#    Updated: 2022/04/29 12:48:16 by chelmerd         ###   ########.fr        #
+#    Updated: 2022/05/02 16:02:16 by chelmerd         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,15 +27,18 @@ endif
 
 LIBFT = libft/libft.a
 
-INCLUDES = $(READLINE_INCLUDE)
+INCLUDES = -I$(READLINE_INCLUDE)
 
-SRCS_MANDATORY	= minishell.c execute.c
+
+PARSER			= parse.c special_character.c
+SRCS_PARSER		= $(addprefix parser/, $(PARSER))
+SRCS_MANDATORY	= minishell.c execute.c $(SRCS_PARSER)
 OBJS_MANDATORY	= $(patsubst %.c, %.o, $(SRCS_MANDATORY))
 
 all: $(NAME)
 
-$(NAME): $(OBJS_MANDATORY) $(LIBFT)
-	$(CC) $(LFLAGS) $^ -o $@ -lreadline -L$(READLINE_PATH)
+$(NAME): $(SRCS_MANDATORY) $(LIBFT)
+	$(CC) $(CFLAGS) $^ -o $@ -Iparser/ -lreadline #-L$(READLINE_PATH)
 
 # $(LIBS):
 # 	make -C pipex/
@@ -44,7 +47,7 @@ debug: CFLAGS := $(CFLAGS) -g
 debug: all
 
 $(OBJS_MANDATORY): $(SRCS_MANDATORY)
-	$(CC) $(CFLAGS) -c $^ -I$(INCLUDES)
+	$(CC) $(CFLAGS) -c $^ -Iparser/
 
 $(LIBFT):
 	make -C libft
