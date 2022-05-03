@@ -114,42 +114,42 @@ int	expand_env_vars(char **input, t_env_var *env_vars)
 	return (0);
 }
 
-int	init_dumpster(t_dumpster **dump, t_env_var *env_vars)
+int	init_bin(t_bin **bin, t_env_var *env_vars)
 {
-	*dump = ft_calloc(1, sizeof(t_dumpster));
-	(*dump)->env = env_vars;
+	*bin = ft_calloc(1, sizeof(t_bin));
+	(*bin)->env = env_vars;
 	return (0);
 }
 
 int	main(void)
 {
 	t_env_var	*env_vars;
-	t_dumpster	*dump;
+	t_bin	*bin;
 	t_cmd_line	cmd_line;
 
 	// init env
 	init_env(&env_vars);
-	init_dumpster(&dump, env_vars);
+	init_bin(&bin, env_vars);
 	signal(SIGINT, &handle_signals);
 	while (1)
 	{
-		dump->in = readline(SHELL_PROMT);
-		if (!dump->in)
+		bin->in = readline(SHELL_PROMT);
+		if (!bin->in || !ft_strncmp(bin->in, "exit", 5))
 		{
 			// printf("exit");
 			rl_replace_line("minishell>exit", 0);
 			rl_redisplay();
 			break ;
 		}
-		add_history(dump->in);
+		add_history(bin->in);
 		// transform env_vars
-		expand_env_vars(&(dump->in), env_vars);
+		expand_env_vars(&(bin->in), env_vars);
 		// check syntax
 		// parse / analyse
-		parse(dump->in, &cmd_line);
+		parse(bin->in, &cmd_line);
 		// execute
-		// execute(dump, env_vars);
-		free(dump->in);
+		execute(&cmd_line, env_vars);
+		free(bin->in);
 	}
 	// clear list of env_vars
 

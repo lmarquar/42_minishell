@@ -33,7 +33,7 @@ typedef struct s_env_var
 	struct s_env_var	*next;
 }	t_env_var;
 
-typedef struct s_dumpster
+typedef struct s_bin
 {
 	char		*in;
 	int			is_builtin;
@@ -41,8 +41,8 @@ typedef struct s_dumpster
 	char		**args;
 	t_env_var	*env;
 	int			exit_code;
-}	t_dumpster;
+}	t_bin;
 
-int	execute(t_dumpster *dump, t_env_var *env_vars);
+int	execute(t_cmd_line *cmd_line, t_env_var *env_vars);
 
 #endif
