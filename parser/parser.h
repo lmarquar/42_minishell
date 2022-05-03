@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 13:20:00 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/02 17:08:18 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/03 12:24:24 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ typedef struct s_smp_cmd
 {
 	char	*cmd;
 	char	**args;
+	size_t	arg_count;
 }	t_smp_cmd;
 
 typedef struct s_cmd_line
@@ -41,5 +42,8 @@ int	is_ctrlchr(char c);
 int	is_metachr(char c);
 
 int	parse(const char *input, t_cmd_line *cmd_line);
+
+//debug
+void	show_cmd_line(t_cmd_line *cmd_line);
 
 #endif

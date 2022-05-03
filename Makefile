@@ -6,7 +6,7 @@
 #    By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/01/18 12:03:48 by chelmerd          #+#    #+#              #
-#    Updated: 2022/05/02 16:02:16 by chelmerd         ###   ########.fr        #
+#    Updated: 2022/05/03 11:32:25 by chelmerd         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,14 +23,15 @@ endif
 ifeq ($(UNAME), Darwin)
 	READLINE_PATH = /usr/local/opt/readline/lib
 	READLINE_INCLUDE = /usr/local/opt/readline/include
+	RL_LIBARY = -L$(READLINE_PATH)
 endif
 
 LIBFT = libft/libft.a
 
-INCLUDES = -I$(READLINE_INCLUDE)
+INCLUDES = -I$(READLINE_INCLUDE) -Iparser
 
 
-PARSER			= parse.c special_character.c
+PARSER			= parse.c special_character.c debug.c
 SRCS_PARSER		= $(addprefix parser/, $(PARSER))
 SRCS_MANDATORY	= minishell.c execute.c $(SRCS_PARSER)
 OBJS_MANDATORY	= $(patsubst %.c, %.o, $(SRCS_MANDATORY))
@@ -38,7 +39,7 @@ OBJS_MANDATORY	= $(patsubst %.c, %.o, $(SRCS_MANDATORY))
 all: $(NAME)
 
 $(NAME): $(SRCS_MANDATORY) $(LIBFT)
-	$(CC) $(CFLAGS) $^ -o $@ -Iparser/ -lreadline #-L$(READLINE_PATH)
+	$(CC) $(CFLAGS) $^ -o $@ $(INCLUDES) -lreadline $(RL_LIBARY)
 
 # $(LIBS):
 # 	make -C pipex/
