@@ -138,7 +138,7 @@ int	parse(const char *input, t_cmd_line *cmd_line, t_env_var *env)
 
 	error = 0;
 	token = next_token(input, 1);
-	init_smp_cmd(&smp_cmd, NULL, ft_calloc(1, sizeof (char *)), 0);
+	init_smp_cmd(&smp_cmd, NULL, ft_calloc(2, sizeof (char *)), 0);
 	init_cmd_line(cmd_line);
 	cmd_line->simple_commands = ft_calloc(3, sizeof (t_smp_cmd));
 	while (token)

@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/29 12:17:48 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/04/29 14:00:15 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/03 15:16:53 by leon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,39 +23,118 @@ static int	free_arr(char **arr)
 	return (0);
 }
 
-int	execute(t_dumpster *dump, t_env_var *env_vars)
+int	exec_el(char **arg, char **paths, int fdin, int fdout)
 {
-	int		i;
-	int		fd[2];
+	int	i;
 	char	*cmd;
-	int		pid;
+
+	if (fdin != STDIN_FILENO)
+	{
+		i = dup2(fdin, STDIN_FILENO);
+		if (i < 0)
+			printf("dup2error\n");
+		close(fdin);
+	}
+	if (fdout != STDOUT_FILENO)
+	{
+		i = dup2(fdout, STDOUT_FILENO);
+		if (i < 0)
+			printf("dup2error\n");
+		close(fdout);
+	}
+	i = -1;
+	while (paths[++i])
+	{
+		cmd = ft_strjoin(paths[i], "/");
+		cmd = ft_strjoin(cmd, arg[0]);
+		execve(cmd, arg, NULL);
+		free(cmd);
+	}
+	printf("Command couldn't be found\n");
+	free_arr(paths);
+	exit(1);
+
+	return (0);
+}
+
+int	execute(t_cmd_line *cmd_line, t_env_var *env_vars)
+{
+	int		p_count;
+	int		*pid;
 	int		exit_code;
 	char	**paths;
 	char	**arg;
+	int		fd[4];
+	int		i;
+	int		k;
 
-	arg = ft_calloc(3, sizeof(char *));
-	arg[0] = dump->in;
+	arg = cmd_line->simple_commands[0]->args;
+	i = -1;
+	p_count = cmd_line->pipe_count;
 	paths = ft_split(env_vars->val, ':');
-	if (pipe(fd) == 1)
-		return (1);
-	pid = fork();
-	if (pid == 0)
+	pid = ft_calloc(sizeof(int), p_count + 1);
+	i = 0;
+	if (!p_count)
 	{
-		i = -1;
-		while (paths[++i])
-		{
-			cmd = ft_strjoin(paths[i], "/");
-			cmd = ft_strjoin(cmd, arg[0]);
-			printf("%s\n", cmd);
-			execve(cmd, arg, NULL);
-		}
-		printf("Command couldn't be found\n");
-		free_arr(paths);
-		free(cmd);
-		exit(1);
+		pid[i] = fork();
+		if (pid[i] == 0)
+			exec_el(arg, paths, STDIN_FILENO, STDOUT_FILENO);
 	}
-	waitpid(pid, &exit_code, 0);
-	if (exit_code != 0 && exit_code != 256)
-		perror("program failed");
+	else
+	{
+		if (pipe(&(fd[0])) == -1)
+			return (3);
+		pid[i] = fork();
+		if (pid[i] == 0)
+		{
+			close(fd[0]);
+			exec_el(arg, paths, STDIN_FILENO, fd[1]);
+		}
+		while (++i < p_count)
+		{
+			arg = cmd_line->simple_commands[i]->args;
+			if (pipe(&(fd[(i % 2) * 2])) == -1)
+				return (3);
+			pid[i] = fork();
+			if (pid[i] == 0)
+			{
+				close(fd[i % 2]);
+				close(fd[2 + ((i + 1) % 2)]);
+				exec_el(arg, paths, fd[((i + 1) % 2) * 2], fd[1 + (i % 2) * 2]);
+			}
+			close(fd[((i + 1) % 2) * 2]);
+			close(fd[1 + ((i + 1) % 2) * 2]);
+		}
+		arg = cmd_line->simple_commands[i]->args;
+		if ((p_count % 2))
+		{
+			pid[i] = fork();
+			if (pid[i] == 0)
+			{
+				close(fd[1]);
+				exec_el(arg, paths, fd[0], STDOUT_FILENO);
+			}
+			close(fd[0]);
+			close(fd[1]);
+		}
+		else
+		{
+			pid[i] = fork();
+			if (pid[i] == 0)
+			{
+				close(fd[3]);
+				exec_el(arg, paths, fd[2], STDOUT_FILENO);
+			}
+			close(fd[2]);
+			close(fd[3]);
+		}
+	}
+	k = -1;
+	while (++k <= i)
+	{
+		waitpid(pid[k], &exit_code, 0);
+		if (exit_code != 0 && exit_code != 256)
+			perror("program failed");
+	}
 	return (0);
 }

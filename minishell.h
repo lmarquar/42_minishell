@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 10:29:16 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/04 15:21:44 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/04 15:41:58 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 # include "pipex/pipex.h"
 # include "parser.h"
 
-typedef struct s_dumpster
+typedef struct s_bin
 {
 	char		*in;
 	int			is_builtin;
@@ -34,8 +34,8 @@ typedef struct s_dumpster
 	char		**args;
 	t_env_var	*env;
 	int			exit_code;
-}	t_dumpster;
+}	t_bin;
 
-int	execute(t_dumpster *dump, t_env_var *env_vars);
+int	execute(t_cmd_line *cmd_line, t_env_var *env_vars);
 
 #endif
