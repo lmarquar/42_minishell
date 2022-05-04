@@ -57,6 +57,21 @@ int	exec_el(char **arg, char **paths, int fdin, int fdout)
 	return (0);
 }
 
+int	heredoc_handler(char *delimiter, int fdout)
+{
+	char	*in;
+	int		i;
+
+	in = "";
+	i = ft_strlen(delimiter);
+	while(ft_strncmp(delimiter, in, i))
+	{
+		in = readline(">");
+		write(fdout, in, ft_strlen(in));
+	}
+	return (0);
+}
+
 int	execute(t_cmd_line *cmd_line, t_env_var *env_vars)
 {
 	int		p_count;
@@ -89,6 +104,8 @@ int	execute(t_cmd_line *cmd_line, t_env_var *env_vars)
 		pid[i] = fork();
 		if (pid[i] == 0)
 			exec_el(arg, paths, in, out);
+		if (cmd_line->heredoc_delimiter)
+			heredoc_handler(cmd_line->heredoc_delimiter, out);
 	}
 	else
 	{
