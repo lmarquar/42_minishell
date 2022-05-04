@@ -117,7 +117,7 @@ void	add_arg(t_smp_cmd **old, char *arg)
 	char		**new_args;
 	size_t		i;
 
-	new_args = ft_calloc((*old)->arg_count + 1, sizeof (char *));
+	new_args = ft_calloc((*old)->arg_count + 2, sizeof (char *));
 	i = 0;
 	while (i < (*old)->arg_count)
 	{
@@ -138,7 +138,7 @@ int	parse(const char *input, t_cmd_line *cmd_line)
 
 	error = 0;
 	token = next_token(input, 1);
-	init_smp_cmd(&smp_cmd, NULL, ft_calloc(1, sizeof (char *)), 0);
+	init_smp_cmd(&smp_cmd, NULL, ft_calloc(2, sizeof (char *)), 0);
 	init_cmd_line(cmd_line);
 	cmd_line->simple_commands = ft_calloc(3, sizeof (t_smp_cmd));
 	while (token)
@@ -146,7 +146,6 @@ int	parse(const char *input, t_cmd_line *cmd_line)
 		printf("token:%s\n", token);
 		if (is_ctrlchr(token[0]))
 		{
-
 			if (ft_strncmp("<", token, 2) == 0)
 				cmd_line->infile = next_token(input, 0);
 			else if (ft_strncmp("<<", token, 3) == 0)
