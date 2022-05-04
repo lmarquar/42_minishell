@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/29 12:17:48 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/03 15:16:53 by leon             ###   ########.fr       */
+/*   Updated: 2022/05/04 16:14:07 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,14 +32,14 @@ int	exec_el(char **arg, char **paths, int fdin, int fdout)
 	{
 		i = dup2(fdin, STDIN_FILENO);
 		if (i < 0)
-			printf("dup2error\n");
+			perror("dup2error(in)\n");
 		close(fdin);
 	}
 	if (fdout != STDOUT_FILENO)
 	{
 		i = dup2(fdout, STDOUT_FILENO);
 		if (i < 0)
-			printf("dup2error\n");
+			perror("dup2error(out)\n");
 		close(fdout);
 	}
 	i = -1;
@@ -67,7 +67,17 @@ int	execute(t_cmd_line *cmd_line, t_env_var *env_vars)
 	int		fd[4];
 	int		i;
 	int		k;
+	int		in;
+	int		out;
 
+	if (cmd_line->infile)
+		in = open(cmd_line->infile, O_RDONLY);
+	else
+		in = STDIN_FILENO;
+	if (cmd_line->outfile)
+		out = open(cmd_line->outfile, O_WRONLY | O_CREAT, 0666);
+	else
+		out = STDOUT_FILENO;
 	arg = cmd_line->simple_commands[0]->args;
 	i = -1;
 	p_count = cmd_line->pipe_count;
@@ -78,7 +88,7 @@ int	execute(t_cmd_line *cmd_line, t_env_var *env_vars)
 	{
 		pid[i] = fork();
 		if (pid[i] == 0)
-			exec_el(arg, paths, STDIN_FILENO, STDOUT_FILENO);
+			exec_el(arg, paths, in, out);
 	}
 	else
 	{
@@ -88,7 +98,7 @@ int	execute(t_cmd_line *cmd_line, t_env_var *env_vars)
 		if (pid[i] == 0)
 		{
 			close(fd[0]);
-			exec_el(arg, paths, STDIN_FILENO, fd[1]);
+			exec_el(arg, paths, in, fd[1]);
 		}
 		while (++i < p_count)
 		{
@@ -112,7 +122,7 @@ int	execute(t_cmd_line *cmd_line, t_env_var *env_vars)
 			if (pid[i] == 0)
 			{
 				close(fd[1]);
-				exec_el(arg, paths, fd[0], STDOUT_FILENO);
+				exec_el(arg, paths, fd[0], out);
 			}
 			close(fd[0]);
 			close(fd[1]);
@@ -123,7 +133,7 @@ int	execute(t_cmd_line *cmd_line, t_env_var *env_vars)
 			if (pid[i] == 0)
 			{
 				close(fd[3]);
-				exec_el(arg, paths, fd[2], STDOUT_FILENO);
+				exec_el(arg, paths, fd[2], out);
 			}
 			close(fd[2]);
 			close(fd[3]);
