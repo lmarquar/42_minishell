@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 10:29:16 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/02 13:31:24 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/04 15:21:44 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,6 @@
 # include "libft/libft.h"
 # include "pipex/pipex.h"
 # include "parser.h"
-
-typedef struct s_env_var
-{
-	char				*key;
-	char				*val;
-	struct s_env_var	*next;
-}	t_env_var;
 
 typedef struct s_dumpster
 {

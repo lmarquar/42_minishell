@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 10:17:17 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/03 14:50:26 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/04 15:19:06 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@ void	add_arg(t_smp_cmd **old, char *arg)
 	char		**new_args;
 	size_t		i;
 
-	new_args = ft_calloc((*old)->arg_count + 1, sizeof (char *));
+	new_args = ft_calloc((*old)->arg_count + 2, sizeof (char *));
 	i = 0;
 	while (i < (*old)->arg_count)
 	{
@@ -130,7 +130,7 @@ void	add_arg(t_smp_cmd **old, char *arg)
 	*old = new;
 }
 
-int	parse(const char *input, t_cmd_line *cmd_line)
+int	parse(const char *input, t_cmd_line *cmd_line, t_env_var *env)
 {
 	int			error;
 	char		*token;
@@ -146,7 +146,6 @@ int	parse(const char *input, t_cmd_line *cmd_line)
 		printf("token:%s\n", token);
 		if (is_ctrlchr(token[0]))
 		{
-
 			if (ft_strncmp("<", token, 2) == 0)
 				cmd_line->infile = next_token(input, 0);
 			else if (ft_strncmp("<<", token, 3) == 0)
@@ -173,6 +172,7 @@ int	parse(const char *input, t_cmd_line *cmd_line)
 		}
 		else
 		{
+			expand_env_vars(&token, env);
 			if (!smp_cmd->cmd)
 				smp_cmd->cmd = token;
 			add_arg(&smp_cmd, token);

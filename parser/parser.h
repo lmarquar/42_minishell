@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 13:20:00 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/03 12:24:24 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/04 15:21:02 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,20 @@ typedef struct s_cmd_line
 	char		*heredoc_delimiter;
 }	t_cmd_line;
 
+typedef struct s_env_var
+{
+	char				*key;
+	char				*val;
+	struct s_env_var	*next;
+}	t_env_var;
+
 int	is_space(char c);
 int	is_ctrlchr(char c);
 int	is_metachr(char c);
 
-int	parse(const char *input, t_cmd_line *cmd_line);
+int	parse(const char *input, t_cmd_line *cmd_line, t_env_var *env);
+
+int	expand_env_vars(char **input, t_env_var *env_vars);
 
 //debug
 void	show_cmd_line(t_cmd_line *cmd_line);

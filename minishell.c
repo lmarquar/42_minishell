@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 10:39:02 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/02 13:53:01 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/04 15:23:20 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,9 +44,10 @@ int	init_env(t_env_var **e_v)
 // 	return (0);
 // }
 
-char	*find_in_env(char *key, t_env_var *env_vars)
+/*
+char	*find_in_env(char *key, size_t key_len, t_env_var *env_vars)
 {
-	while (env_vars && ft_strncmp(env_vars->key, key, ft_strlen(key)) != 0)
+	while (env_vars && ft_strncmp(env_vars->key, key, key_len) != 0)
 	{
 		env_vars = env_vars->next;
 	}
@@ -113,7 +114,7 @@ int	expand_env_vars(char **input, t_env_var *env_vars)
 	*input = in;
 	return (0);
 }
-
+*/
 int	init_dumpster(t_dumpster **dump, t_env_var *env_vars)
 {
 	*dump = ft_calloc(1, sizeof(t_dumpster));
@@ -143,10 +144,9 @@ int	main(void)
 		}
 		add_history(dump->in);
 		// transform env_vars
-		expand_env_vars(&(dump->in), env_vars);
 		// check syntax
 		// parse / analyse
-		parse(dump->in, &cmd_line);
+		parse(dump->in, &cmd_line, env_vars);
 		// execute
 		// execute(dump, env_vars);
 		free(dump->in);
