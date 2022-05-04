@@ -30,13 +30,17 @@ int	exec_el(char **arg, char **paths, int fdin, int fdout)
 
 	if (fdin != STDIN_FILENO)
 	{
-		dup2(fdin, STDIN_FILENO);
+		i = dup2(fdin, STDIN_FILENO);
+		if (i < 0)
+			printf("dup2error\n");
 		close(fdin);
 	}
 	if (fdout != STDOUT_FILENO)
 	{
-		dup2(fdout, STDOUT_FILENO);
-		close(fdin);
+		i = dup2(fdout, STDOUT_FILENO);
+		if (i < 0)
+			printf("dup2error\n");
+		close(fdout);
 	}
 	i = -1;
 	while (paths[++i])
@@ -65,6 +69,7 @@ int	execute(t_cmd_line *cmd_line, t_env_var *env_vars)
 	int		k;
 
 	arg = cmd_line->simple_commands[0]->args;
+	i = -1;
 	p_count = cmd_line->pipe_count;
 	paths = ft_split(env_vars->val, ':');
 	pid = ft_calloc(sizeof(int), p_count + 1);
@@ -82,46 +87,32 @@ int	execute(t_cmd_line *cmd_line, t_env_var *env_vars)
 		pid[i] = fork();
 		if (pid[i] == 0)
 		{
-			close(fd[1]);
-			exec_el(arg, paths, STDIN_FILENO, fd[0]);
+			close(fd[0]);
+			exec_el(arg, paths, STDIN_FILENO, fd[1]);
 		}
-		while (++i < (p_count - 2))
+		while (++i < p_count)
 		{
 			arg = cmd_line->simple_commands[i]->args;
-			if (pipe(&(fd[2])) == -1)
+			if (pipe(&(fd[(i % 2) * 2])) == -1)
 				return (3);
 			pid[i] = fork();
 			if (pid[i] == 0)
 			{
-				close(fd[0]);
-				close(fd[3]);
-				exec_el(arg, paths, fd[1], fd[2]);
+				close(fd[i % 2]);
+				close(fd[2 + ((i + 1) % 2)]);
+				exec_el(arg, paths, fd[((i + 1) % 2) * 2], fd[1 + (i % 2) * 2]);
 			}
-			close(fd[0]);
-			close(fd[1]);
-			i++;
-			arg = cmd_line->simple_commands[i]->args;
-			if (pipe(fd) == -1)
-				return (3);
+			close(fd[((i + 1) % 2) * 2]);
+			close(fd[1 + ((i + 1) % 2) * 2]);
+		}
+		arg = cmd_line->simple_commands[i]->args;
+		if ((p_count % 2))
+		{
 			pid[i] = fork();
 			if (pid[i] == 0)
 			{
 				close(fd[1]);
-				close(fd[2]);
-				exec_el(arg, paths, fd[3], fd[0]);
-			}
-			close(fd[2]);
-			close(fd[3]);
-			i++;
-		}
-		arg = cmd_line->simple_commands[i]->args;
-		if (!(p_count % 2))
-		{
-			pid[i] = fork();
-			if (pid[i] == 0)
-			{
-				close(fd[0]);
-				exec_el(arg, paths, fd[1], STDOUT_FILENO);
+				exec_el(arg, paths, fd[0], STDOUT_FILENO);
 			}
 			close(fd[0]);
 			close(fd[1]);
@@ -131,8 +122,8 @@ int	execute(t_cmd_line *cmd_line, t_env_var *env_vars)
 			pid[i] = fork();
 			if (pid[i] == 0)
 			{
-				close(fd[2]);
-				exec_el(arg, paths, fd[3], STDOUT_FILENO);
+				close(fd[3]);
+				exec_el(arg, paths, fd[2], STDOUT_FILENO);
 			}
 			close(fd[2]);
 			close(fd[3]);
