@@ -57,17 +57,34 @@ int	exec_el(char **arg, char **paths, int fdin, int fdout)
 	return (0);
 }
 
+int append(int fdin, int fdout)
+{
+	char	c;
+
+	while (read(fdout, &c, 1))
+		printf("%c", c);
+	while (read(fdin, &c, 1))
+		write(fdout, &c, 1);
+	return (0);
+}
+
 int	heredoc_handler(char *delimiter, int fdout)
 {
 	char	*in;
+	char	*term;
 	int		i;
 
 	in = "";
+	term = "heredoc>";
+	//term needs pipes
 	i = ft_strlen(delimiter);
-	while(ft_strncmp(delimiter, in, i))
+	while(1)
 	{
-		in = readline(">");
+		in = readline(term);
+		if (!ft_strncmp(delimiter, in, ft_strlen(in)))
+				break ;
 		write(fdout, in, ft_strlen(in));
+		write(fdout, "\n", 1);
 	}
 	return (0);
 }
@@ -90,12 +107,18 @@ int	execute(t_cmd_line *cmd_line, t_env_var *env_vars)
 	else
 		in = STDIN_FILENO;
 	if (cmd_line->outfile)
-		out = open(cmd_line->outfile, O_WRONLY | O_CREAT, 0666);
+		out = open(cmd_line->outfile, O_RDWR | O_CREAT, 0777);
 	else
 		out = STDOUT_FILENO;
 	arg = cmd_line->simple_commands[0]->args;
 	i = -1;
 	p_count = cmd_line->pipe_count;
+	//delete this later
+	if (cmd_line->heredoc_delimiter)
+		p_count++;
+	if (cmd_line->append)
+		p_count++;
+	//until here delete
 	paths = ft_split(env_vars->val, ':');
 	pid = ft_calloc(sizeof(int), p_count + 1);
 	i = 0;
@@ -104,53 +127,90 @@ int	execute(t_cmd_line *cmd_line, t_env_var *env_vars)
 		pid[i] = fork();
 		if (pid[i] == 0)
 			exec_el(arg, paths, in, out);
-		if (cmd_line->heredoc_delimiter)
-			heredoc_handler(cmd_line->heredoc_delimiter, out);
 	}
 	else
 	{
 		if (pipe(&(fd[0])) == -1)
 			return (3);
-		pid[i] = fork();
-		if (pid[i] == 0)
+		if (cmd_line->heredoc_delimiter)
+			heredoc_handler(cmd_line->heredoc_delimiter, fd[1]);
+		else
 		{
-			close(fd[0]);
-			exec_el(arg, paths, in, fd[1]);
+			pid[i] = fork();
+			if (pid[i] == 0)
+			{
+				close(fd[0]);
+				exec_el(arg, paths, in, fd[1]);
+			}
 		}
-		while (++i < p_count)
+		if (!cmd_line->heredoc_delimiter)
+			i++;	
+		while ((i < p_count && !cmd_line->heredoc_delimiter) || i < (p_count - 1))
 		{
 			arg = cmd_line->simple_commands[i]->args;
-			if (pipe(&(fd[(i % 2) * 2])) == -1)
+			if (pipe(&(fd[2])) == -1)
 				return (3);
 			pid[i] = fork();
 			if (pid[i] == 0)
 			{
-				close(fd[i % 2]);
-				close(fd[2 + ((i + 1) % 2)]);
-				exec_el(arg, paths, fd[((i + 1) % 2) * 2], fd[1 + (i % 2) * 2]);
+				close(fd[1]);
+				close(fd[2]);
+				exec_el(arg, paths, fd[0], fd[3]);
 			}
-			close(fd[((i + 1) % 2) * 2]);
-			close(fd[1 + ((i + 1) % 2) * 2]);
+			close(fd[0]);
+			close(fd[1]);
+			i++;
+			if ((i >= p_count && !(cmd_line->heredoc_delimiter)) || i >= (p_count - 1))
+				break ;
+			arg = cmd_line->simple_commands[i]->args;
+			if (pipe(&(fd[0])) == -1)
+				return (3);
+			pid[i] = fork();
+			if (pid[i] == 0)
+			{
+				close(fd[0]);
+				close(fd[3]);
+				exec_el(arg, paths, fd[2], fd[1]);
+			}
+			close(fd[2]);
+			close(fd[3]);
+			i++;
 		}
 		arg = cmd_line->simple_commands[i]->args;
 		if ((p_count % 2))
 		{
-			pid[i] = fork();
-			if (pid[i] == 0)
+			if (cmd_line->append <= 0)
 			{
-				close(fd[1]);
-				exec_el(arg, paths, fd[0], out);
+				append(fd[0], out);
+				i--;
+			}
+			else
+			{
+				pid[i] = fork();
+				if (pid[i] == 0)
+				{
+					close(fd[1]);
+					exec_el(arg, paths, fd[0], out);
+				}
 			}
 			close(fd[0]);
 			close(fd[1]);
 		}
 		else
 		{
-			pid[i] = fork();
-			if (pid[i] == 0)
+			if (cmd_line->append)
 			{
-				close(fd[3]);
-				exec_el(arg, paths, fd[2], out);
+				append(fd[2], out);
+				i--;
+			}
+			else
+			{
+				pid[i] = fork();
+				if (pid[i] == 0)
+				{
+					close(fd[3]);
+					exec_el(arg, paths, fd[2], out);
+				}
 			}
 			close(fd[2]);
 			close(fd[3]);
