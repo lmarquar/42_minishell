@@ -6,34 +6,11 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 10:39:02 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/04/28 16:55:11 by leon             ###   ########.fr       */
+/*   Updated: 2022/05/04 15:43:34 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-int	execute(char *arg)
-{
-	int		fd[2];
-	char	*cmd;
-	int		pid;
-	char	*args[3];
-	int		exit_code;
-
-	args[0] = "echo";
-	args[1] = arg;
-	args[2] = 0;
-	cmd = "/bin/echo";
-	if (pipe(fd) == 1)
-		return (1);
-	pid = fork();
-	if (pid == 0)
-		execve(cmd, args, NULL);
-	waitpid(pid, &exit_code, 0);
-	if (exit_code != 0 && exit_code != 256)
-		perror("program failed");
-	return (0);
-}
 
 void	handle_signals(int signo)
 {
@@ -46,24 +23,31 @@ void	handle_signals(int signo)
 
 int	init_env(t_env_var **e_v)
 {
+	t_env_var	*var;
+
 	(*e_v) = NULL;
 	(*e_v) = malloc(sizeof(t_env_var));
-	(*e_v)->key = "$";
-	(*e_v)->val = "86545";	
-	(*e_v)->next = NULL;
+	(*e_v)->key = "PATH";
+	(*e_v)->val = getenv("PATH");
+	var = malloc(sizeof(t_env_var));
+	var->key = "PWD";
+	var->val = getcwd(NULL, 0);
+	(*e_v)->next = var;
 	return (0);
 }
 
-int	is_space(char c)
-{
-	if (c == ' ' || c == '\t' || c == '\r' || c == '\n' || c == '\v' || c == '\f')
-		return (1);
-	return (0);
-}
+// int	is_space(char c)
+// {
+// 	if (c == ' ' || c == '\t' || c == '\r'
+// 		|| c == '\n' || c == '\v' || c == '\f')
+// 		return (1);
+// 	return (0);
+// }
 
-char	*find_in_env(char *key, t_env_var *env_vars)
+/*
+char	*find_in_env(char *key, size_t key_len, t_env_var *env_vars)
 {
-	while (env_vars && strcmp(env_vars->key, key) != 0)
+	while (env_vars && ft_strncmp(env_vars->key, key, key_len) != 0)
 	{
 		env_vars = env_vars->next;
 	}
@@ -78,27 +62,29 @@ char	*replace_word(char *str, char *key, char *val)
 	char	*start;
 	size_t	offset;
 
+	if (!val)
+		val = "";
 	offset = 0;
+	result = ft_calloc((ft_strlen(str) + ft_strlen(val)), sizeof(char));
 
-	result = malloc(sizeof(char) * (strlen(str) * strlen(val)));
-       	
-	start = strstr(str, key);
-	strncpy(result, str, (start - str));
+	start = ft_strnstr(str, key, ft_strlen(str));
+	ft_strlcpy(result, str, (start - str) + 1);
 	offset = start - str;
-       	strcpy(result + offset, val);
-	offset += strlen(val);
-	strcpy(result + offset, start + strlen(key));
+	ft_strlcpy(result + offset, val, ft_strlen(val) + 1);
+	offset += ft_strlen(val);
+	ft_strlcpy(result + offset, start + ft_strlen(key), ft_strlen(result));
 	free(str);
-	return (result);		
+	return (result);
 }
 
 int	expand_env_vars(char **input, t_env_var *env_vars)
 {
-	int	i;
+	int		i;
 	char	*mark;
-	int	k;
+	int		k;
 	char	*var_key;
 	char	*var_val;
+	char	*needle;
 	char	*in;
 
 	in = *input;
@@ -109,49 +95,64 @@ int	expand_env_vars(char **input, t_env_var *env_vars)
 		{
 			mark = &(in[i + 1]);
 			k = 0;
-			while (mark[k] && !is_space(mark[k])) 	
+			while (mark[k] && !is_space(mark[k]))
 				k++;
 			var_key = malloc(sizeof(char) * (k + 1));
-			strncpy(var_key, mark, k);
-			var_key[k] = '\0';
+			ft_strlcpy(var_key, mark, k + 1);
 			var_val = find_in_env(var_key, env_vars);
-			in = replace_word(in, ft_strjoin("$", var_key), var_val);
-			i = i + k;
+			needle = ft_strjoin("$", var_key);
+			in = replace_word(in, needle, var_val);
+			free(needle);
+			if (var_val)
+				i = i + ft_strlen(var_val);
+			else
+				i--;
 			free(var_key);
 		}
 		i++;
 	}
 	*input = in;
-	return(0);
+	return (0);
+}
+*/
+
+int	init_bin(t_bin **bin, t_env_var *env_vars)
+{
+	*bin = ft_calloc(1, sizeof(t_bin));
+	(*bin)->env = env_vars;
+	return (0);
 }
 
 int	main(void)
 {
-	char	*input;
-	t_env_var	*env_vars; 
+	t_env_var	*env_vars;
+	t_bin	*bin;
+	t_cmd_line	cmd_line;
 
 	// init env
 	init_env(&env_vars);
+	init_bin(&bin, env_vars);
 	signal(SIGINT, &handle_signals);
 	while (1)
 	{
-		input = readline(SHELL_PROMT);
-		if (!input)
+		bin->in = readline(SHELL_PROMT);
+		if (!bin->in || !ft_strncmp(bin->in, "exit", 5))
 		{
 			// printf("exit");
 			rl_replace_line("minishell>exit", 0);
 			rl_redisplay();
 			break ;
 		}
-		add_history(input);
+		add_history(bin->in);
 		// transform env_vars
-		expand_env_vars(&input, env_vars);
 		// check syntax
 		// parse / analyse
+		parse(bin->in, &cmd_line, env_vars);
 		// execute
-		execute(input);
-		free(input);
+		execute(&cmd_line, env_vars);
+		free(bin->in);
 	}
+	// clear list of env_vars
 
 	return (0);
 }

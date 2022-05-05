@@ -6,30 +6,43 @@
 #    By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/01/18 12:03:48 by chelmerd          #+#    #+#              #
+<<<<<<< HEAD
 #    Updated: 2022/04/28 16:58:59 by leon             ###   ########.fr        #
+=======
+#    Updated: 2022/05/04 15:24:24 by chelmerd         ###   ########.fr        #
+>>>>>>> eff1ac5f7b278a0422abe22ea1c9fd566c6f684e
 #                                                                              #
 # **************************************************************************** #
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -g
 
 NAME = minishell
 HEADER = minishell.h
 
-READLINE_PATH = /usr/local/opt/readline/lib
-READLINE_INCLUDE = /usr/local/opt/readline/include
+UNAME = $(shell uname -s)
+ifeq ($(UNAME), Linux)
 
-INCLUDES = $(READLINE_INCLUDE)
+endif
+ifeq ($(UNAME), Darwin)
+	READLINE_PATH = /usr/local/opt/readline/lib
+	READLINE_INCLUDE = /usr/local/opt/readline/include
+	RL_LIBARY = -L$(READLINE_PATH)
+endif
 
-SRCS_MANDATORY	= minishell.c
+LIBFT = libft/libft.a
+
+INCLUDES = -I$(READLINE_INCLUDE) -Iparser
+
+PARSER			= parse.c special_character.c replace.c debug.c
+SRCS_PARSER		= $(addprefix parser/, $(PARSER))
+SRCS_MANDATORY	= minishell.c execute.c $(SRCS_PARSER)
 OBJS_MANDATORY	= $(patsubst %.c, %.o, $(SRCS_MANDATORY))
-
-# LIBS = pipex/pipex.a
 
 all: $(NAME)
 
-$(NAME): $(OBJS_MANDATORY) $(LIBS)
-	$(CC) $(LFLAGS) $^ -o $@ -lreadline libft_pro.a 
+$(NAME): $(SRCS_MANDATORY) $(LIBFT)
+	$(CC) $(CFLAGS) $^ -o $@ $(INCLUDES) -lreadline $(RL_LIBARY)
 
 # $(LIBS):
 # 	make -C pipex/
@@ -38,7 +51,10 @@ debug: CFLAGS := $(CFLAGS) -g
 debug: all
 
 $(OBJS_MANDATORY): $(SRCS_MANDATORY)
-	$(CC) $(CFLAGS) -c $< -I$(INCLUDES) -o $@
+	$(CC) $(CFLAGS) -c $^ -Iparser/
+
+$(LIBFT):
+	make -C libft
 
 show:
 	@echo $(SRCS_MANDATORY)
@@ -46,9 +62,11 @@ show:
 
 clean:
 	rm -f $(OBJS_MANDATORY)
+	make -C libft clean
 
 fclean: clean
 	rm -f $(NAME)
+	make -C libft fclean
 
 re: fclean
 	make all
