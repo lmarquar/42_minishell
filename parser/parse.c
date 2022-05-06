@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 10:17:17 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/04 15:19:06 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/06 13:00:20 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,16 +18,18 @@
 int	change_quote_state(int state, char c)
 {
 	if (!(c == '\'' || c == '"'))
-		return (state);
+		return (0);
+	if (state == -1)
+		return (is_quote(c) + 1);
 	if (state == NO_QUOTE && c == '\'')
 		return (SINGLE_QUOTE);
 	if (state == NO_QUOTE && c == '"')
 		return (DOUBLE_QUOTE);
 	if (state == SINGLE_QUOTE && c == '\'')
-		return (NO_QUOTE);
+		return (-SINGLE_QUOTE);
 	if (state == DOUBLE_QUOTE && c == '"')
-		return (NO_QUOTE);
-	return (state);
+		return (-DOUBLE_QUOTE);
+	return (0);
 }
 
 /*
@@ -41,7 +43,7 @@ size_t	next_token_len(const char *s, int quote_state, int unit_is_word)
 	quote_state = 0;
 	while (s && s[token_len])
 	{
-		quote_state = change_quote_state(quote_state, s[token_len]);
+		quote_state = quote_state + change_quote_state(quote_state, s[token_len]);
 		if (!unit_is_word)
 		{
 			if (!is_ctrlchr(s[token_len]))
@@ -130,6 +132,150 @@ void	add_arg(t_smp_cmd **old, char *arg)
 	*old = new;
 }
 
+t_text_chunk	*new_chunk(char *str, int expand)
+{
+	t_text_chunk	*chunk;
+
+	chunk = malloc(sizeof (t_text_chunk));
+	chunk->str = str;
+	chunk->len = 1;
+	chunk->expand = expand;
+	return (chunk);
+}
+
+void	split_into_chunks(t_list **chunks,
+							t_text_chunk **chunk,
+							int *state,
+							char *s)
+{
+	if (change_quote_state(*state, *s) != 0 || (*state != 1 && *s == '$'))
+	{
+		*state = *state + change_quote_state(*state, *s);
+		if (*chunk)
+		{
+			ft_lstadd_back(chunks, ft_lstnew(*chunk));
+			*chunk = NULL;
+		}
+		if (*state != 1 && *s == '$')
+			*chunk = new_chunk(s, 1);
+	}
+	else if (*chunk && (*chunk)->str[0] == '$' && *state != 1
+		&& (is_quote(*s) || *s == '$'))
+	{
+		ft_lstadd_back(chunks, ft_lstnew(*chunk));
+		*chunk = NULL;
+		if (*s == '$')
+			*chunk = new_chunk(s, 1);
+	}
+	else if (*chunk == NULL)
+		*chunk = new_chunk(s, 0);
+	else
+		(*chunk)->len++;
+}
+
+void	print_text_chunks(t_list *chunks)
+{
+	size_t			size;
+	char			*buffer;
+	t_text_chunk	*chunk;
+	size_t			i;
+
+	i = 0;
+	while (chunks)
+	{
+		chunk = (t_text_chunk *) chunks->content;
+		size = chunk->len + 1;
+		buffer = ft_calloc(size, sizeof (char));
+		ft_strlcpy(buffer, chunk->str, size);
+		printf("text_chunk[%zu]:%s, len:%zu, expand:%d|\n", i, buffer, chunk->len, chunk->expand);
+		chunks = chunks->next;
+		i++;
+	}
+}
+
+void	expansion(t_list *chunks, t_env_var *env)
+{
+	t_text_chunk	*chunk;
+
+	while (chunks)
+	{
+		chunk = (t_text_chunk *) chunks->content;
+		if (chunk->expand)
+		{
+			if (chunk->len == 1)
+				chunk->expand = 0;
+			else
+				expand_env_var(chunk, env);
+		}
+		chunks = chunks->next;
+	}
+}
+
+size_t	sum_len(t_list *chunks)
+{
+	size_t			total_len;
+	t_text_chunk	*chunk;
+
+	total_len = 0;
+	while (chunks)
+	{
+		chunk = (t_text_chunk *) chunks->content;
+		total_len += chunk->len;
+		chunks = chunks->next;
+	}
+	return (total_len);
+}
+
+char	*join_chunks(t_list *chunks)
+{
+	char			*buffer;
+	size_t			size;
+	t_text_chunk	*chunk;
+	t_list			*start;
+	size_t			offset;
+
+	start = chunks;
+	size = sum_len(chunks) + 1;
+	buffer = ft_calloc(size, sizeof (char));
+	offset = 0;
+	while (chunks)
+	{
+		chunk = (t_text_chunk *) chunks->content;
+		ft_memcpy(buffer + offset, chunk->str, chunk->len);
+		offset += chunk->len;
+		chunks = chunks->next;
+	}
+	return (buffer);
+}
+
+void	interpret_quotes(char **str, t_env_var *env)
+{
+	char			*result;
+	int				quote_state;
+	size_t			i;
+	t_list			*text_chunks;
+	t_text_chunk	*text_chunk;
+
+	text_chunk = NULL;
+	text_chunks = NULL;
+	i = 0;
+	quote_state = -1;
+	while ((*str)[i])
+	{
+		split_into_chunks(&text_chunks, &text_chunk, &quote_state, &(*str)[i]);
+		i++;
+	}
+	if (text_chunk)
+		ft_lstadd_back(&text_chunks, ft_lstnew(text_chunk));
+	(void) env;
+	print_text_chunks(text_chunks);
+	expansion(text_chunks, env);
+	result = join_chunks(text_chunks);
+	//free(*str);
+	//clear text_chunks
+	*str = result;
+}
+
 int	parse(const char *input, t_cmd_line *cmd_line, t_env_var *env)
 {
 	int			error;
@@ -172,7 +318,8 @@ int	parse(const char *input, t_cmd_line *cmd_line, t_env_var *env)
 		}
 		else
 		{
-			expand_env_vars(&token, env);
+			interpret_quotes(&token, env);
+			// expand_env_vars(&token, env);
 			if (!smp_cmd->cmd)
 				smp_cmd->cmd = token;
 			add_arg(&smp_cmd, token);

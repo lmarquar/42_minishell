@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/04 13:25:25 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/04 15:26:37 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/06 12:19:23 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ char	*find_val(char *str, size_t i, size_t *key_len, t_env_var *env_vars)
 
 	i++;
 	j = i;
-	while (str[j] && !is_ctrlchr(str[j]))
+	while (str[j] && !is_ctrlchr(str[j]) && str[j] != '$' && !is_quote(str[j]))
 	{
 		j++;
 	}
@@ -42,20 +42,25 @@ char	*find_val(char *str, size_t i, size_t *key_len, t_env_var *env_vars)
 char	*replace_word(char *str, char *word, size_t word_len, char *val)
 {
 	char	*result;
+	size_t	result_size;
 	size_t	offset;
 
+	printf("orignal:%s, word(start):%3s, word_len:%zu val:%s\n", str, word, word_len, val);
 	if (!val)
 		val = "";
 	offset = 0;
-	result = ft_calloc((ft_strlen(str) + ft_strlen(val) + 1), sizeof(char));
+	result_size = ft_strlen(str) + ft_strlen(val) + 1;
+	result = ft_calloc(result_size, sizeof(char));
 	offset = word - str;
 	ft_strlcpy(result, str, offset + 1);
+	printf("before:%s|\n", result);
 	if (val[0])
 	{
-		ft_strlcpy(result + offset, val, ft_strlen(val) + 1);
+		printf("val not empty");
+		ft_strlcat(result, val, result_size);
 		offset += ft_strlen(val);
 	}
-	ft_strlcpy(result + offset, str + word_len + 1, ft_strlen(result));
+	ft_strlcat(result, word + word_len + 1, result_size);
 	free(str);
 	return (result);
 }
@@ -66,9 +71,11 @@ int	expand_env_vars(char **input, t_env_var *env_vars)
 	char	*val;
 	size_t	key_len;
 	size_t	i;
+	int		single_qoute;
 
 	str = *input;
 	i = 0;
+	single_qoute = 0;
 	while (str[i])
 	{
 		if (str[i] == '$')
@@ -77,11 +84,26 @@ int	expand_env_vars(char **input, t_env_var *env_vars)
 			if (key_len > 0)
 			{
 				str = replace_word(str, &str[i], key_len, val);
-				i += key_len;
+				if (val)
+					i += ft_strlen(val) - 1;
 			}
 		}
 		i++;
 	}
 	*input = str;
+	printf("expanded:%s|\n", str);
 	return (0);
+}
+
+void	expand_env_var(t_text_chunk *chunk, t_env_var *env_vars)
+{
+	char	*val;
+
+	printf("key:%.*s", (int) (chunk->len - 1), chunk->str + 1);
+	val = find_in_env(chunk->str + 1, chunk->len - 1, env_vars);
+	if (!val)
+		val = ft_strdup("");
+	chunk->str = val;
+	chunk->len = ft_strlen(val);
+	printf("value of key:%s|\n", val);
 }
