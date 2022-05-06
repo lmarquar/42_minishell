@@ -6,7 +6,7 @@
 #    By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/01/18 12:03:48 by chelmerd          #+#    #+#              #
-#    Updated: 2022/05/04 15:24:24 by chelmerd         ###   ########.fr        #
+#    Updated: 2022/05/06 15:05:15 by chelmerd         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,7 +30,8 @@ LIBFT = libft/libft.a
 
 INCLUDES = -I$(READLINE_INCLUDE) -Iparser
 
-PARSER			= parse.c special_character.c replace.c debug.c
+PARSER			=	parse.c special_character.c replace.c debug.c \
+					chunk.c token.c cmd_line.c
 SRCS_PARSER		= $(addprefix parser/, $(PARSER))
 SRCS_MANDATORY	= minishell.c execute.c $(SRCS_PARSER)
 OBJS_MANDATORY	= $(patsubst %.c, %.o, $(SRCS_MANDATORY))

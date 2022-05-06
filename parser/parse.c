@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 10:17:17 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/06 13:00:20 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/06 15:06:00 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,87 +32,6 @@ int	change_quote_state(int state, char c)
 	return (0);
 }
 
-/*
-* tokens can be either words or control operators
-*/
-size_t	next_token_len(const char *s, int quote_state, int unit_is_word)
-{
-	size_t	token_len;
-
-	token_len = 0;
-	quote_state = 0;
-	while (s && s[token_len])
-	{
-		quote_state = quote_state + change_quote_state(quote_state, s[token_len]);
-		if (!unit_is_word)
-		{
-			if (!is_ctrlchr(s[token_len]))
-				break ;
-		}
-		else if (quote_state == NO_QUOTE && is_metachr(s[token_len]))
-			break ;
-		token_len++;
-	}
-	return (token_len);
-}
-
-char	*next_token(const char *s, int reset)
-{
-	static size_t	i = 0;
-	char			*token;
-	size_t			token_len;
-	int				quote_state;
-
-	if (reset)
-		i = 0;
-	quote_state = change_quote_state(NO_QUOTE, s[i]);
-	while (quote_state == NO_QUOTE && s[i] && is_space(s[i]))
-		i++;
-	if (quote_state == NO_QUOTE && is_ctrlchr(s[i]))
-		token_len = next_token_len(&s[i], quote_state, 0);
-	else
-		token_len = next_token_len(&s[i], quote_state, 1);
-	if (token_len == 0)
-		return (NULL);
-	token = ft_calloc(token_len + 1, sizeof (char));
-	ft_strlcpy(token, &s[i], token_len + 1);
-	i += token_len;
-	return (token);
-}
-
-void	init_cmd_line(t_cmd_line *cmd)
-{
-	cmd->infile = NULL;
-	cmd->outfile = NULL;
-	cmd->cmd_count = 1;
-	cmd->pipe_count = 0;
-	cmd->simple_commands = NULL;
-	cmd->heredoc_delimiter = NULL;
-	cmd->append = -1;
-}
-
-void	init_smp_cmd(t_smp_cmd **smp_c, char *cmd, char **args, size_t arg_count)
-{
-	t_smp_cmd	*new;
-
-	new = malloc(sizeof (t_smp_cmd));
-	new->cmd = cmd;
-	new->args = args;
-	new->arg_count = arg_count;
-	*smp_c = new;
-}
-
-void	*ft_realloc(void *ptr, size_t size)
-{
-	void	*new;
-
-	new = malloc(size);
-	ft_bzero(new, size);
-	ft_memmove(new, ptr, size);
-
-	return (new);
-}
-
 void	add_arg(t_smp_cmd **old, char *arg)
 {
 	t_smp_cmd	*new;
@@ -127,70 +46,9 @@ void	add_arg(t_smp_cmd **old, char *arg)
 		i++;
 	}
 	new_args[i] = arg;
-	init_smp_cmd(&new, (*old)->cmd, new_args, (*old)->arg_count + 1);
+	new = new_smp_cmd((*old)->cmd, new_args, (*old)->arg_count + 1);
 	free(*old);
 	*old = new;
-}
-
-t_text_chunk	*new_chunk(char *str, int expand)
-{
-	t_text_chunk	*chunk;
-
-	chunk = malloc(sizeof (t_text_chunk));
-	chunk->str = str;
-	chunk->len = 1;
-	chunk->expand = expand;
-	return (chunk);
-}
-
-void	split_into_chunks(t_list **chunks,
-							t_text_chunk **chunk,
-							int *state,
-							char *s)
-{
-	if (change_quote_state(*state, *s) != 0 || (*state != 1 && *s == '$'))
-	{
-		*state = *state + change_quote_state(*state, *s);
-		if (*chunk)
-		{
-			ft_lstadd_back(chunks, ft_lstnew(*chunk));
-			*chunk = NULL;
-		}
-		if (*state != 1 && *s == '$')
-			*chunk = new_chunk(s, 1);
-	}
-	else if (*chunk && (*chunk)->str[0] == '$' && *state != 1
-		&& (is_quote(*s) || *s == '$'))
-	{
-		ft_lstadd_back(chunks, ft_lstnew(*chunk));
-		*chunk = NULL;
-		if (*s == '$')
-			*chunk = new_chunk(s, 1);
-	}
-	else if (*chunk == NULL)
-		*chunk = new_chunk(s, 0);
-	else
-		(*chunk)->len++;
-}
-
-void	print_text_chunks(t_list *chunks)
-{
-	size_t			size;
-	char			*buffer;
-	t_text_chunk	*chunk;
-	size_t			i;
-
-	i = 0;
-	while (chunks)
-	{
-		chunk = (t_text_chunk *) chunks->content;
-		size = chunk->len + 1;
-		buffer = ft_calloc(size, sizeof (char));
-		ft_strlcpy(buffer, chunk->str, size);
-		printf("text_chunk[%zu]:%s, len:%zu, expand:%d|\n", i, buffer, chunk->len, chunk->expand);
-		chunks = chunks->next;
-		i++;
-	}
 }
 
 void	expansion(t_list *chunks, t_env_var *env)
@@ -209,43 +67,6 @@ void	expansion(t_list *chunks, t_env_var *env)
 		}
 		chunks = chunks->next;
 	}
-}
-
-size_t	sum_len(t_list *chunks)
-{
-	size_t			total_len;
-	t_text_chunk	*chunk;
-
-	total_len = 0;
-	while (chunks)
-	{
-		chunk = (t_text_chunk *) chunks->content;
-		total_len += chunk->len;
-		chunks = chunks->next;
-	}
-	return (total_len);
-}
-
-char	*join_chunks(t_list *chunks)
-{
-	char			*buffer;
-	size_t			size;
-	t_text_chunk	*chunk;
-	t_list			*start;
-	size_t			offset;
-
-	start = chunks;
-	size = sum_len(chunks) + 1;
-	buffer = ft_calloc(size, sizeof (char));
-	offset = 0;
-	while (chunks)
-	{
-		chunk = (t_text_chunk *) chunks->content;
-		ft_memcpy(buffer + offset, chunk->str, chunk->len);
-		offset += chunk->len;
-		chunks = chunks->next;
-	}
-	return (buffer);
 }
 
 void	interpret_quotes(char **str, t_env_var *env)
@@ -271,8 +92,9 @@ void	interpret_quotes(char **str, t_env_var *env)
 	print_text_chunks(text_chunks);
 	expansion(text_chunks, env);
 	result = join_chunks(text_chunks);
-	//free(*str);
 	//clear text_chunks
+	ft_lstclear(&text_chunks, &clear_chunk);
+	free(*str);
 	*str = result;
 }
 
@@ -284,9 +106,9 @@ int	parse(const char *input, t_cmd_line *cmd_line, t_env_var *env)
 
 	error = 0;
 	token = next_token(input, 1);
-	init_smp_cmd(&smp_cmd, NULL, ft_calloc(2, sizeof (char *)), 0);
+	smp_cmd = new_smp_cmd(NULL, ft_calloc(2, sizeof (char *)), 0);
 	init_cmd_line(cmd_line);
-	cmd_line->simple_commands = ft_calloc(3, sizeof (t_smp_cmd));
+	cmd_line->simple_commands = ft_calloc(3, sizeof (t_smp_cmd)); //TODO
 	while (token)
 	{
 		printf("token:%s\n", token);
@@ -305,7 +127,7 @@ int	parse(const char *input, t_cmd_line *cmd_line, t_env_var *env)
 			else if (ft_strncmp("|", token, 2) == 0)
 			{
 				cmd_line->simple_commands[cmd_line->cmd_count - 1] = smp_cmd;
-				init_smp_cmd(&smp_cmd, NULL, ft_calloc(1, sizeof (char *)), 0);
+				smp_cmd = new_smp_cmd(NULL, ft_calloc(1, sizeof (char *)), 0);
 				cmd_line->pipe_count++;
 				cmd_line->cmd_count++;
 			}
