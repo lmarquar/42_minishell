@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/29 12:17:48 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/04 16:14:07 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/05 09:49:09 by leon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ int	heredoc_handler(char *delimiter, int fdout)
 	while(ft_strncmp(delimiter, in, i))
 	{
 		in = readline(">");
+		printf("\n%s", in);
 		write(fdout, in, ft_strlen(in));
 	}
 	return (0);

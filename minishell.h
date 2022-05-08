@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 10:29:16 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/04 15:41:58 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/05 09:43:09 by leon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 
 # include "libft/libft.h"
 # include "pipex/pipex.h"
-# include "parser.h"
+# include "parser/parser.h"
 
 typedef struct s_bin
 {
