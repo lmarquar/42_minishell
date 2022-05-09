@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 13:20:00 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/06 15:15:21 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/09 11:17:56 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,7 @@ int				change_quote_state(int state, char c);
 void			init_cmd_line(t_cmd_line *cmd);
 t_smp_cmd		*new_smp_cmd(char *cmd, char **args, size_t arg_count);
 void			clear_smp_cmd(void *cmd_ptr);
+t_smp_cmd		**create_cmd_arr(t_list *cmd_lst);
 
 // chunk
 
@@ -93,6 +94,7 @@ void			clear_chunk(void *chk_ptr);
 char			*next_token(const char *s, int reset);
 
 //debug
+void			show_smp_cmd(void *cmd_ptr);
 void			show_cmd_line(t_cmd_line *cmd_line);
 void			print_text_chunks(t_list *chunks);
 

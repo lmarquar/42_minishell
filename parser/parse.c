@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 10:17:17 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/06 15:06:00 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/09 11:23:42 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,12 +103,13 @@ int	parse(const char *input, t_cmd_line *cmd_line, t_env_var *env)
 	int			error;
 	char		*token;
 	t_smp_cmd	*smp_cmd;
+	t_list		*cmds;
 
 	error = 0;
 	token = next_token(input, 1);
 	smp_cmd = new_smp_cmd(NULL, ft_calloc(2, sizeof (char *)), 0);
 	init_cmd_line(cmd_line);
-	cmd_line->simple_commands = ft_calloc(3, sizeof (t_smp_cmd)); //TODO
+	cmds = NULL;
 	while (token)
 	{
 		printf("token:%s\n", token);
@@ -126,7 +127,7 @@ int	parse(const char *input, t_cmd_line *cmd_line, t_env_var *env)
 			}
 			else if (ft_strncmp("|", token, 2) == 0)
 			{
-				cmd_line->simple_commands[cmd_line->cmd_count - 1] = smp_cmd;
+				ft_lstadd_back(&cmds, ft_lstnew(smp_cmd));
 				smp_cmd = new_smp_cmd(NULL, ft_calloc(1, sizeof (char *)), 0);
 				cmd_line->pipe_count++;
 				cmd_line->cmd_count++;
@@ -148,7 +149,9 @@ int	parse(const char *input, t_cmd_line *cmd_line, t_env_var *env)
 		}
 		token = next_token(input, 0);
 	}
-	cmd_line->simple_commands[cmd_line->cmd_count - 1] = smp_cmd;
-	show_cmd_line(cmd_line);
+	ft_lstadd_back(&cmds, ft_lstnew(smp_cmd));
+	cmd_line->simple_commands = create_cmd_arr(cmds);
+	ft_lstclear(&cmds, NULL);
+	show_cmd_line(cmd_line); // debug
 	return (error);
 }

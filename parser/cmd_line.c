@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/06 14:44:32 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/06 15:12:57 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/09 10:51:27 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,4 +53,23 @@ void	clear_smp_cmd(void *cmd_ptr)
 	}
 	free(cmd->args);
 	free(cmd);
+}
+
+t_smp_cmd	**create_cmd_arr(t_list *cmd_lst)
+{
+	t_smp_cmd	**arr;
+	size_t		len;
+	size_t		i;
+
+	len = ft_lstsize(cmd_lst);
+	arr = ft_calloc(len + 1, sizeof (t_smp_cmd *));
+	if (!arr)
+		return (NULL);
+	i = 0;
+	while (cmd_lst)
+	{
+		arr[i++] = (t_smp_cmd *) cmd_lst->content;
+		cmd_lst = cmd_lst->next;
+	}
+	return (arr);
 }

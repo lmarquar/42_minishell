@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_lstclear.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chelmerd <chelmerd@student.wolfsburg.de    +#+  +:+       +#+        */
+/*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/17 14:23:38 by chelmerd          #+#    #+#             */
-/*   Updated: 2021/11/26 10:25:58 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/09 11:21:50 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,8 @@ void	ft_lstclear(t_list **lst, void (*del)(void *))
 	while (current)
 	{
 		next = current->next;
-		(del)(current->content);
+		if (del)
+			(del)(current->content);
 		free(current);
 		current = next;
 	}
