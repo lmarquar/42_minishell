@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/06 13:22:23 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/06 14:23:06 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/09 15:34:06 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,5 @@ void	clear_chunk(void *chk_ptr)
 	t_text_chunk	*chunk;
 
 	chunk = (t_text_chunk *) chk_ptr;
-	if (chunk->expand == 1)
-		free(chunk->str);
 	free(chunk);
 }

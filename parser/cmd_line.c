@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/06 14:44:32 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/09 10:51:27 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/09 15:29:16 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,14 @@ void	init_cmd_line(t_cmd_line *cmd)
 	cmd->append = 0;
 }
 
-t_smp_cmd	*new_smp_cmd(char *cmd, char **args, size_t arg_count)
+/*
+* allocates and initalize a simple command with the given parameters
+*/
+t_smp_cmd	*new_smp_cmd(
+	char *cmd,
+	char **args,
+	size_t arg_count,
+	int is_builtin)
 {
 	t_smp_cmd	*new;
 
@@ -33,7 +40,34 @@ t_smp_cmd	*new_smp_cmd(char *cmd, char **args, size_t arg_count)
 	new->cmd = cmd;
 	new->args = args;
 	new->arg_count = arg_count;
+	new->is_builtin = is_builtin;
 	return (new);
+}
+
+/*
+* appends arg to array of arguments
+*/
+void	add_arg(t_smp_cmd **old_cmd, char *arg)
+{
+	t_smp_cmd	*old;
+	t_smp_cmd	*new;
+	char		**new_args;
+	size_t		i;
+
+	if (!old_cmd)
+		return ;
+	old = *old_cmd;
+	new_args = ft_calloc(old->arg_count + 2, sizeof (char *));
+	i = 0;
+	while (i < old->arg_count && old && old->args[i])
+	{
+		new_args[i] = old->args[i];
+		i++;
+	}
+	new_args[i] = arg;
+	new = new_smp_cmd(old->cmd, new_args, old->arg_count + 1, old->is_builtin);
+	free(old);
+	*old_cmd = new;
 }
 
 //TODO: use it

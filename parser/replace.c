@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/04 13:25:25 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/06 12:19:23 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/09 15:48:50 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ char	*replace_word(char *str, char *word, size_t word_len, char *val)
 	return (result);
 }
 
+// old
 int	expand_env_vars(char **input, t_env_var *env_vars)
 {
 	char	*str;
@@ -99,7 +100,7 @@ void	expand_env_var(t_text_chunk *chunk, t_env_var *env_vars)
 {
 	char	*val;
 
-	printf("key:%.*s", (int) (chunk->len - 1), chunk->str + 1);
+	printf("key:%.*s", (int)(chunk->len - 1), chunk->str + 1);
 	val = find_in_env(chunk->str + 1, chunk->len - 1, env_vars);
 	if (!val)
 		val = ft_strdup("");

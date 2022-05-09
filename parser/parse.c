@@ -6,50 +6,11 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 10:17:17 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/09 11:23:42 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/09 15:42:32 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-/*
-* the quote state will be hold until a matching quote is encountered.
-*/
-int	change_quote_state(int state, char c)
-{
-	if (!(c == '\'' || c == '"'))
-		return (0);
-	if (state == -1)
-		return (is_quote(c) + 1);
-	if (state == NO_QUOTE && c == '\'')
-		return (SINGLE_QUOTE);
-	if (state == NO_QUOTE && c == '"')
-		return (DOUBLE_QUOTE);
-	if (state == SINGLE_QUOTE && c == '\'')
-		return (-SINGLE_QUOTE);
-	if (state == DOUBLE_QUOTE && c == '"')
-		return (-DOUBLE_QUOTE);
-	return (0);
-}
-
-void	add_arg(t_smp_cmd **old, char *arg)
-{
-	t_smp_cmd	*new;
-	char		**new_args;
-	size_t		i;
-
-	new_args = ft_calloc((*old)->arg_count + 2, sizeof (char *));
-	i = 0;
-	while (i < (*old)->arg_count)
-	{
-		new_args[i] = (*old)->args[i];
-		i++;
-	}
-	new_args[i] = arg;
-	new = new_smp_cmd((*old)->cmd, new_args, (*old)->arg_count + 1);
-	free(*old);
-	*old = new;
-}
 
 void	expansion(t_list *chunks, t_env_var *env)
 {
@@ -98,60 +59,76 @@ void	interpret_quotes(char **str, t_env_var *env)
 	*str = result;
 }
 
+typedef struct s_cmds
+{
+	t_list		*cmd_lst;
+	t_smp_cmd	*current_cmd;
+}	t_cmds;
+
+int	parse_operator(const char *input, char *token, t_cmds *cmds,
+				t_cmd_line *cmd_line)
+{
+	if (ft_strncmp("<", token, 2) == 0)
+		cmd_line->infile = next_token(input, 0);
+	else if (ft_strncmp("<<", token, 3) == 0)
+		cmd_line->heredoc_delimiter = next_token(input, 0);
+	else if (token[0] == '>')
+	{
+		cmd_line->outfile = next_token(input, 0);
+		if (token[1] == '>')
+			cmd_line->append = 1;
+	}
+	else if (ft_strncmp("|", token, 2) == 0)
+	{
+		ft_lstadd_back(&cmds->cmd_lst, ft_lstnew(cmds->current_cmd));
+		cmds->current_cmd
+			= new_smp_cmd(NULL, ft_calloc(2, sizeof (char *)), 0, 0);
+		cmd_line->pipe_count++;
+		cmd_line->cmd_count++;
+	}
+	else
+	{
+		printf("Control charater ('%s') not regonized.\n", token);
+		return (1);
+	}
+	return (0);
+}
+
+int	parse_word(char *token, t_env_var *env, t_cmds *cmds)
+{
+	interpret_quotes(&token, env);
+	if (!cmds->current_cmd->cmd)
+	{
+		cmds->current_cmd->cmd = token;
+		cmds->current_cmd->is_builtin = is_builtin(token);
+	}
+	add_arg(&cmds->current_cmd, token);
+	return (0); //TODO: what could be an error here?
+}
+
 int	parse(const char *input, t_cmd_line *cmd_line, t_env_var *env)
 {
-	int			error;
-	char		*token;
-	t_smp_cmd	*smp_cmd;
-	t_list		*cmds;
+	int		error;
+	char	*token;
+	t_cmds	cmds;
 
 	error = 0;
 	token = next_token(input, 1);
-	smp_cmd = new_smp_cmd(NULL, ft_calloc(2, sizeof (char *)), 0);
 	init_cmd_line(cmd_line);
-	cmds = NULL;
-	while (token)
+	cmds.cmd_lst = NULL;
+	cmds.current_cmd = new_smp_cmd(NULL, ft_calloc(2, sizeof (char *)), 0, 0);
+	while (token && !error)
 	{
 		printf("token:%s\n", token);
 		if (is_ctrlchr(token[0]))
-		{
-			if (ft_strncmp("<", token, 2) == 0)
-				cmd_line->infile = next_token(input, 0);
-			else if (ft_strncmp("<<", token, 3) == 0)
-				cmd_line->heredoc_delimiter = next_token(input, 0);
-			else if (token[0] == '>')
-			{
-				cmd_line->outfile = next_token(input, 0);
-				if (token[1] == '>')
-					cmd_line->append = 1;
-			}
-			else if (ft_strncmp("|", token, 2) == 0)
-			{
-				ft_lstadd_back(&cmds, ft_lstnew(smp_cmd));
-				smp_cmd = new_smp_cmd(NULL, ft_calloc(1, sizeof (char *)), 0);
-				cmd_line->pipe_count++;
-				cmd_line->cmd_count++;
-			}
-			else
-			{
-				printf("Control charater ('%s') not regonized.\n", token);
-				error = 1;
-				free(token);
-			}
-		}
+			error = parse_operator(input, token, &cmds, cmd_line);
 		else
-		{
-			interpret_quotes(&token, env);
-			// expand_env_vars(&token, env);
-			if (!smp_cmd->cmd)
-				smp_cmd->cmd = token;
-			add_arg(&smp_cmd, token);
-		}
+			parse_word(token, env, &cmds);
 		token = next_token(input, 0);
 	}
-	ft_lstadd_back(&cmds, ft_lstnew(smp_cmd));
-	cmd_line->simple_commands = create_cmd_arr(cmds);
-	ft_lstclear(&cmds, NULL);
+	ft_lstadd_back(&cmds.cmd_lst, ft_lstnew(cmds.current_cmd));
+	cmd_line->simple_commands = create_cmd_arr(cmds.cmd_lst);
+	ft_lstclear(&cmds.cmd_lst, NULL);
 	show_cmd_line(cmd_line); // debug
 	return (error);
 }

@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 13:20:00 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/09 11:17:56 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/09 15:45:30 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <stdlib.h>
 
 # include "../libft/libft.h"
+# include "../builtins/builtins.h"
 
 # define NO_QUOTE 0
 # define SINGLE_QUOTE 1
@@ -27,6 +28,7 @@ typedef struct s_smp_cmd
 	char	*cmd;
 	char	**args;
 	size_t	arg_count;
+	int		is_builtin;
 }	t_smp_cmd;
 
 typedef struct s_cmd_line
@@ -66,12 +68,19 @@ int				is_quote(char c);
 int				expand_env_vars(char **input, t_env_var *env_vars);
 void			expand_env_var(t_text_chunk *chunk, t_env_var *env_vars);
 
+// quote
+
 int				change_quote_state(int state, char c);
 
 // cmd_line
 
 void			init_cmd_line(t_cmd_line *cmd);
-t_smp_cmd		*new_smp_cmd(char *cmd, char **args, size_t arg_count);
+t_smp_cmd		*new_smp_cmd(
+					char *cmd,
+					char **args,
+					size_t arg_count,
+					int is_builtin);
+void			add_arg(t_smp_cmd **old, char *arg);
 void			clear_smp_cmd(void *cmd_ptr);
 t_smp_cmd		**create_cmd_arr(t_list *cmd_lst);
 

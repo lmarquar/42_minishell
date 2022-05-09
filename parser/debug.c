@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/03 11:21:44 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/09 11:18:21 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/09 15:32:36 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	show_cmds(t_smp_cmd **commands, size_t cmd_count)
 	c = 0;
 	while (c < cmd_count)
 	{
-		printf("simple Command #%zu:\n cmd:%s\n", c + 1, commands[c]->cmd);
+		printf("simple Command #%zu:\n cmd:%s (is_builtin=%d)\n", c + 1, commands[c]->cmd, commands[c]->is_builtin);
 		show_smp_cmd(commands[c]);
 		c++;
 	}
