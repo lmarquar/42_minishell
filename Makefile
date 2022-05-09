@@ -6,7 +6,7 @@
 #    By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/01/18 12:03:48 by chelmerd          #+#    #+#              #
-#    Updated: 2022/05/04 15:24:24 by chelmerd         ###   ########.fr        #
+#    Updated: 2022/05/08 11:35:49 by leon             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,7 +32,9 @@ INCLUDES = -I$(READLINE_INCLUDE) -Iparser
 
 PARSER			= parse.c special_character.c replace.c debug.c
 SRCS_PARSER		= $(addprefix parser/, $(PARSER))
-SRCS_MANDATORY	= minishell.c execute.c $(SRCS_PARSER)
+EXECUTER		= execute.c execute_funcs.c exec_el.c
+SRCS_EXECUTER	= $(addprefix executer/, $(EXECUTER))
+SRCS_MANDATORY	= minishell.c $(SRCS_PARSER) $(SRCS_EXECUTER)
 OBJS_MANDATORY	= $(patsubst %.c, %.o, $(SRCS_MANDATORY))
 
 all: $(NAME)
