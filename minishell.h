@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 10:29:16 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/04 15:41:58 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/08 11:19:59 by leon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@
 # include <readline/history.h>
 
 # include "libft/libft.h"
-# include "pipex/pipex.h"
-# include "parser.h"
+# include "executer/execute.h"
+# include "parser/parser.h"
 
 typedef struct s_bin
 {
@@ -35,7 +35,5 @@ typedef struct s_bin
 	t_env_var	*env;
 	int			exit_code;
 }	t_bin;
-
-int	execute(t_cmd_line *cmd_line, t_env_var *env_vars);
 
 #endif

@@ -6,7 +6,7 @@
 #    By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/01/18 12:03:48 by chelmerd          #+#    #+#              #
-#    Updated: 2022/05/09 15:44:38 by chelmerd         ###   ########.fr        #
+#    Updated: 2022/05/10 11:10:46 by chelmerd         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,14 +28,16 @@ endif
 
 LIBFT = libft/libft.a
 
-INCLUDES = -I$(READLINE_INCLUDE) -Iparser
+INCLUDES = -I$(READLINE_INCLUDE) -Iparser -Ibuiltin -Iexecuter
 
 PARSER			=	parse.c special_character.c replace.c debug.c \
 					chunk.c token.c cmd_line.c quote.c
 SRCS_PARSER		= $(addprefix parser/, $(PARSER))
 BUILTINS		=	builtin_utils.c
 SRCS_BUILTINS	= $(addprefix builtins/, $(BUILTINS))
-SRCS_MANDATORY	= minishell.c execute.c $(SRCS_PARSER) $(SRCS_BUILTINS)
+EXECUTER		= execute.c execute_funcs.c exec_el.c cd.c
+SRCS_EXECUTER	= $(addprefix executer/, $(EXECUTER))
+SRCS_MANDATORY	= minishell.c $(SRCS_PARSER) $(SRCS_EXECUTER) $(SRCS_BUILTINS)
 OBJS_MANDATORY	= $(patsubst %.c, %.o, $(SRCS_MANDATORY))
 
 all: $(NAME)
@@ -61,6 +63,7 @@ show:
 
 clean:
 	rm -f $(OBJS_MANDATORY)
+	rm -rfd minishell.dSYM
 	make -C libft clean
 
 fclean: clean
