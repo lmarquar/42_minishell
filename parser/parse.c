@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 10:17:17 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/09 15:42:32 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/10 12:38:20 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ typedef struct s_cmds
 }	t_cmds;
 
 int	parse_operator(const char *input, char *token, t_cmds *cmds,
-				t_cmd_line *cmd_line)
+					t_cmd_line *cmd_line)
 {
 	if (ft_strncmp("<", token, 2) == 0)
 		cmd_line->infile = next_token(input, 0);
@@ -106,7 +106,16 @@ int	parse_word(char *token, t_env_var *env, t_cmds *cmds)
 	return (0); //TODO: what could be an error here?
 }
 
-int	parse(const char *input, t_cmd_line *cmd_line, t_env_var *env)
+void	package_info(t_cmd_line *cmd_line, t_env_var *env, t_bin *bin)
+{
+	bin->cmd_line = cmd_line;
+	bin->env = env; // really need to do it here?
+	bin->env_arr = create_env_arr(env);
+	bin->cwd = find_in_env("PWD", 3, env);
+	bin->paths = create_path_arr(find_in_env("PATH", 4, env), bin->cwd);
+}
+
+int	parse(const char *input, t_cmd_line *cmd_line, t_env_var *env, t_bin *bin)
 {
 	int		error;
 	char	*token;
@@ -130,5 +139,6 @@ int	parse(const char *input, t_cmd_line *cmd_line, t_env_var *env)
 	cmd_line->simple_commands = create_cmd_arr(cmds.cmd_lst);
 	ft_lstclear(&cmds.cmd_lst, NULL);
 	show_cmd_line(cmd_line); // debug
+	package_info(cmd_line, env, bin);
 	return (error);
 }

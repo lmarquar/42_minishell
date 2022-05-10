@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 10:29:16 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/08 11:19:59 by leon             ###   ########.fr       */
+/*   Updated: 2022/05/10 12:33:41 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,14 +26,6 @@
 # include "executer/execute.h"
 # include "parser/parser.h"
 
-typedef struct s_bin
-{
-	char		*in;
-	int			is_builtin;
-	char		*cmd;
-	char		**args;
-	t_env_var	*env;
-	int			exit_code;
-}	t_bin;
+
 
 #endif

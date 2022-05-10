@@ -13,7 +13,7 @@
 
 
 
-int	execute(t_cmd_line *cmd_line, t_env_var *env_vars);
+int	execute(t_bin *bin);
 int	heredoc_handler(t_cmd_line *cmd_line, int fdout);
 int append(int fdin, int fdout);
 int	exec_el(char **arg, char **paths, int fdin, int fdout);

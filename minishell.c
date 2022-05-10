@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 10:39:02 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/04 15:43:34 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/10 12:37:03 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,7 @@ int	init_bin(t_bin **bin, t_env_var *env_vars)
 int	main(void)
 {
 	t_env_var	*env_vars;
-	t_bin	*bin;
+	t_bin		*bin;
 	t_cmd_line	cmd_line;
 
 	// init env
@@ -147,9 +147,9 @@ int	main(void)
 		// transform env_vars
 		// check syntax
 		// parse / analyse
-		parse(bin->in, &cmd_line, env_vars);
+		parse(bin->in, &cmd_line, env_vars, bin);
 		// execute
-		execute(&cmd_line, env_vars);
+		execute(bin);
 		free(bin->in);
 	}
 	// clear list of env_vars

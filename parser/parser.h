@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 13:20:00 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/09 15:45:30 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/10 12:33:50 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,17 @@ typedef struct s_env_var
 	struct s_env_var	*next;
 }	t_env_var;
 
+typedef struct s_bin
+{
+	char		*in;
+	t_cmd_line	*cmd_line;
+	t_env_var	*env;
+	char		**env_arr;
+	int			exit_code;
+	char		*cwd;
+	char		**paths; // {"/bin/", ... , "/<cwd>/"}
+}	t_bin;
+
 typedef struct s_text_chunk
 {
 	char	*str;
@@ -56,7 +67,8 @@ typedef struct s_text_chunk
 	int		expand;
 }	t_text_chunk;
 
-int				parse(const char *input, t_cmd_line *cmd_line, t_env_var *env);
+int				parse(const char *input, t_cmd_line *cmd_line, t_env_var *env,
+					t_bin *bin);
 
 // special character
 
@@ -101,6 +113,15 @@ void			clear_chunk(void *chk_ptr);
 // size_t			next_token_len(
 // 					const char *s, int quote_state, int unit_is_word);
 char			*next_token(const char *s, int reset);
+
+// replace
+
+char			*find_in_env(char *key, size_t key_len, t_env_var *env_vars); // group with other list utils?
+
+// array
+
+char			**create_path_arr(char	*path, char *cwd);
+char			**create_env_arr(t_env_var *env);
 
 //debug
 void			show_smp_cmd(void *cmd_ptr);
