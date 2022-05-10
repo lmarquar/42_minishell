@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/29 12:17:48 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/08 13:13:13 by leon             ###   ########.fr       */
+/*   Updated: 2022/05/10 11:07:14 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	execute_init_vars(t_cmd_line **cmd_line, int (*inout)[], int **pid)
 		(*cmd_line)->pipe_count = (*cmd_line)->pipe_count + 1;
 	*pid = ft_calloc(sizeof(int), (*cmd_line)->pipe_count + 1);
 	return (0);
-}	
+}
 
 char	**create_path_arr(char	*path)
 {
@@ -59,14 +59,6 @@ int ft_strcmp(char *s1, char *s2)
 	return (0);
 }
 
-int	is_builtin(char	**cmd)
-{
-
-	if (ft_strcmp(cmd[0], "cd"))
-		return (1);
-	return (0);	
-}
-
 int	exec_builtin(char **args, int fdin, int fdout)
 {
 	if (ft_strcmp(args[0], "cd"))
@@ -91,7 +83,7 @@ int	execute(t_cmd_line *cmd_line, t_env_var *env_vars)
 	i = 0;
 	if (!cmd_line->pipe_count)
 	{
-		if (is_builtin(cmd_line->simple_commands[i]->args))
+		if (cmd_line->simple_commands[i]->is_builtin)
 				exec_builtin(cmd_line->simple_commands[i]->args, inout[0], inout[1]);
 		else
 		{
@@ -116,7 +108,7 @@ int	execute(t_cmd_line *cmd_line, t_env_var *env_vars)
 			}
 		}
 		if (!cmd_line->heredoc_delimiter)
-			i++;	
+			i++;
 		while ((i < cmd_line->pipe_count && !cmd_line->heredoc_delimiter) || i < (cmd_line->pipe_count - 1))
 		{
 			if (pipe(&(fd[2])) == -1)
