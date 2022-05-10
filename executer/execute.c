@@ -30,6 +30,54 @@ int	execute_init_vars(t_cmd_line **cmd_line, int (*inout)[], int **pid)
 	return (0);
 }	
 
+char	**create_path_arr(char	*path)
+{
+	char	**paths;
+	int		i;
+	char	*cmd;
+
+	paths = ft_split(path, ':');
+	i = -1;
+	while (paths[++i])
+	{
+		cmd = ft_strjoin(paths[i], "/");
+		free(paths[i]);
+		paths[i] = cmd;
+	}
+	return (paths);
+}
+
+int ft_strcmp(char *s1, char *s2)
+{
+	while (*s1 == *s2 && *s1 && *s2)
+	{
+		s1++;
+		s2++;
+	}
+	if (!(*s1) && !(*s2))
+		return (1);
+	return (0);
+}
+
+int	is_builtin(char	**cmd)
+{
+
+	if (ft_strcmp(cmd[0], "cd"))
+		return (1);
+	return (0);	
+}
+
+int	exec_builtin(char **args, int fdin, int fdout)
+{
+	if (ft_strcmp(args[0], "cd"))
+		exec_cd(args[1]);
+
+	//currently unused:
+	fdin++;
+	fdout++;
+	return (0);
+}
+
 int	execute(t_cmd_line *cmd_line, t_env_var *env_vars)
 {
 	int		*pid;
@@ -39,13 +87,18 @@ int	execute(t_cmd_line *cmd_line, t_env_var *env_vars)
 	int		inout[2];
 
 	execute_init_vars(&cmd_line, &inout, &pid);
-	paths = ft_split(env_vars->val, ':');
+	paths = create_path_arr(env_vars->val);
 	i = 0;
 	if (!cmd_line->pipe_count)
 	{
-		pid[i] = fork();
-		if (pid[i] == 0)
-			exec_el(cmd_line->simple_commands[i]->args, paths, inout[0], inout[1]);
+		if (is_builtin(cmd_line->simple_commands[i]->args))
+				exec_builtin(cmd_line->simple_commands[i]->args, inout[0], inout[1]);
+		else
+		{
+			pid[i] = fork();
+			if (pid[i] == 0)
+				exec_el(cmd_line->simple_commands[i]->args, paths, inout[0], inout[1]);
+		}
 	}
 	else
 	{
@@ -123,11 +176,12 @@ int	execute(t_cmd_line *cmd_line, t_env_var *env_vars)
 	size_t	k;
 	int error_code;
 	k = -1;
-	while (++k <= i)
+	while (*pid)
 	{
-		waitpid(pid[k], &error_code, 0);
+		waitpid(*pid, &error_code, 0);
 		if (error_code != 0 && error_code != 256)
 			perror("program failed");
+		pid++;
 	}
 	return (0);
 }

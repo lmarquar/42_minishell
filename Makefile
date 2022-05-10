@@ -32,7 +32,7 @@ INCLUDES = -I$(READLINE_INCLUDE) -Iparser
 
 PARSER			= parse.c special_character.c replace.c debug.c
 SRCS_PARSER		= $(addprefix parser/, $(PARSER))
-EXECUTER		= execute.c execute_funcs.c exec_el.c
+EXECUTER		= execute.c execute_funcs.c exec_el.c cd.c
 SRCS_EXECUTER	= $(addprefix executer/, $(EXECUTER))
 SRCS_MANDATORY	= minishell.c $(SRCS_PARSER) $(SRCS_EXECUTER)
 OBJS_MANDATORY	= $(patsubst %.c, %.o, $(SRCS_MANDATORY))
@@ -60,6 +60,7 @@ show:
 
 clean:
 	rm -f $(OBJS_MANDATORY)
+	rm -rfd minishell.dSYM 
 	make -C libft clean
 
 fclean: clean

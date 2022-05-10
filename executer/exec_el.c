@@ -56,8 +56,7 @@ int	exec_el(char **arg, char **paths, int fdin, int fdout)
 	i = -1;
 	while (paths[++i])
 	{
-		cmd = ft_strjoin(paths[i], "/");
-		cmd = ft_strjoin(cmd, arg[0]);
+		cmd = ft_strjoin(paths[i], arg[0]);
 		execve(cmd, arg, NULL);
 		free(cmd);
 	}
