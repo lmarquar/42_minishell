@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 12:02:58 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/10 12:30:11 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/10 13:32:27 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,11 @@ char	**create_path_arr(char *path, char *cwd)
 	path = ft_strjoin(tmp, cwd);
 	free(tmp);
 	paths = ft_split(path, ':');
+	if (!paths)
+	{
+		free(path);
+		return (NULL);
+	}
 	i = -1;
 	while (paths[++i])
 	{
@@ -30,6 +35,7 @@ char	**create_path_arr(char *path, char *cwd)
 		free(paths[i]);
 		paths[i] = cmd;
 	}
+	free(path);
 	return (paths);
 }
 
@@ -39,6 +45,8 @@ char	*stringify(t_env_var *env)
 	char	*s;
 	size_t	size;
 
+	if (!env->key || !env->val)
+		return (NULL);
 	size = ft_strlen(env->key) + 1 + ft_strlen(env->val) + 1;
 	s = ft_calloc(size, sizeof (char));
 	if (!s)
@@ -78,4 +86,20 @@ char	**create_env_arr(t_env_var *env)
 		i++;
 	}
 	return (arr);
+}
+
+t_env_var	*get_env_from_str(char *env_str)
+{
+	t_env_var	*env;
+	size_t		key_size;
+	char		*val;
+
+	env = malloc(sizeof (t_env_var));
+	val = ft_strnstr(env_str, "=", ft_strlen(env_str)) + 1;
+	key_size = val - env_str;
+	env->key = ft_calloc(key_size, sizeof (char));
+	ft_strlcpy(env->key, env_str, key_size);
+	env->val = ft_strdup(val);
+	env->next = NULL;
+	return (env);
 }

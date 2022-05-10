@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/06 13:22:23 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/09 15:34:06 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/10 13:18:51 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,8 +102,26 @@ char	*join_chunks(t_list *chunks)
 	return (buffer);
 }
 
+void	expansion(t_list *chunks, t_env_var *env)
+{
+	t_text_chunk	*chunk;
+
+	while (chunks)
+	{
+		chunk = (t_text_chunk *) chunks->content;
+		if (chunk->expand)
+		{
+			if (chunk->len == 1)
+				chunk->expand = 0;
+			else
+				expand_env_var(chunk, env);
+		}
+		chunks = chunks->next;
+	}
+}
+
 /*
-* chunks with the expand flag had their strings allocated seperatly
+* chunks with the expand flag had their strings allocated in the env_vars
 */
 void	clear_chunk(void *chk_ptr)
 {

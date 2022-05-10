@@ -6,29 +6,11 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 10:17:17 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/10 12:38:20 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/10 13:18:42 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-void	expansion(t_list *chunks, t_env_var *env)
-{
-	t_text_chunk	*chunk;
-
-	while (chunks)
-	{
-		chunk = (t_text_chunk *) chunks->content;
-		if (chunk->expand)
-		{
-			if (chunk->len == 1)
-				chunk->expand = 0;
-			else
-				expand_env_var(chunk, env);
-		}
-		chunks = chunks->next;
-	}
-}
 
 void	interpret_quotes(char **str, t_env_var *env)
 {
@@ -54,7 +36,7 @@ void	interpret_quotes(char **str, t_env_var *env)
 	expansion(text_chunks, env);
 	result = join_chunks(text_chunks);
 	//clear text_chunks
-	ft_lstclear(&text_chunks, &clear_chunk);
+	ft_lstclear(&text_chunks, &free);
 	free(*str);
 	*str = result;
 }
@@ -106,6 +88,7 @@ int	parse_word(char *token, t_env_var *env, t_cmds *cmds)
 	return (0); //TODO: what could be an error here?
 }
 
+static
 void	package_info(t_cmd_line *cmd_line, t_env_var *env, t_bin *bin)
 {
 	bin->cmd_line = cmd_line;

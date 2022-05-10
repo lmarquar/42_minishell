@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 13:20:00 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/10 12:33:50 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/10 17:15:08 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,7 @@ void			split_into_chunks(
 					char *s);
 size_t			sum_len(t_list *chunks);
 char			*join_chunks(t_list *chunks);
+void			expansion(t_list *chunks, t_env_var *env);
 void			clear_chunk(void *chk_ptr);
 
 // token
@@ -122,6 +123,7 @@ char			*find_in_env(char *key, size_t key_len, t_env_var *env_vars); // group wi
 
 char			**create_path_arr(char	*path, char *cwd);
 char			**create_env_arr(t_env_var *env);
+t_env_var		*get_env_from_str(char *env_str);
 
 //debug
 void			show_smp_cmd(void *cmd_ptr);
