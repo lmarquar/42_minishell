@@ -6,7 +6,7 @@
 #    By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/01/18 12:03:48 by chelmerd          #+#    #+#              #
-#    Updated: 2022/05/12 12:53:09 by chelmerd         ###   ########.fr        #
+#    Updated: 2022/05/12 16:19:59 by chelmerd         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,9 +35,9 @@ PARSER			=	parse.c special_character.c replace.c debug.c \
 SRCS_PARSER		= $(addprefix parser/, $(PARSER))
 BUILTINS		=	builtin_utils.c
 SRCS_BUILTINS	= $(addprefix builtins/, $(BUILTINS))
-EXECUTER		= execute.c execute_funcs.c exec_el.c cd.c
 ENV				=	env.c env_list.c
-SRCS_ENV	= $(addprefix env/, $(ENV))
+SRCS_ENV		= $(addprefix env/, $(ENV))
+EXECUTER		= execute.c execute_funcs.c exec_el.c exec_with_pipes.c exec_builtin.c
 SRCS_EXECUTER	= $(addprefix executer/, $(EXECUTER))
 SRCS_MANDATORY	= minishell.c $(SRCS_PARSER) $(SRCS_EXECUTER) $(SRCS_BUILTINS) $(SRCS_ENV)
 OBJS_MANDATORY	= $(patsubst %.c, %.o, $(SRCS_MANDATORY))

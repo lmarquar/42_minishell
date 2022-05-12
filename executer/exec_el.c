@@ -12,18 +12,7 @@
 
 #include "execute.h"
 
-static int	free_arr(char **arr)
-{
-	int	i;
-
-	i = -1;
-	while (arr[++i])
-		free(arr[i]);
-	free(arr);
-	return (0);
-}
-
-static int	handle_dup2error()
+static int	handle_dup2error(void)
 {
 	perror("dup2 failed(system error)\n");
 	return (1);
@@ -36,9 +25,9 @@ static int	com_not_found_exit(void)
 	return (1);
 }
 
-int	exec_el(char **arg, char **paths, int fdin, int fdout)
+int	exec_el(char **arg, t_bin *bin, int fdin, int fdout)
 {
-	int	i;
+	int		i;
 	char	*cmd;
 
 	if (fdin != STDIN_FILENO)
@@ -54,12 +43,11 @@ int	exec_el(char **arg, char **paths, int fdin, int fdout)
 		close(fdout);
 	}
 	i = -1;
-	while (paths[++i])
+	while (bin->paths[++i])
 	{
-		cmd = ft_strjoin(paths[i], arg[0]);
-		execve(cmd, arg, NULL);
+		cmd = ft_strjoin(bin->paths[i], arg[0]);
+		execve(cmd, arg, bin->env_arr);
 		free(cmd);
 	}
-	free_arr(paths);
 	return (com_not_found_exit());
 }

@@ -1,6 +1,6 @@
 #include "execute.h"
 
-int append(int fdin, int fdout)
+int	append(int fdin, int fdout)
 {
 	char	c;
 	int		i;
@@ -38,11 +38,11 @@ int	heredoc_handler(t_cmd_line *cmd_line, int fdout)
 		free(term);
 		term = in;
 	}
-	while(1)
+	while (1)
 	{
 		in = readline(term);
 		if (!ft_strncmp(delimiter, in, ft_strlen(in)))
-				break ;
+			break ;
 		write(fdout, in, ft_strlen(in));
 		write(fdout, "\n", 1);
 	}

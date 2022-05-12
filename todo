@@ -1,0 +1,4 @@
+implement bulitin command handling for pipes
+
+chris:
+env_arr variables have to be contained in "" and null terminate the array
