@@ -39,7 +39,6 @@ int	exec_echo(int inout[], char **args)
 	int	i;
 
 	i = 1;
-	printf("hello\n");
 	if (!ft_strncmp(args[i], "-n", 2))
 		i++;
 	while (args[i])

@@ -29,15 +29,7 @@ int	heredoc_handler(t_cmd_line *cmd_line, int fdout)
 		p_count--;
 	if (cmd_line->append > 0)
 		p_count--;
-	term = "heredoc>";
-	if (p_count-- > 0)
-		term = ft_strjoin("pipe ", term);
-	while (p_count-- > 0)
-	{
-		in = ft_strjoin("pipe ", term);
-		free(term);
-		term = in;
-	}
+	term = "> ";
 	while (1)
 	{
 		in = readline(term);
