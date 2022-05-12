@@ -37,16 +37,22 @@ char	*get_full_path(char *cd, char *gd)
 int	exec_echo(int inout[], char **args)
 {
 	int	i;
+	int	newline;
 
+	newline = 1;
 	i = 1;
-	if (!ft_strncmp(args[i], "-n", 2))
+	if (!ft_strncmp(args[i], "-n", 3))
+	{
 		i++;
+		newline = 0;
+	}
 	while (args[i])
-		printf("%s", args[i++]);
-	if (!ft_strncmp(args[1], "-n", 2))
-		printf("\n");
-	inout[0]++;
-	inout[1]++;
+	{
+		write(inout[1], args[i], ft_strlen(args[i]));
+		i++;
+	}
+	if (newline)
+		write(inout[1], "\n", 1);
 	return (0);
 }
 
