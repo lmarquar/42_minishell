@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 12:02:58 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/10 13:32:27 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/12 11:47:38 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,9 @@ char	**create_path_arr(char *path, char *cwd)
 	return (paths);
 }
 
+/*
+* converts enviroment variable into a string with format: key="value"
+*/
 static
 char	*stringify(t_env_var *env)
 {
@@ -47,13 +50,15 @@ char	*stringify(t_env_var *env)
 
 	if (!env->key || !env->val)
 		return (NULL);
-	size = ft_strlen(env->key) + 1 + ft_strlen(env->val) + 1;
+	size = ft_strlen(env->key) + 3 + ft_strlen(env->val) + 1;
 	s = ft_calloc(size, sizeof (char));
 	if (!s)
 		return (NULL);
 	ft_strlcpy(s, env->key, size);
 	ft_strlcat(s, "=", size);
+	ft_strlcat(s, "\"", size);
 	ft_strlcat(s, env->val, size);
+	ft_strlcat(s, "\"", size);
 	return (s);
 }
 
