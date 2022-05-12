@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 13:20:00 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/10 17:15:08 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/12 13:26:43 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 
 # include "../libft/libft.h"
 # include "../builtins/builtins.h"
+# include "../env/env.h"
 
 # define NO_QUOTE 0
 # define SINGLE_QUOTE 1
@@ -41,13 +42,6 @@ typedef struct s_cmd_line
 	int			append;
 	char		*heredoc_delimiter;
 }	t_cmd_line;
-
-typedef struct s_env_var
-{
-	char				*key;
-	char				*val;
-	struct s_env_var	*next;
-}	t_env_var;
 
 typedef struct s_bin
 {
@@ -77,7 +71,6 @@ int				is_ctrlchr(char c);
 int				is_metachr(char c);
 int				is_quote(char c);
 
-int				expand_env_vars(char **input, t_env_var *env_vars);
 void			expand_env_var(t_text_chunk *chunk, t_env_var *env_vars);
 
 // quote

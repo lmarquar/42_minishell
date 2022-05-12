@@ -6,38 +6,11 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/04 13:25:25 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/09 15:48:50 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/12 13:28:39 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-char	*find_in_env(char *key, size_t key_len, t_env_var *env_vars)
-{
-	while (env_vars && ft_strncmp(env_vars->key, key, key_len) != 0)
-	{
-		env_vars = env_vars->next;
-	}
-	if (env_vars)
-		return (env_vars->val);
-	return (NULL);
-}
-
-char	*find_val(char *str, size_t i, size_t *key_len, t_env_var *env_vars)
-{
-	char	*val;
-	size_t	j;
-
-	i++;
-	j = i;
-	while (str[j] && !is_ctrlchr(str[j]) && str[j] != '$' && !is_quote(str[j]))
-	{
-		j++;
-	}
-	*key_len = j - i;
-	val = find_in_env(&str[i], *key_len, env_vars);
-	return (val);
-}
 
 char	*replace_word(char *str, char *word, size_t word_len, char *val)
 {
@@ -65,37 +38,12 @@ char	*replace_word(char *str, char *word, size_t word_len, char *val)
 	return (result);
 }
 
-// old
-int	expand_env_vars(char **input, t_env_var *env_vars)
-{
-	char	*str;
-	char	*val;
-	size_t	key_len;
-	size_t	i;
-	int		single_qoute;
-
-	str = *input;
-	i = 0;
-	single_qoute = 0;
-	while (str[i])
-	{
-		if (str[i] == '$')
-		{
-			val = find_val(str, i, &key_len, env_vars);
-			if (key_len > 0)
-			{
-				str = replace_word(str, &str[i], key_len, val);
-				if (val)
-					i += ft_strlen(val) - 1;
-			}
-		}
-		i++;
-	}
-	*input = str;
-	printf("expanded:%s|\n", str);
-	return (0);
-}
-
+/**
+ * @brief replaces the $key with the value for the key
+ *
+ * @param chunk holds $key
+ * @param env_vars list to find the value for the key
+ */
 void	expand_env_var(t_text_chunk *chunk, t_env_var *env_vars)
 {
 	char	*val;

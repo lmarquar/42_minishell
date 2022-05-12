@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/06 13:22:23 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/10 13:18:51 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/12 13:18:49 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,15 +118,4 @@ void	expansion(t_list *chunks, t_env_var *env)
 		}
 		chunks = chunks->next;
 	}
-}
-
-/*
-* chunks with the expand flag had their strings allocated in the env_vars
-*/
-void	clear_chunk(void *chk_ptr)
-{
-	t_text_chunk	*chunk;
-
-	chunk = (t_text_chunk *) chk_ptr;
-	free(chunk);
 }
