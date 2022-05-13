@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/06 13:22:23 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/12 13:18:49 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/13 11:55:48 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,12 +44,14 @@ void	split_into_chunks(t_list **chunks,
 			*chunk = new_chunk(s, 1);
 	}
 	else if (*chunk && (*chunk)->str[0] == '$' && *state != 1
-		&& (is_quote(*s) || *s == '$'))
+		&& (is_quote(*s) || *s == '$' || is_space(*s)))
 	{
 		ft_lstadd_back(chunks, ft_lstnew(*chunk));
 		*chunk = NULL;
 		if (*s == '$')
 			*chunk = new_chunk(s, 1);
+		else
+			*chunk = new_chunk(s, 0);
 	}
 	else if (*chunk == NULL)
 		*chunk = new_chunk(s, 0);
@@ -83,10 +85,8 @@ char	*join_chunks(t_list *chunks)
 	char			*buffer;
 	size_t			size;
 	t_text_chunk	*chunk;
-	t_list			*start;
 	size_t			offset;
 
-	start = chunks;
 	size = sum_len(chunks) + 1;
 	buffer = ft_calloc(size, sizeof (char));
 	if (!buffer)
