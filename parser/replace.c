@@ -6,36 +6,29 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/04 13:25:25 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/12 13:28:39 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/13 13:26:39 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "parser.h"
 
-char	*replace_word(char *str, char *word, size_t word_len, char *val)
+// chunk->expand is set to two to indicate it has to be freed
+int	replace_question_mark(t_text_chunk *chunk, int exit_code)
 {
-	char	*result;
-	size_t	result_size;
-	size_t	offset;
+	char	*code;
 
-	printf("orignal:%s, word(start):%3s, word_len:%zu val:%s\n", str, word, word_len, val);
-	if (!val)
-		val = "";
-	offset = 0;
-	result_size = ft_strlen(str) + ft_strlen(val) + 1;
-	result = ft_calloc(result_size, sizeof(char));
-	offset = word - str;
-	ft_strlcpy(result, str, offset + 1);
-	printf("before:%s|\n", result);
-	if (val[0])
+	code = ft_itoa(exit_code);
+	if (!code)
 	{
-		printf("val not empty");
-		ft_strlcat(result, val, result_size);
-		offset += ft_strlen(val);
+		perror("ft_itoa malloc");
+		chunk->len = 0;
+		chunk->expand = 0;
+		return (1);
 	}
-	ft_strlcat(result, word + word_len + 1, result_size);
-	free(str);
-	return (result);
+	chunk->str = code;
+	chunk->len = ft_strlen(chunk->str);
+	chunk->expand = 2;
+	return (0);
 }
 
 /**
@@ -51,8 +44,40 @@ void	expand_env_var(t_text_chunk *chunk, t_env_var *env_vars)
 	printf("key:%.*s", (int)(chunk->len - 1), chunk->str + 1);
 	val = find_in_env(chunk->str + 1, chunk->len - 1, env_vars);
 	if (!val)
-		val = ft_strdup("");
+		val = "";
 	chunk->str = val;
 	chunk->len = ft_strlen(val);
 	printf("value of key:%s|\n", val);
+}
+
+/**
+ * @brief replace the text in a chunk if needed 
+ *
+ * @param chunks linked list of t_text_chunks
+ * @param env linked list of enviroment variables
+ * @param exit_code the last exit code in the shell
+ */
+void	expansion(t_list *chunks, t_env_var *env, int exit_code)
+{
+	t_text_chunk	*chunk;
+
+	while (chunks)
+	{
+		chunk = (t_text_chunk *) chunks->content;
+		if (!chunk->expand)
+		{
+			chunks = chunks->next;
+			continue ;
+		}
+		if (chunk->len == 1)
+			chunk->expand = 0;
+		else if (chunk->len == 2 && chunk->str[1] == '?')
+		{
+			if (replace_question_mark(chunk, exit_code) != 0)
+				break ; //TODO: handle error
+		}
+		else
+			expand_env_var(chunk, env);
+		chunks = chunks->next;
+	}
 }

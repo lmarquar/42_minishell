@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/06 13:22:23 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/13 11:55:48 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/13 13:30:00 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,25 @@ t_text_chunk	*new_chunk(char *str, int expand)
 {
 	t_text_chunk	*chunk;
 
+	if (!str || *str == '\0')
+		return (NULL);
 	chunk = malloc(sizeof (t_text_chunk));
 	chunk->str = str;
 	chunk->len = 1;
 	chunk->expand = expand;
 	return (chunk);
+}
+
+void	clear_chunk(void *chk_ptr)
+{
+	t_text_chunk	*chunk;
+
+	if (!chk_ptr)
+		return ;
+	chunk = (t_text_chunk *) chk_ptr;
+	if (chunk->expand == 2 && chunk->str)
+		free(chunk->str);
+	free(chunk);
 }
 
 void	split_into_chunks(t_list **chunks,
@@ -44,14 +58,11 @@ void	split_into_chunks(t_list **chunks,
 			*chunk = new_chunk(s, 1);
 	}
 	else if (*chunk && (*chunk)->str[0] == '$' && *state != 1
-		&& (is_quote(*s) || *s == '$' || is_space(*s)))
+		&& (is_quote(*s) || *s == '$' || is_space(*s)
+			|| ((*chunk)->len >= 2 && (*chunk)->str[1] == '?')))
 	{
 		ft_lstadd_back(chunks, ft_lstnew(*chunk));
-		*chunk = NULL;
-		if (*s == '$')
-			*chunk = new_chunk(s, 1);
-		else
-			*chunk = new_chunk(s, 0);
+		*chunk = new_chunk(s, is_dollarchr(*s));
 	}
 	else if (*chunk == NULL)
 		*chunk = new_chunk(s, 0);
@@ -100,22 +111,4 @@ char	*join_chunks(t_list *chunks)
 		chunks = chunks->next;
 	}
 	return (buffer);
-}
-
-void	expansion(t_list *chunks, t_env_var *env)
-{
-	t_text_chunk	*chunk;
-
-	while (chunks)
-	{
-		chunk = (t_text_chunk *) chunks->content;
-		if (chunk->expand)
-		{
-			if (chunk->len == 1)
-				chunk->expand = 0;
-			else
-				expand_env_var(chunk, env);
-		}
-		chunks = chunks->next;
-	}
 }
