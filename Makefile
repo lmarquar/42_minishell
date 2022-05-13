@@ -6,11 +6,7 @@
 #    By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/01/18 12:03:48 by chelmerd          #+#    #+#              #
-<<<<<<< HEAD
-#    Updated: 2022/04/28 16:58:59 by leon             ###   ########.fr        #
-=======
-#    Updated: 2022/05/04 15:24:24 by chelmerd         ###   ########.fr        #
->>>>>>> eff1ac5f7b278a0422abe22ea1c9fd566c6f684e
+#    Updated: 2022/05/13 16:33:56 by leon             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,11 +28,18 @@ endif
 
 LIBFT = libft/libft.a
 
-INCLUDES = -I$(READLINE_INCLUDE) -Iparser
+INCLUDES = -I$(READLINE_INCLUDE) -Iparser -Ibuiltin -Iexecuter
 
-PARSER			= parse.c special_character.c replace.c debug.c
+PARSER			=	parse.c special_character.c replace.c debug.c \
+					chunk.c token.c cmd_line.c quote.c arrays.c
 SRCS_PARSER		= $(addprefix parser/, $(PARSER))
-SRCS_MANDATORY	= minishell.c execute.c $(SRCS_PARSER)
+BUILTINS		=	builtin_utils.c
+SRCS_BUILTINS	= $(addprefix builtins/, $(BUILTINS))
+ENV				=	env.c env_list.c
+SRCS_ENV		= $(addprefix env/, $(ENV))
+EXECUTER		= execute.c execute_funcs.c exec_el.c exec_with_pipes.c exec_builtin.c
+SRCS_EXECUTER	= $(addprefix executer/, $(EXECUTER))
+SRCS_MANDATORY	= minishell.c $(SRCS_PARSER) $(SRCS_EXECUTER) $(SRCS_BUILTINS) $(SRCS_ENV)
 OBJS_MANDATORY	= $(patsubst %.c, %.o, $(SRCS_MANDATORY))
 
 all: $(NAME)
@@ -62,6 +65,7 @@ show:
 
 clean:
 	rm -f $(OBJS_MANDATORY)
+	rm -rfd minishell.dSYM
 	make -C libft clean
 
 fclean: clean

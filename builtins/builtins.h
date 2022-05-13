@@ -1,31 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   builtins.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/28 10:29:16 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/10 12:33:41 by chelmerd         ###   ########.fr       */
+/*   Created: 2022/05/09 15:36:23 by chelmerd          #+#    #+#             */
+/*   Updated: 2022/05/09 15:44:49 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-# define MINISHELL_H
+#ifndef BUILTINS_H
+# define BUILTINS_H
 
-# define SHELL_PROMT "minishell>"
+# include "../libft/libft.h"
 
-# include <unistd.h>
-# include <stdlib.h>
-# include <stdio.h>
-# include <signal.h>
-# include <readline/readline.h>
-# include <readline/history.h>
+// utils
 
-# include "libft/libft.h"
-# include "executer/execute.h"
-# include "parser/parser.h"
+int	is_builtin(const char *s);
 
-
+// actual builtins
+// echo
+// cd
+// pwd
+// export
+// unset
+// env
+// exit
 
 #endif
