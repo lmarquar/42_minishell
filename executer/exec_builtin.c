@@ -34,17 +34,67 @@ char	*get_full_path(char *cd, char *gd)
 	return (res);
 }
 
+
+int	exec_cd(int inout[], char *dir_raw)
+{
+	int		i;
+	char	*curdir;
+	char	*dir;
+	char	*error_msg;
+
+	curdir = getcwd(NULL, 0);
+	curdir = ft_strjoin(curdir, "/");
+	if (dir_raw[0] != '/')
+		dir = get_full_path(curdir, dir_raw);
+	i = chdir(dir);
+	error_msg = ft_strjoin("minishell: cd: ", dir_raw);
+	if (i == -1)
+		perror(error_msg);
+	inout[0]++;
+	inout[1]++;
+	free(error_msg);
+	free(curdir);
+	free(dir);
+	return (0);
+}
+
+int	format_string_fd(char *s, int fd)
+{
+	int flag;
+
+	flag = 1;
+	if (!s)
+		return (1);
+	if (*s != '\\')
+		write(fd, s, 1);
+	s++;
+	while (*s)
+	{
+		if (*s != '\\')
+			write(fd, s, 1);
+		else
+			flag = flag * -1;
+		if (flag > 0 && *s == '\\')
+			write(fd, s, 1);
+		s++;
+	}
+	return (0);
+}
+
 int	exec_echo(int inout[], char **args)
 {
-	int	i;
+	int		i;
 
 	i = 1;
 	if (!ft_strncmp(args[i], "-n", 2))
 		i++;
 	while (args[i])
-		printf("%s", args[i++]);
+	{
+		format_string_fd(args[i], inout[1]);
+		i++;
+	}
 	if (!ft_strncmp(args[1], "-n", 2))
-		printf("\n");
+		write(inout[1], "\n", 1);
 	inout[0]++;
 	inout[1]++;
 	return (0);
@@ -64,8 +114,7 @@ int	exec_export(int inout[], t_bin *bin, char *var_ass)
 			printf("declare -x %s\n", bin->env_arr[i++]);
 		return (0);
 	}
-	while (var_ass[i] && var_ass[i] != '=')
-		i++;
+	while (var_ass[i] && var_ass[i] != '=') i++;
 	if (!var_ass[i])
 		return (1);
 	if (!var_ass[i + 1])
@@ -99,22 +148,6 @@ int	exec_export(int inout[], t_bin *bin, char *var_ass)
 	return (0);
 }
 
-int	exec_cd(int inout[], char *dir)
-{
-	int		i;
-	char	*curdir;
-
-	curdir = getcwd(NULL, 0);
-	curdir = ft_strjoin(curdir, "/");
-	if (dir[0] != '/')
-		dir = get_full_path(curdir, dir);
-	i = chdir(dir);
-	if (i == -1)
-		perror("chdir failed");
-	inout[0]++;
-	inout[1]++;
-	return (0);
-}
 
 int	exec_builtin(t_bin *bin, char **args, int fdin, int fdout)
 {

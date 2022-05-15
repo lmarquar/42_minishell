@@ -33,6 +33,8 @@ int	heredoc_handler(t_cmd_line *cmd_line, int fdout)
 	while (1)
 	{
 		in = readline(term);
+		if (!in)
+			break ;
 		if (!ft_strncmp(delimiter, in, ft_strlen(in)))
 			break ;
 		write(fdout, in, ft_strlen(in));

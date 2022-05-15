@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/06 13:22:23 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/12 13:18:49 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/13 16:54:30 by leon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,10 +83,8 @@ char	*join_chunks(t_list *chunks)
 	char			*buffer;
 	size_t			size;
 	t_text_chunk	*chunk;
-	t_list			*start;
 	size_t			offset;
 
-	start = chunks;
 	size = sum_len(chunks) + 1;
 	buffer = ft_calloc(size, sizeof (char));
 	if (!buffer)
