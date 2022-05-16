@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/03 11:21:44 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/09 15:32:36 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/16 11:55:46 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,5 +65,15 @@ void	print_text_chunks(t_list *chunks)
 		printf("text_chunk[%zu]:%s, len:%zu, expand:%d|\n", i, buffer, chunk->len, chunk->expand);
 		chunks = chunks->next;
 		i++;
+	}
+}
+
+void	print_path_arr(char **paths)
+{
+	printf("paths\n");
+	while (paths && *paths)
+	{
+		printf("%s|\n", *paths);
+		paths++;
 	}
 }

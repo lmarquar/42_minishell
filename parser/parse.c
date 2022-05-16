@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 10:17:17 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/16 11:38:51 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/16 12:45:43 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	interpret_quotes(char **str, t_env_var *env, int exit_code)
 	if (text_chunk)
 		ft_lstadd_back(&text_chunks, ft_lstnew(text_chunk));
 	(void) env;
-	print_text_chunks(text_chunks);
+	// print_text_chunks(text_chunks);
 	expansion(text_chunks, env, exit_code);
 	result = join_chunks(text_chunks);
 	//clear text_chunks
@@ -128,5 +128,6 @@ int	parse(const char *input, t_cmd_line *cmd_line, t_env_var *env, t_bin *bin)
 	ft_lstclear(&cmds.cmd_lst, NULL);
 	show_cmd_line(cmd_line); // debug
 	package_info(cmd_line, env, bin);
+	// print_path_arr(bin->paths); // debug
 	return (error);
 }
