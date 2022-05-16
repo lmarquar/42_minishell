@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/08 11:35:15 by leon              #+#    #+#             */
-/*   Updated: 2022/05/12 16:47:21 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/16 13:21:23 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ int	exec_el(char **arg, t_bin *bin, int fdin, int fdout)
 	int		i;
 	char	*cmd;
 
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
 	if (fdin != STDIN_FILENO)
 	{
 		if (dup2(fdin, STDIN_FILENO) < 0)

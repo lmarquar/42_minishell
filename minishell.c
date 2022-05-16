@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 10:39:02 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/16 11:47:40 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/16 13:19:54 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,13 @@
 
 void	handle_signals(int signo)
 {
-	printf("\n");
-	rl_on_new_line();
+	if (signo == SIGINT)
+	{
+		rl_replace_line("", 0);
+		printf("\n");
+		rl_on_new_line();
+	}
 	rl_redisplay();
-	if (signo != 2)
-		exit(0);
 }
 
 int	init_env(char *envp[], t_env_var **e_v)
@@ -72,9 +74,10 @@ int	main(int argc, char *argv[], char *envp[])
 	// init env
 	init_env(envp, &env_vars);
 	init_bin(&bin, env_vars);
-	signal(SIGINT, &handle_signals);
 	while (1)
 	{
+		signal(SIGINT, &handle_signals);
+		signal(SIGQUIT, SIG_IGN);
 		bin->in = readline(SHELL_PROMT);
 		if (!bin->in || !ft_strncmp(bin->in, "exit", 5))
 		{
@@ -88,7 +91,10 @@ int	main(int argc, char *argv[], char *envp[])
 		// check syntax
 		// parse / analyse
 		if (parse(bin->in, &cmd_line, env_vars, bin) == 0)
+		{
+			
 			execute(bin);
+		}
 		free(bin->in);
 	}
 	// clear list of env_vars

@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/29 12:17:48 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/10 12:38:02 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/16 13:24:13 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,8 @@ int	execute(t_bin *bin)
 		exec_with_pipes(bin, pid, fd);
 	while (*pid)
 	{
+		signal(SIGINT, SIG_IGN);
+		signal(SIGQUIT, SIG_IGN);
 		waitpid(*pid, &exit_code, 0);
 		printf("PID: %d, exit_code: %d\n", *pid, exit_code);
 		if (exit_code != 0 && exit_code != 256)
