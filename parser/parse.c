@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 10:17:17 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/13 13:30:35 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/16 11:32:18 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ void	package_info(t_cmd_line *cmd_line, t_env_var *env, t_bin *bin)
 	bin->cmd_line = cmd_line;
 	bin->env = env; // really need to do it here?
 	bin->env_arr = create_env_arr(env);
-	bin->cwd = find_in_env("PWD", 3, env);
+	bin->cwd = getcwd(NULL, 0);
 	bin->paths = create_path_arr(find_in_env("PATH", 4, env), bin->cwd);
 }
 
