@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 15:36:23 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/13 11:15:42 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/16 15:50:29 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 // utils
 
 int	is_builtin(const char *s);
+int	builtin_error(int error_code, char *builtin_name, char *msg);
 
 enum e_BUILTIN
 {
@@ -30,7 +31,7 @@ enum e_BUILTIN
 	EXPORT = 4,
 	UNSET = 5,
 	ENV = 6,
-	EXIT = 6
+	EXIT = 7
 };
 
 // actual builtins
@@ -42,5 +43,6 @@ enum e_BUILTIN
 // env
 int	exec_env(int out, t_env_var *env, char **args);
 // exit
+int	exec_exit(int exit_code, char **args, int is_pipeline);
 
 #endif

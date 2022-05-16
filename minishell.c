@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 10:39:02 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/10 17:20:45 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/16 16:10:19 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,12 +76,9 @@ int	main(int argc, char *argv[], char *envp[])
 	while (1)
 	{
 		bin->in = readline(SHELL_PROMT);
-		if (!bin->in || !ft_strncmp(bin->in, "exit", 5))
+		if (!bin->in)
 		{
-			// printf("exit");
-			rl_replace_line("minishell>exit", 0);
-			rl_redisplay();
-			break ;
+			bin->in = ft_strdup("exit");
 		}
 		add_history(bin->in);
 		// transform env_vars
