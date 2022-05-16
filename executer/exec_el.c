@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/08 11:35:15 by leon              #+#    #+#             */
-/*   Updated: 2022/05/16 13:21:23 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/16 13:56:53 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static int	handle_dup2error(void)
 static int	com_not_found_exit(void)
 {
 	printf("Command couldn't be found\n");
-	exit(1);
+	exit(127);
 	return (1);
 }
 

@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 10:17:17 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/16 12:45:43 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/16 14:00:59 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,10 @@ int	parse(const char *input, t_cmd_line *cmd_line, t_env_var *env, t_bin *bin)
 
 	error = 0;
 	if (has_unclosed_quotes(input))
+	{
+		bin->exit_code = 2;
 		return (ft_error(2, "Unclosed quotes!"));
+	}
 	token = next_token(input, 1);
 	init_cmd_line(cmd_line);
 	cmds.cmd_lst = NULL;

@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/29 12:17:48 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/16 13:24:13 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/16 14:11:28 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,19 @@ int	exec_in_to_out(t_bin *bin, int *pid, int fd[])
 	return (0);
 }
 
+void	set_exit_code(t_bin *bin, int exit_code)
+{
+	if (WIFSIGNALED(exit_code))
+		bin->exit_code = 128 + WTERMSIG(exit_code);
+	else if (WIFEXITED(exit_code))
+	{
+		printf("EXIT STATUS:%d\n", WEXITSTATUS(exit_code)); // debug
+		bin->exit_code = WEXITSTATUS(exit_code);
+	}
+	else
+		perror("program failed");
+}
+
 int	execute(t_bin *bin)
 {
 	int	*pid;
@@ -60,8 +73,7 @@ int	execute(t_bin *bin)
 		signal(SIGQUIT, SIG_IGN);
 		waitpid(*pid, &exit_code, 0);
 		printf("PID: %d, exit_code: %d\n", *pid, exit_code);
-		if (exit_code != 0 && exit_code != 256)
-			perror("program failed");
+		set_exit_code(bin, exit_code);
 		pid++;
 	}
 	return (0);
