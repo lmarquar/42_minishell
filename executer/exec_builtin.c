@@ -36,7 +36,7 @@ char	*get_full_path(char *cd, char *gd)
 
 int	exec_echo(int fdout, char **args)
 {
-	int	i;
+	int		i;
 
 	i = 1;
 	if (!ft_strncmp(args[i], "-n", 2))
@@ -73,8 +73,7 @@ int	exec_export(int fdout, t_bin *bin, char *var_ass)
 			printf("declare -x %s\n", bin->env_arr[i++]);
 		return (0);
 	}
-	while (var_ass[i] && var_ass[i] != '=')
-		i++;
+	while (var_ass[i] && var_ass[i] != '=') i++;
 	if (!var_ass[i])
 		return (1);
 	if (!var_ass[i + 1])
