@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 13:20:00 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/13 13:26:59 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/16 12:43:08 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ int				is_dollarchr(char c);
 // quote
 
 int				change_quote_state(int state, char c);
+int				has_unclosed_quotes(const char *s);
 
 // cmd_line
 
@@ -117,11 +118,12 @@ void			expansion(t_list *chunks, t_env_var *env, int exit_code);
 
 char			**create_path_arr(char	*path, char *cwd);
 char			**create_env_arr(t_env_var *env);
-t_env_var		*get_env_from_str(char *env_str);
+void			clear_pointer_arr(void **arr);
 
 //debug
 void			show_smp_cmd(void *cmd_ptr);
 void			show_cmd_line(t_cmd_line *cmd_line);
 void			print_text_chunks(t_list *chunks);
+void			print_path_arr(char **paths);
 
 #endif

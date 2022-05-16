@@ -6,7 +6,11 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 10:39:02 by chelmerd          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2022/05/16 16:10:19 by chelmerd         ###   ########.fr       */
+=======
+/*   Updated: 2022/05/16 11:47:40 by chelmerd         ###   ########.fr       */
+>>>>>>> 97bb9569df4bbeeb36dd11201886465f55954806
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,9 +88,8 @@ int	main(int argc, char *argv[], char *envp[])
 		// transform env_vars
 		// check syntax
 		// parse / analyse
-		parse(bin->in, &cmd_line, env_vars, bin);
-		// execute
-		execute(bin);
+		if (parse(bin->in, &cmd_line, env_vars, bin) == 0)
+			execute(bin);
 		free(bin->in);
 	}
 	// clear list of env_vars

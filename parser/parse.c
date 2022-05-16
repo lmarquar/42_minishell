@@ -6,7 +6,11 @@
 /*   By: leon <leon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 10:17:17 by chelmerd          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2022/05/16 20:23:58 by leon             ###   ########.fr       */
+=======
+/*   Updated: 2022/05/16 12:45:43 by chelmerd         ###   ########.fr       */
+>>>>>>> 97bb9569df4bbeeb36dd11201886465f55954806
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +36,13 @@ void	interpret_quotes(char **str, t_env_var *env)
 	if (text_chunk)
 		ft_lstadd_back(&text_chunks, ft_lstnew(text_chunk));
 	(void) env;
+<<<<<<< HEAD
 	print_text_chunks(text_chunks);
 	expansion(text_chunks, env, 0);
+=======
+	// print_text_chunks(text_chunks);
+	expansion(text_chunks, env, exit_code);
+>>>>>>> 97bb9569df4bbeeb36dd11201886465f55954806
 	result = join_chunks(text_chunks);
 	//clear text_chunks
 	ft_lstclear(&text_chunks, &free);
@@ -94,7 +103,7 @@ void	package_info(t_cmd_line *cmd_line, t_env_var *env, t_bin *bin)
 	bin->cmd_line = cmd_line;
 	bin->env = env; // really need to do it here?
 	bin->env_arr = create_env_arr(env);
-	bin->cwd = find_in_env("PWD", 3, env);
+	bin->cwd = getcwd(NULL, 0);
 	bin->paths = create_path_arr(find_in_env("PATH", 4, env), bin->cwd);
 }
 
@@ -105,6 +114,8 @@ int	parse(const char *input, t_cmd_line *cmd_line, t_env_var *env, t_bin *bin)
 	t_cmds	cmds;
 
 	error = 0;
+	if (has_unclosed_quotes(input))
+		return (ft_error(2, "Unclosed quotes!"));
 	token = next_token(input, 1);
 	init_cmd_line(cmd_line);
 	cmds.cmd_lst = NULL;
@@ -123,5 +134,6 @@ int	parse(const char *input, t_cmd_line *cmd_line, t_env_var *env, t_bin *bin)
 	ft_lstclear(&cmds.cmd_lst, NULL);
 	show_cmd_line(cmd_line); // debug
 	package_info(cmd_line, env, bin);
+	// print_path_arr(bin->paths); // debug
 	return (error);
 }
