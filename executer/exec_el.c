@@ -3,20 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   exec_el.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leon <lmarquar@student.42wolfsburg.de      +#+  +:+       +#+        */
+/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/08 11:35:15 by leon              #+#    #+#             */
-/*   Updated: 2022/05/08 11:35:18 by leon             ###   ########.fr       */
+/*   Updated: 2022/05/16 12:17:48 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "execute.h"
-
-static int	handle_dup2error(void)
-{
-	perror("dup2 failed(system error)\n");
-	return (1);
-}
 
 static int	com_not_found_exit(void)
 {

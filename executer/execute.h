@@ -21,5 +21,6 @@ int	exec_builtin(t_bin *bin, char **args, int fdin, int fdout);
 int	exec_cd(int inout[], char *dir);
 int	exec_export(int inout[], t_bin *bin, char *var_ass);
 int	exec_echo(int inout[], char **args);
+int	handle_dup2error(void);
 
 #endif

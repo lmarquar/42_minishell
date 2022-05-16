@@ -38,16 +38,24 @@ int	exec_echo(int inout[], char **args)
 {
 	int	i;
 
+	if (inout[1] != STDOUT_FILENO)
+	{
+		if (dup2(inout[1], STDOUT_FILENO) < 0)
+			return (handle_dup2error());
+		close(inout[1]);
+	}
 	i = 1;
-	printf("hello\n");
 	if (!ft_strncmp(args[i], "-n", 2))
 		i++;
 	while (args[i])
+	{
 		printf("%s", args[i++]);
-	if (!ft_strncmp(args[1], "-n", 2))
+		if (args[i])
+			printf(" ");
+	}
+	if (ft_strncmp(args[1], "-n", 2))
 		printf("\n");
 	inout[0]++;
-	inout[1]++;
 	return (0);
 }
 

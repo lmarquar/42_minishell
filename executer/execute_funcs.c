@@ -1,5 +1,11 @@
 #include "execute.h"
 
+int	handle_dup2error(void)
+{
+	perror("dup2 failed(system error)\n");
+	return (1);
+}
+
 int	append(int fdin, int fdout)
 {
 	char	c;
