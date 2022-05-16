@@ -34,39 +34,38 @@ char	*get_full_path(char *cd, char *gd)
 	return (res);
 }
 
-int	exec_echo(int inout[], char **args)
+int	exec_echo(int fdout, char **args)
 {
 	int	i;
-	int	newline;
 
-	if (inout[1] != STDOUT_FILENO)
-	{
-		if (dup2(inout[1], STDOUT_FILENO) < 0)
-			return (handle_dup2error());
-		close(inout[1]);
-	}
 	i = 1;
 	if (!ft_strncmp(args[i], "-n", 2))
 		i++;
 	while (args[i])
 	{
-		printf("%s", args[i++]);
+		write(fdout, args[i], ft_strlen(args[i]));
+		i++;
 		if (args[i])
-			printf(" ");
+			write(1, " ", 1);
 	}
 	if (ft_strncmp(args[1], "-n", 2))
-		printf("\n");
-	inout[0]++;
+		write(1, "\n", 1);
 	return (0);
 }
 
 //by far not really good. f.ex.: "" are missing
-int	exec_export(int inout[], t_bin *bin, char *var_ass)
+int	exec_export(int fdout, t_bin *bin, char *var_ass)
 {
 	t_env_var	*env;
 	int			i;
 	int			i2;
-
+	
+	if (fdout != STDOUT_FILENO)
+	{
+		if (dup2(fdout, STDOUT_FILENO) < 0)
+			return (handle_dup2error());
+		close(fdout);
+	}
 	i = 0;
 	if (!var_ass)
 	{
@@ -104,12 +103,10 @@ int	exec_export(int inout[], t_bin *bin, char *var_ass)
 		env->val[i2] = var_ass[i + i2];
 		i2++;
 	}
-	inout[0]++;
-	inout[1]++;
 	return (0);
 }
 
-int	exec_cd(int inout[], char *dir)
+int	exec_cd(char *dir)
 {
 	int		i;
 	char	*curdir;
@@ -121,20 +118,18 @@ int	exec_cd(int inout[], char *dir)
 	i = chdir(dir);
 	if (i == -1)
 		perror("chdir failed");
-	inout[0]++;
-	inout[1]++;
 	return (0);
 }
 
-int	exec_env(int fd)
+int	exec_pwd(int fdout)
 {
-	if (fd != STDOUT_FILENO)
+	if (fdout != STDOUT_FILENO)
 	{
-		if (dup2(fd, STDOUT_FILENO) < 0)
+		if (dup2(fdout, STDOUT_FILENO) < 0)
 			return (handle_dup2error());
-		close(fd);
+		close(fdout);
 	}
-
+	printf("%s\n", getcwd(NULL, 0));
 	return (0);
 }
 
@@ -145,11 +140,13 @@ int	exec_builtin(t_bin *bin, char **args, int fdin, int fdout)
 	inout[0] = fdin;
 	inout[1] = fdout;
 	if (ft_strcmp(args[0], "echo"))
-		bin->exit_code = exec_echo(inout, args);
+		bin->exit_code = exec_echo(inout[1], args);
 	if (ft_strcmp(args[0], "cd"))
-		bin->exit_code = exec_cd(inout, args[1]);
+		bin->exit_code = exec_cd(args[1]);
 	if (ft_strcmp(args[0], "export"))
-		bin->exit_code = exec_export(inout, bin, args[1]);
+		bin->exit_code = exec_export(inout[1], bin, args[1]);
+	if (ft_strcmp(args[0], "pwd"))
+		bin->exit_code = exec_pwd(inout[1]);
 	if (bin->cmd_line->simple_commands[0]->is_builtin == ENV)
 		bin->exit_code = exec_env(fdout, bin->env, args);
 	if (bin->cmd_line->simple_commands[0]->is_builtin == EXIT)
