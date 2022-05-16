@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 13:20:00 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/13 13:26:59 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/16 11:45:43 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ int				is_dollarchr(char c);
 // quote
 
 int				change_quote_state(int state, char c);
+int				has_unclosed_quotes(const char *s);
 
 // cmd_line
 
