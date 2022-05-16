@@ -125,6 +125,18 @@ int	exec_cd(int inout[], char *dir)
 	return (0);
 }
 
+int	exec_env(int fd)
+{
+	if (fd != STDOUT_FILENO)
+	{
+		if (dup2(fd, STDOUT_FILENO) < 0)
+			return (handle_dup2error());
+		close(fd);
+	}
+
+	return (0);
+}
+
 int	exec_builtin(t_bin *bin, char **args, int fdin, int fdout)
 {
 	int	inout[2];
@@ -137,5 +149,7 @@ int	exec_builtin(t_bin *bin, char **args, int fdin, int fdout)
 		exec_cd(inout, args[1]);
 	if (ft_strcmp(args[0], "export"))
 		exec_export(inout, bin, args[1]);
+	if (ft_strcmp(args[0], "env"))
+		exec_env(inout[1]);
 	return (0);
 }
