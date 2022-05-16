@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+         #
+#    By: leon <leon@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/01/18 12:03:48 by chelmerd          #+#    #+#              #
-#    Updated: 2022/05/13 16:33:56 by leon             ###   ########.fr        #
+#    Updated: 2022/05/15 23:37:32 by leon             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,7 +37,7 @@ BUILTINS		=	builtin_utils.c
 SRCS_BUILTINS	= $(addprefix builtins/, $(BUILTINS))
 ENV				=	env.c env_list.c
 SRCS_ENV		= $(addprefix env/, $(ENV))
-EXECUTER		= execute.c execute_funcs.c exec_el.c exec_with_pipes.c exec_builtin.c
+EXECUTER		= execute.c exec_funcs.c exec_el.c exec_with_pipes.c exec_builtin.c
 SRCS_EXECUTER	= $(addprefix executer/, $(EXECUTER))
 SRCS_MANDATORY	= minishell.c $(SRCS_PARSER) $(SRCS_EXECUTER) $(SRCS_BUILTINS) $(SRCS_ENV)
 OBJS_MANDATORY	= $(patsubst %.c, %.o, $(SRCS_MANDATORY))

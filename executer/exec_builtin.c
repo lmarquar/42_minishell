@@ -58,29 +58,6 @@ int	exec_cd(int inout[], char *dir_raw)
 	return (0);
 }
 
-int	format_string_fd(char *s, int fd)
-{
-	int flag;
-
-	flag = 1;
-	if (!s)
-		return (1);
-	if (*s != '\\')
-		write(fd, s, 1);
-	s++;
-	while (*s)
-	{
-		if (*s != '\\')
-			write(fd, s, 1);
-		else
-			flag = flag * -1;
-		if (flag > 0 && *s == '\\')
-			write(fd, s, 1);
-		s++;
-	}
-	return (0);
-}
-
 int	exec_echo(int inout[], char **args)
 {
 	int		i;
@@ -90,7 +67,7 @@ int	exec_echo(int inout[], char **args)
 		i++;
 	while (args[i])
 	{
-		format_string_fd(args[i], inout[1]);
+		ft_putstr_fd(args[i], inout[1]);
 		i++;
 	}
 	if (!ft_strncmp(args[1], "-n", 2))
