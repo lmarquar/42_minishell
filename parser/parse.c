@@ -6,11 +6,7 @@
 /*   By: leon <leon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 10:17:17 by chelmerd          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2022/05/16 20:23:58 by leon             ###   ########.fr       */
-=======
-/*   Updated: 2022/05/16 12:45:43 by chelmerd         ###   ########.fr       */
->>>>>>> 97bb9569df4bbeeb36dd11201886465f55954806
+/*   Updated: 2022/05/16 22:33:33 by leon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,13 +32,8 @@ void	interpret_quotes(char **str, t_env_var *env)
 	if (text_chunk)
 		ft_lstadd_back(&text_chunks, ft_lstnew(text_chunk));
 	(void) env;
-<<<<<<< HEAD
-	print_text_chunks(text_chunks);
-	expansion(text_chunks, env, 0);
-=======
 	// print_text_chunks(text_chunks);
-	expansion(text_chunks, env, exit_code);
->>>>>>> 97bb9569df4bbeeb36dd11201886465f55954806
+	expansion(text_chunks, env, 0);
 	result = join_chunks(text_chunks);
 	//clear text_chunks
 	ft_lstclear(&text_chunks, &free);

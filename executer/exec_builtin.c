@@ -132,6 +132,27 @@ int	exec_pwd(int fdout)
 	return (0);
 }
 
+int exec_unset(char *unset_key, t_bin *bin)
+{
+	t_env_var *env;
+	t_env_var *tmp;
+
+	env = bin->env;
+	while (env && !ft_strcmp(env->key, unset_key))
+	{
+		tmp = env;
+		env = env->next;
+	}
+	if (!env)
+		return (0);
+	tmp->next = env->next;
+	printf("unset: key=%s, val=%s", env->key, env->val);
+	free(env->key);
+	free(env->val);
+	free(env);
+	return (0);	
+}
+
 int	exec_builtin(t_bin *bin, char **args, int fdin, int fdout)
 {
 	int	inout[2];
@@ -145,7 +166,9 @@ int	exec_builtin(t_bin *bin, char **args, int fdin, int fdout)
 	if (ft_strcmp(args[0], "export"))
 		bin->exit_code = exec_export(inout[1], bin, args[1]);
 	if (ft_strcmp(args[0], "pwd"))
-		bin->exit_code = exec_pwd(inout[1]);
+		bin->exit_code = exec_pwd(inout[1]);     
+	if (ft_strcmp(args[0], "unset"))
+		bin->exit_code = exec_unset(args[1], bin);     
 	if (bin->cmd_line->simple_commands[0]->is_builtin == ENV)
 		bin->exit_code = exec_env(fdout, bin->env, args);
 	if (bin->cmd_line->simple_commands[0]->is_builtin == EXIT)
