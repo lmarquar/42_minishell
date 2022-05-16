@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 12:02:58 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/10 12:30:11 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/12 13:09:34 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,11 @@ char	**create_path_arr(char *path, char *cwd)
 	path = ft_strjoin(tmp, cwd);
 	free(tmp);
 	paths = ft_split(path, ':');
+	if (!paths)
+	{
+		free(path);
+		return (NULL);
+	}
 	i = -1;
 	while (paths[++i])
 	{
@@ -30,36 +35,8 @@ char	**create_path_arr(char *path, char *cwd)
 		free(paths[i]);
 		paths[i] = cmd;
 	}
+	free(path);
 	return (paths);
-}
-
-static
-char	*stringify(t_env_var *env)
-{
-	char	*s;
-	size_t	size;
-
-	size = ft_strlen(env->key) + 1 + ft_strlen(env->val) + 1;
-	s = ft_calloc(size, sizeof (char));
-	if (!s)
-		return (NULL);
-	ft_strlcpy(s, env->key, size);
-	ft_strlcat(s, "=", size);
-	ft_strlcat(s, env->val, size);
-	return (s);
-}
-
-size_t	env_var_len(t_env_var *env)
-{
-	size_t	len;
-
-	len = 0;
-	while (env)
-	{
-		env = env->next;
-		len++;
-	}
-	return (len);
 }
 
 char	**create_env_arr(t_env_var *env)
@@ -73,7 +50,7 @@ char	**create_env_arr(t_env_var *env)
 	i = 0;
 	while (env)
 	{
-		arr[i] = stringify(env);
+		arr[i] = stringify(env, 1);
 		env = env->next;
 		i++;
 	}

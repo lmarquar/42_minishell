@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 13:20:00 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/10 12:33:50 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/13 13:26:59 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,11 @@
 
 # include <stddef.h>
 # include <stdlib.h>
+# include <stdio.h> // perror
 
 # include "../libft/libft.h"
 # include "../builtins/builtins.h"
+# include "../env/env.h"
 
 # define NO_QUOTE 0
 # define SINGLE_QUOTE 1
@@ -41,13 +43,6 @@ typedef struct s_cmd_line
 	int			append;
 	char		*heredoc_delimiter;
 }	t_cmd_line;
-
-typedef struct s_env_var
-{
-	char				*key;
-	char				*val;
-	struct s_env_var	*next;
-}	t_env_var;
 
 typedef struct s_bin
 {
@@ -76,9 +71,7 @@ int				is_space(char c);
 int				is_ctrlchr(char c);
 int				is_metachr(char c);
 int				is_quote(char c);
-
-int				expand_env_vars(char **input, t_env_var *env_vars);
-void			expand_env_var(t_text_chunk *chunk, t_env_var *env_vars);
+int				is_dollarchr(char c);
 
 // quote
 
@@ -116,12 +109,15 @@ char			*next_token(const char *s, int reset);
 
 // replace
 
-char			*find_in_env(char *key, size_t key_len, t_env_var *env_vars); // group with other list utils?
+void			expand_env_var(t_text_chunk *chunk, t_env_var *env_vars);
+int				replace_question_mark(t_text_chunk *chunk, int exit_code);
+void			expansion(t_list *chunks, t_env_var *env, int exit_code);
 
 // array
 
 char			**create_path_arr(char	*path, char *cwd);
 char			**create_env_arr(t_env_var *env);
+t_env_var		*get_env_from_str(char *env_str);
 
 //debug
 void			show_smp_cmd(void *cmd_ptr);

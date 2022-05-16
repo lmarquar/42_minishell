@@ -37,6 +37,7 @@ char	*get_full_path(char *cd, char *gd)
 int	exec_echo(int inout[], char **args)
 {
 	int	i;
+	int	newline;
 
 	if (inout[1] != STDOUT_FILENO)
 	{
@@ -144,12 +145,17 @@ int	exec_builtin(t_bin *bin, char **args, int fdin, int fdout)
 	inout[0] = fdin;
 	inout[1] = fdout;
 	if (ft_strcmp(args[0], "echo"))
-		exec_echo(inout, args);
+		bin->exit_code = exec_echo(inout, args);
 	if (ft_strcmp(args[0], "cd"))
-		exec_cd(inout, args[1]);
+		bin->exit_code = exec_cd(inout, args[1]);
 	if (ft_strcmp(args[0], "export"))
-		exec_export(inout, bin, args[1]);
-	if (ft_strcmp(args[0], "env"))
-		exec_env(inout[1]);
+		bin->exit_code = exec_export(inout, bin, args[1]);
+	if (bin->cmd_line->simple_commands[0]->is_builtin == ENV)
+		bin->exit_code = exec_env(fdout, bin->env, args);
+	if (bin->cmd_line->simple_commands[0]->is_builtin == EXIT)
+	{
+		bin->exit_code = exec_exit(bin->exit_code, args,
+				(bin->cmd_line->pipe_count > 0));
+	}
 	return (0);
 }

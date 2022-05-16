@@ -6,31 +6,14 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 10:17:17 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/10 12:38:20 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/13 13:30:35 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	expansion(t_list *chunks, t_env_var *env)
-{
-	t_text_chunk	*chunk;
-
-	while (chunks)
-	{
-		chunk = (t_text_chunk *) chunks->content;
-		if (chunk->expand)
-		{
-			if (chunk->len == 1)
-				chunk->expand = 0;
-			else
-				expand_env_var(chunk, env);
-		}
-		chunks = chunks->next;
-	}
-}
-
-void	interpret_quotes(char **str, t_env_var *env)
+static
+void	interpret_quotes(char **str, t_env_var *env, int exit_code)
 {
 	char			*result;
 	int				quote_state;
@@ -51,7 +34,7 @@ void	interpret_quotes(char **str, t_env_var *env)
 		ft_lstadd_back(&text_chunks, ft_lstnew(text_chunk));
 	(void) env;
 	print_text_chunks(text_chunks);
-	expansion(text_chunks, env);
+	expansion(text_chunks, env, exit_code);
 	result = join_chunks(text_chunks);
 	//clear text_chunks
 	ft_lstclear(&text_chunks, &clear_chunk);
@@ -65,6 +48,7 @@ typedef struct s_cmds
 	t_smp_cmd	*current_cmd;
 }	t_cmds;
 
+static
 int	parse_operator(const char *input, char *token, t_cmds *cmds,
 					t_cmd_line *cmd_line)
 {
@@ -94,9 +78,10 @@ int	parse_operator(const char *input, char *token, t_cmds *cmds,
 	return (0);
 }
 
-int	parse_word(char *token, t_env_var *env, t_cmds *cmds)
+static
+int	parse_word(char *token, t_env_var *env, int exit_code, t_cmds *cmds)
 {
-	interpret_quotes(&token, env);
+	interpret_quotes(&token, env, exit_code);
 	if (!cmds->current_cmd->cmd)
 	{
 		cmds->current_cmd->cmd = token;
@@ -106,6 +91,7 @@ int	parse_word(char *token, t_env_var *env, t_cmds *cmds)
 	return (0); //TODO: what could be an error here?
 }
 
+static
 void	package_info(t_cmd_line *cmd_line, t_env_var *env, t_bin *bin)
 {
 	bin->cmd_line = cmd_line;
@@ -132,7 +118,7 @@ int	parse(const char *input, t_cmd_line *cmd_line, t_env_var *env, t_bin *bin)
 		if (is_ctrlchr(token[0]))
 			error = parse_operator(input, token, &cmds, cmd_line);
 		else
-			parse_word(token, env, &cmds);
+			parse_word(token, env, bin->exit_code, &cmds);
 		token = next_token(input, 0);
 	}
 	ft_lstadd_back(&cmds.cmd_lst, ft_lstnew(cmds.current_cmd));
