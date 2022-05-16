@@ -101,10 +101,7 @@ int	exec_pipe_to_out(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 		i_fd = 2;
 	close(fd[1 + i_fd]);
 	if (bin->cmd_line->append > 0)
-	{
 		append(fd[i_fd], fd[5]);
-		((*i)[1])--;
-	}
 	else if (bin->cmd_line->simple_commands[0]->is_builtin)
 		exec_builtin(bin, bin->cmd_line->simple_commands[0]->args, fd[i_fd], fd[5]);
 	else

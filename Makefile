@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+         #
+#    By: leon <leon@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/01/18 12:03:48 by chelmerd          #+#    #+#              #
-#    Updated: 2022/05/16 17:36:25 by lmarquar         ###   ########.fr        #
+#    Updated: 2022/05/16 20:11:55 by leon             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,7 +33,7 @@ INCLUDES = -I$(READLINE_INCLUDE) -Iparser -Ibuiltin -Iexecuter
 PARSER			=	parse.c special_character.c replace.c debug.c \
 					chunk.c token.c cmd_line.c quote.c arrays.c
 SRCS_PARSER		= $(addprefix parser/, $(PARSER))
-BUILTINS		=	builtin_utils.c env.c exit.c
+BUILTINS		=	builtin_utils.c
 SRCS_BUILTINS	= $(addprefix builtins/, $(BUILTINS))
 ENV				=	env.c env_list.c
 SRCS_ENV		= $(addprefix env/, $(ENV))
