@@ -6,7 +6,7 @@
 #    By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/01/18 12:03:48 by chelmerd          #+#    #+#              #
-#    Updated: 2022/05/16 17:36:25 by lmarquar         ###   ########.fr        #
+#    Updated: 2022/05/17 11:34:56 by lmarquar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,6 +14,7 @@ CC = cc
 CFLAGS = -Wall -Wextra -Werror -g
 
 NAME = minishell
+NAME_LEAKS = minishell_leaks
 HEADER = minishell.h
 
 UNAME = $(shell uname -s)
@@ -44,8 +45,13 @@ OBJS_MANDATORY	= $(patsubst %.c, %.o, $(SRCS_MANDATORY))
 
 all: $(NAME)
 
+leaks: $(NAME_LEAKS)
+
 $(NAME): $(SRCS_MANDATORY) $(LIBFT)
 	$(CC) $(CFLAGS) $^ -o $@ $(INCLUDES) -lreadline $(RL_LIBARY)
+
+$(NAME_LEAKS): $(SRCS_MANDATORY) $(LIBFT)
+	$(CC) $(CFLAGS) -fsanitize=address $^ -o $@ $(INCLUDES) -lreadline $(RL_LIBARY)
 
 # $(LIBS):
 # 	make -C pipex/
