@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/04 13:25:25 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/13 13:26:39 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/17 17:33:48 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,17 +41,17 @@ void	expand_env_var(t_text_chunk *chunk, t_env_var *env_vars)
 {
 	char	*val;
 
-	printf("key:%.*s", (int)(chunk->len - 1), chunk->str + 1);
+	// printf("key:%.*s", (int)(chunk->len - 1), chunk->str + 1); // debug
 	val = find_in_env(chunk->str + 1, chunk->len - 1, env_vars);
 	if (!val)
 		val = "";
 	chunk->str = val;
 	chunk->len = ft_strlen(val);
-	printf("value of key:%s|\n", val);
+	// printf("value of key:%s|\n", val); // debug
 }
 
 /**
- * @brief replace the text in a chunk if needed 
+ * @brief replace the text in a chunk if needed
  *
  * @param chunks linked list of t_text_chunks
  * @param env linked list of enviroment variables

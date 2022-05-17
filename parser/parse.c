@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 10:17:17 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/17 16:53:51 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/17 17:08:14 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,7 @@ int	parse(const char *input, t_cmd_line *cmd_line, t_env_var *env, t_bin *bin)
 	ft_lstadd_back(&cmds.cmd_lst, ft_lstnew(cmds.current_cmd));
 	cmd_line->simple_commands = create_cmd_arr(cmds.cmd_lst);
 	ft_lstclear(&cmds.cmd_lst, NULL);
-	// show_cmd_line(cmd_line); // debug
+	show_cmd_line(cmd_line); // debug
 	package_info(cmd_line, env, bin);
 	print_path_arr(bin->paths); // debug
 	return (error);
