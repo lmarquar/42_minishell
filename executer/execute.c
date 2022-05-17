@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leon <leon@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/29 12:17:48 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/15 15:16:00 by leon             ###   ########.fr       */
+/*   Updated: 2022/05/17 11:48:48 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,19 @@ int	exec_in_to_out(t_bin *bin, int *pid, int fd[])
 	return (0);
 }
 
+void	set_exit_code(t_bin *bin, int exit_code)
+{
+	if (WIFSIGNALED(exit_code))
+		bin->exit_code = 128 + WTERMSIG(exit_code);
+	else if (WIFEXITED(exit_code))
+	{
+		printf("EXIT STATUS:%d\n", WEXITSTATUS(exit_code)); // debug
+		bin->exit_code = WEXITSTATUS(exit_code);
+	}
+	else
+		perror("program failed");
+}
+
 int	execute(t_bin *bin)
 {
 	int	*pid;
@@ -56,10 +69,11 @@ int	execute(t_bin *bin)
 		exec_with_pipes(bin, pid, fd);
 	while (*pid)
 	{
+		signal(SIGINT, SIG_IGN);
+		signal(SIGQUIT, SIG_IGN);
 		waitpid(*pid, &exit_code, 0);
 		printf("PID: %d, exit_code: %d\n", *pid, exit_code);
-		if (exit_code != 0 && exit_code != 256)
-			perror("one of the executed programs failed");
+		set_exit_code(bin, exit_code);
 		pid++;
 	}
 	bin->exit_code = exit_code;
