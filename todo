@@ -2,5 +2,3 @@ leon:
 fix that output of builtins can be used in pipes
 
 chris:
-env_arr variables have to be contained in "" and null terminate the array
-add an empty string to paths, for executing f.ex: "bin/ls"

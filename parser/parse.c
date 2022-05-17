@@ -6,14 +6,13 @@
 /*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 10:17:17 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/17 11:51:03 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/05/17 11:57:01 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-static
-void	interpret_quotes(char **str, t_env_var *env, int exit_code)
+void	interpret_quotes(char **str, t_env_var *env)
 {
 	char			*result;
 	int				quote_state;
@@ -34,10 +33,10 @@ void	interpret_quotes(char **str, t_env_var *env, int exit_code)
 		ft_lstadd_back(&text_chunks, ft_lstnew(text_chunk));
 	(void) env;
 	// print_text_chunks(text_chunks);
-	expansion(text_chunks, env, exit_code);
+	expansion(text_chunks, env, 0);
 	result = join_chunks(text_chunks);
 	//clear text_chunks
-	ft_lstclear(&text_chunks, &clear_chunk);
+	ft_lstclear(&text_chunks, &free);
 	free(*str);
 	*str = result;
 }
@@ -48,7 +47,6 @@ typedef struct s_cmds
 	t_smp_cmd	*current_cmd;
 }	t_cmds;
 
-static
 int	parse_operator(const char *input, char *token, t_cmds *cmds,
 					t_cmd_line *cmd_line)
 {
@@ -78,10 +76,9 @@ int	parse_operator(const char *input, char *token, t_cmds *cmds,
 	return (0);
 }
 
-static
-int	parse_word(char *token, t_env_var *env, int exit_code, t_cmds *cmds)
+int	parse_word(char *token, t_env_var *env, t_cmds *cmds)
 {
-	interpret_quotes(&token, env, exit_code);
+	interpret_quotes(&token, env);
 	if (!cmds->current_cmd->cmd)
 	{
 		cmds->current_cmd->cmd = token;
@@ -123,7 +120,7 @@ int	parse(const char *input, t_cmd_line *cmd_line, t_env_var *env, t_bin *bin)
 		if (is_ctrlchr(token[0]))
 			error = parse_operator(input, token, &cmds, cmd_line);
 		else
-			parse_word(token, env, bin->exit_code, &cmds);
+			parse_word(token, env, &cmds);
 		token = next_token(input, 0);
 	}
 	ft_lstadd_back(&cmds.cmd_lst, ft_lstnew(cmds.current_cmd));
