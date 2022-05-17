@@ -6,36 +6,31 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 12:02:58 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/16 12:43:51 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/17 16:51:50 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 
-char		**create_path_arr(char *path, char *cwd);
-char		**create_env_arr(t_env_var *env);
+char	**create_path_arr(char *path);
+char	**create_env_arr(t_env_var *env);
 
-void		clear_pointer_arr(void **arr);
-static char	*append_const_dir(char *path, char *cwd);
+void	clear_pointer_arr(void **arr);
 
 /**
  * @brief Create a null terminated array with directories to search binaries in.
  * This includes dirs from the $PATH, the CWD and the root.
  *
  * @param path value of $PATH
- * @param cwd the current working directory
  * @return char** array of directories (as strings ending with /)
  */
-char	**create_path_arr(char *path, char *cwd)
+char	**create_path_arr(char *path)
 {
 	char	**paths;
 	int		i;
 	char	*tmp;
 
-	tmp = append_const_dir(path, cwd);
-	paths = ft_split(tmp, ':');
-	if (tmp)
-		free(tmp);
+	paths = ft_split(path, ':');
 	if (!paths)
 		return (NULL);
 	i = -1;
@@ -66,7 +61,7 @@ char	**create_env_arr(t_env_var *env)
 	i = 0;
 	while (env)
 	{
-		arr[i] = stringify(env, 1);
+		arr[i] = stringify(env, 0);
 		env = env->next;
 		i++;
 	}
@@ -87,21 +82,4 @@ void	clear_pointer_arr(void **arr)
 		i++;
 	}
 	free(arr);
-}
-
-static
-char	*append_const_dir(char *path, char *cwd)
-{
-	char	*tmp;
-
-	tmp = ft_strjoin(path, ":");
-	if (!tmp)
-		return (NULL);
-	path = ft_strjoin(tmp, cwd);
-	free(tmp);
-	if (!path)
-		return (NULL);
-	tmp = ft_strjoin(path, ":/");
-	free(path);
-	return (tmp);
 }

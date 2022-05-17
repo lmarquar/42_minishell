@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 13:20:00 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/16 12:43:08 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/17 16:54:30 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,7 @@ void			expansion(t_list *chunks, t_env_var *env, int exit_code);
 
 // array
 
-char			**create_path_arr(char	*path, char *cwd);
+char			**create_path_arr(char	*path);
 char			**create_env_arr(t_env_var *env);
 void			clear_pointer_arr(void **arr);
 
