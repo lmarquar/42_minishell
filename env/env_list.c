@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/12 12:40:23 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/12 13:13:40 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/17 18:03:01 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,9 @@ void	clear_env_vars(t_env_var *lst)
 
 char	*find_in_env(char *key, size_t key_len, t_env_var *env_vars)
 {
-	while (env_vars && ft_strncmp(env_vars->key, key, key_len) != 0)
+	while (env_vars
+		&& (key_len != ft_strlen(env_vars->key)
+			|| ft_strncmp(env_vars->key, key, key_len) != 0))
 	{
 		env_vars = env_vars->next;
 	}
