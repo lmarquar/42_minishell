@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 13:20:00 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/17 16:54:30 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/17 17:14:42 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,12 @@
 # include "../builtins/builtins.h"
 # include "../env/env.h"
 
-# define NO_QUOTE 0
-# define SINGLE_QUOTE 1
-# define DOUBLE_QUOTE 2
+enum e_QUOTE
+{
+	NO_QUOTE = 0,
+	SINGLE_QUOTE,
+	DOUBLE_QUOTE
+};
 
 typedef struct s_smp_cmd
 {
@@ -52,7 +55,7 @@ typedef struct s_bin
 	char		**env_arr;
 	int			exit_code;
 	char		*cwd;
-	char		**paths; // {"/bin/", ... , "/<cwd>/"}
+	char		**paths;
 }	t_bin;
 
 typedef struct s_text_chunk
