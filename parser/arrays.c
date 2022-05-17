@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 12:02:58 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/17 16:51:50 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/17 18:30:37 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,25 @@ char	**create_env_arr(t_env_var *env)
 		arr[i] = stringify(env, 0);
 		env = env->next;
 		i++;
+	}
+	return (arr);
+}
+
+t_smp_cmd	**create_cmd_arr(t_list *cmd_lst)
+{
+	t_smp_cmd	**arr;
+	size_t		len;
+	size_t		i;
+
+	len = ft_lstsize(cmd_lst);
+	arr = ft_calloc(len + 1, sizeof (t_smp_cmd *));
+	if (!arr)
+		return (NULL);
+	i = 0;
+	while (cmd_lst)
+	{
+		arr[i++] = (t_smp_cmd *) cmd_lst->content;
+		cmd_lst = cmd_lst->next;
 	}
 	return (arr);
 }

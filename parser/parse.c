@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 10:17:17 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/17 17:08:14 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/17 18:34:38 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,9 @@ int	parse_operator(const char *input, char *token, t_cmds *cmds,
 					t_cmd_line *cmd_line)
 {
 	if (ft_strncmp("<", token, 2) == 0)
-		cmd_line->infile = next_token(input, 0);
+	{
+		assign_token(&cmd_line->infile, next_token(input, 0));
+	}
 	else if (ft_strncmp("<<", token, 3) == 0)
 		cmd_line->heredoc_delimiter = next_token(input, 0);
 	else if (token[0] == '>')
