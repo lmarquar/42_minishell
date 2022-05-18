@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 13:20:00 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/17 18:34:04 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/18 10:30:09 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,8 @@ typedef struct s_cmd_line
 	char		*outfile;
 	size_t		pipe_count;
 	size_t		cmd_count;
-	t_smp_cmd	**simple_commands;
+	t_smp_cmd	**smp_cmds; // pointer gets moved by execute()
+	t_smp_cmd	**smp_cmds_start; // points to the beginning of the array
 	int			append;
 	char		*heredoc_delimiter;
 }	t_cmd_line;
@@ -90,8 +91,9 @@ t_smp_cmd		*new_smp_cmd(
 					size_t arg_count,
 					int is_builtin);
 void			add_arg(t_smp_cmd **old, char *arg);
-void			clear_smp_cmd(void *cmd_ptr);
+void			clear_smp_cmd(t_smp_cmd *cmd_ptr);
 void			assign_token(char **member, char *token);
+void			clear_cmd_line(t_cmd_line *cmd);
 
 // chunk
 

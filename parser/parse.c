@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 10:17:17 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/18 09:34:29 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/18 10:28:17 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,8 @@ void	package_info(t_cmd_line *cmd_line, t_env_var *env, t_bin *bin)
 	bin->cmd_line = cmd_line;
 	bin->env = env; // really need to do it here?
 	bin->env_arr = create_env_arr(env);
-	bin->cwd = getcwd(NULL, 0);
+	if (!bin->cwd)
+		bin->cwd = getcwd(NULL, 0);
 	bin->paths = create_path_arr(find_in_env("PATH", 4, env));
 }
 
@@ -126,7 +127,8 @@ int	parse(const char *input, t_cmd_line *cmd_line, t_env_var *env, t_bin *bin)
 		token = next_token(input, 0);
 	}
 	ft_lstadd_back(&cmds.cmd_lst, ft_lstnew(cmds.current_cmd));
-	cmd_line->simple_commands = create_cmd_arr(cmds.cmd_lst);
+	cmd_line->smp_cmds = create_cmd_arr(cmds.cmd_lst);
+	cmd_line->smp_cmds_start = cmd_line->smp_cmds;
 	ft_lstclear(&cmds.cmd_lst, NULL);
 	show_cmd_line(cmd_line); // debug
 	package_info(cmd_line, env, bin);

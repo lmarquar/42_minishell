@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+         #
+#    By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/01/18 12:03:48 by chelmerd          #+#    #+#              #
-#    Updated: 2022/05/17 11:57:28 by lmarquar         ###   ########.fr        #
+#    Updated: 2022/05/18 09:52:14 by chelmerd         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,7 +32,8 @@ LIBFT = libft/libft.a
 INCLUDES = -I$(READLINE_INCLUDE) -Iparser -Ibuiltin -Iexecuter
 
 PARSER			=	parse.c special_character.c replace.c debug.c \
-					chunk.c token.c cmd_line.c quote.c arrays.c
+					chunk.c token.c cmd_line.c quote.c arrays.c \
+					smp_cmd.c
 SRCS_PARSER		= $(addprefix parser/, $(PARSER))
 BUILTINS		=	builtin_utils.c env.c exit.c
 SRCS_BUILTINS	= $(addprefix builtins/, $(BUILTINS))

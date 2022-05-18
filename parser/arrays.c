@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 12:02:58 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/17 18:30:37 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/18 09:40:02 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ t_smp_cmd	**create_cmd_arr(t_list *cmd_lst)
 }
 
 /*
-* frees the array includind all the elements in it
+* frees the array including all the elements in it
 */
 void	clear_pointer_arr(void **arr)
 {

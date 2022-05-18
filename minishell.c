@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 10:39:02 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/17 17:47:20 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/18 09:50:34 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ int	main(int argc, char *argv[], char *envp[])
 		{
 			execute(bin);
 		}
+		clear_cmd_line(&cmd_line);
 		free(bin->in);
 	}
 	// clear list of env_vars

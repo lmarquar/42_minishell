@@ -59,7 +59,7 @@ int	exec_export(int fdout, t_bin *bin, char *var_ass)
 	t_env_var	*env;
 	int			i;
 	int			i2;
-	
+
 	if (fdout != STDOUT_FILENO)
 	{
 		if (dup2(fdout, STDOUT_FILENO) < 0)
@@ -150,7 +150,7 @@ int exec_unset(char *unset_key, t_bin *bin)
 	free(env->key);
 	free(env->val);
 	free(env);
-	return (0);	
+	return (0);
 }
 
 int	exec_builtin(t_bin *bin, char **args, int fdin, int fdout)
@@ -166,12 +166,12 @@ int	exec_builtin(t_bin *bin, char **args, int fdin, int fdout)
 	if (ft_strcmp(args[0], "export"))
 		bin->exit_code = exec_export(inout[1], bin, args[1]);
 	if (ft_strcmp(args[0], "pwd"))
-		bin->exit_code = exec_pwd(inout[1]);     
+		bin->exit_code = exec_pwd(inout[1]);
 	if (ft_strcmp(args[0], "unset"))
-		bin->exit_code = exec_unset(args[1], bin);     
-	if (bin->cmd_line->simple_commands[0]->is_builtin == ENV)
+		bin->exit_code = exec_unset(args[1], bin);
+	if (bin->cmd_line->smp_cmds[0]->is_builtin == ENV)
 		bin->exit_code = exec_env(fdout, bin->env, args);
-	if (bin->cmd_line->simple_commands[0]->is_builtin == EXIT)
+	if (bin->cmd_line->smp_cmds[0]->is_builtin == EXIT)
 	{
 		bin->exit_code = exec_exit(bin->exit_code, args,
 				(bin->cmd_line->pipe_count > 0));

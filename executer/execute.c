@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/29 12:17:48 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/17 11:48:48 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/05/18 09:46:59 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,13 +32,13 @@ int	execute_init_vars(t_cmd_line **cmd_line, int (*fd)[], int **pid)
 
 int	exec_in_to_out(t_bin *bin, int *pid, int fd[])
 {
-	if (bin->cmd_line->simple_commands[0]->is_builtin)
-		exec_builtin(bin, bin->cmd_line->simple_commands[0]->args, fd[4], fd[5]);
+	if (bin->cmd_line->smp_cmds[0]->is_builtin)
+		exec_builtin(bin, bin->cmd_line->smp_cmds[0]->args, fd[4], fd[5]);
 	else
 	{
 		*pid = fork();
 		if (*pid == 0)
-			exec_el(bin->cmd_line->simple_commands[0]->args, bin, fd[4], fd[5]);
+			exec_el(bin->cmd_line->smp_cmds[0]->args, bin, fd[4], fd[5]);
 	}
 	return (0);
 }
