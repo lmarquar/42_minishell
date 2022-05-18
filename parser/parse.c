@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 10:17:17 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/17 18:34:38 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/18 09:34:29 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,14 +49,13 @@ int	parse_operator(const char *input, char *token, t_cmds *cmds,
 					t_cmd_line *cmd_line)
 {
 	if (ft_strncmp("<", token, 2) == 0)
-	{
 		assign_token(&cmd_line->infile, next_token(input, 0));
-	}
 	else if (ft_strncmp("<<", token, 3) == 0)
-		cmd_line->heredoc_delimiter = next_token(input, 0);
+		assign_token(&cmd_line->heredoc_delimiter, next_token(input, 0));
 	else if (token[0] == '>')
 	{
-		cmd_line->outfile = next_token(input, 0);
+		assign_token(&cmd_line->outfile, next_token(input, 0));
+		cmd_line->append = 0;
 		if (token[1] == '>')
 			cmd_line->append = 1;
 	}
@@ -70,7 +69,7 @@ int	parse_operator(const char *input, char *token, t_cmds *cmds,
 	}
 	else
 	{
-		printf("Control charater ('%s') not regonized.\n", token);
+		printf("Control operator ('%s') not supported.\n", token);
 		return (1);
 	}
 	return (0);
@@ -118,7 +117,10 @@ int	parse(const char *input, t_cmd_line *cmd_line, t_env_var *env, t_bin *bin)
 	{
 		printf("token:%s\n", token);
 		if (is_ctrlchr(token[0]))
+		{
 			error = parse_operator(input, token, &cmds, cmd_line);
+			free(token);
+		}
 		else
 			parse_word(token, env, &cmds);
 		token = next_token(input, 0);
