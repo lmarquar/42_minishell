@@ -6,7 +6,7 @@
 /*   By: leon <leon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 10:39:02 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/18 11:47:55 by leon             ###   ########.fr       */
+/*   Updated: 2022/05/18 16:17:57 by leon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ int	init_env(char *envp[], t_env_var **e_v)
 	t_env_var	*last;
 	size_t		i;
 
+	*e_v = NULL;
 	i = 0;
 	while (envp[i])
 	{
@@ -67,17 +68,14 @@ int	main(int argc, char *argv[], char *envp[])
 		bin->in = readline(SHELL_PROMT);
 		if (!bin->in)
 			bin->in = ft_strdup("exit");
-		if (!ft_strncmp(bin->in, "exit", 5))
-			break ;
 		add_history(bin->in);
 		if (parse(bin->in, &cmd_line, env_vars, bin) == 0)
 		{
 			execute(bin);
 		}
 		clear_cmd_line(&cmd_line);
+		clear_pointer_arr((void **) bin->paths);
 		free(bin->in);
 	}
-	// clear list of env_vars
-	
 	return (0);
 }

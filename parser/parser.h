@@ -6,7 +6,7 @@
 /*   By: leon <leon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 13:20:00 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/18 12:42:37 by leon             ###   ########.fr       */
+/*   Updated: 2022/05/18 16:16:07 by leon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,6 @@
 
 # include "../libft/libft.h"
 # include "../env/env.h"
-
-enum e_QUOTE
-{
-	NO_QUOTE = 0,
-	SINGLE_QUOTE,
-	DOUBLE_QUOTE
-};
 
 typedef struct s_smp_cmd
 {
@@ -58,12 +51,27 @@ typedef struct s_bin
 	char		**paths;
 }	t_bin;
 
+// interal use
+
 typedef struct s_text_chunk
 {
 	char	*str;
 	size_t	len;
 	int		expand;
 }	t_text_chunk;
+
+typedef struct s_cmds
+{
+	t_list		*cmd_lst;
+	t_smp_cmd	*current_cmd;
+}	t_cmds;
+
+enum e_QUOTE
+{
+	NO_QUOTE = 0,
+	SINGLE_QUOTE,
+	DOUBLE_QUOTE
+};
 
 int				parse(const char *input, t_cmd_line *cmd_line, t_env_var *env,
 					t_bin *bin);
@@ -81,9 +89,8 @@ int				is_dollarchr(char c);
 int				change_quote_state(int state, char c);
 int				has_unclosed_quotes(const char *s);
 
-// cmd_line
+// smp_cmd
 
-void			init_cmd_line(t_cmd_line *cmd);
 t_smp_cmd		*new_smp_cmd(
 					char *cmd,
 					char **args,
@@ -91,6 +98,10 @@ t_smp_cmd		*new_smp_cmd(
 					int is_builtin);
 void			add_arg(t_smp_cmd **old, char *arg);
 void			clear_smp_cmd(t_smp_cmd *cmd_ptr);
+
+// cmd_line
+
+void			init_cmd_line(t_cmd_line *cmd);
 void			assign_token(char **member, char *token);
 void			clear_cmd_line(t_cmd_line *cmd);
 
@@ -108,8 +119,6 @@ void			clear_chunk(void *chk_ptr);
 
 // token
 
-// size_t			next_token_len(
-// 					const char *s, int quote_state, int unit_is_word);
 char			*next_token(const char *s, int reset);
 
 // replace
@@ -126,6 +135,7 @@ t_smp_cmd		**create_cmd_arr(t_list *cmd_lst);
 void			clear_pointer_arr(void **arr);
 
 //debug
+
 void			show_smp_cmd(void *cmd_ptr);
 void			show_cmd_line(t_cmd_line *cmd_line);
 void			print_text_chunks(t_list *chunks);
@@ -133,4 +143,5 @@ void			print_path_arr(char **paths);
 
 //builtins
 int				is_builtin(const char *s);
+
 #endif
