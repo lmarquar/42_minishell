@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 15:36:23 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/17 17:08:36 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/18 12:48:47 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 
 # include "../libft/libft.h"
 # include "../env/env.h"
+# include "../parser/parser.h"
 
 // utils
 
@@ -43,6 +44,7 @@ enum e_BUILTIN
 // env
 int	exec_env(int out, t_env_var *env, char **args);
 // exit
-int	exec_exit(int exit_code, char **args, int is_pipeline);
+int	exec_exit(t_bin *bin, char **args, int is_pipeline);
+
 
 #endif

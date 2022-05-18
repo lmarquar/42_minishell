@@ -173,7 +173,7 @@ int	exec_builtin(t_bin *bin, char **args, int fdin, int fdout)
 		bin->exit_code = exec_env(fdout, bin->env, args);
 	if (bin->cmd_line->smp_cmds[0]->is_builtin == EXIT)
 	{
-		bin->exit_code = exec_exit(bin->exit_code, args,
+		bin->exit_code = exec_exit(bin, args,
 				(bin->cmd_line->pipe_count > 0));
 	}
 	return (0);
