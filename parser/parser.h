@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
+/*   By: leon <leon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 13:20:00 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/18 10:30:09 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/18 12:42:37 by leon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 # include <stdio.h> // perror
 
 # include "../libft/libft.h"
-# include "../builtins/builtins.h"
 # include "../env/env.h"
 
 enum e_QUOTE
@@ -132,4 +131,6 @@ void			show_cmd_line(t_cmd_line *cmd_line);
 void			print_text_chunks(t_list *chunks);
 void			print_path_arr(char **paths);
 
+//builtins
+int				is_builtin(const char *s);
 #endif
