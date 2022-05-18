@@ -6,7 +6,7 @@
 /*   By: leon <leon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/29 12:17:48 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/18 11:55:50 by leon             ###   ########.fr       */
+/*   Updated: 2022/05/18 15:12:14 by leon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void	set_exit_code(t_bin *bin, int exit_code)
 		bin->exit_code = 128 + WTERMSIG(exit_code);
 	else if (WIFEXITED(exit_code))
 	{
-		printf("EXIT STATUS:%d\n", WEXITSTATUS(exit_code)); // debug
+		printf("EXIT STATUS:%d\n", WEXITSTATUS(exit_code));
 		bin->exit_code = WEXITSTATUS(exit_code);
 	}
 	else

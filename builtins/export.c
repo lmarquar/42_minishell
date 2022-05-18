@@ -20,10 +20,7 @@ int	init_key_val(t_env_var *env, char *var_ass)
 	int	i2;
 
 	while (var_ass[i] && var_ass[i] != '=')
-	{
-		env->key[i] = var_ass[i];
 		i++;
-	}
 	env->key = ft_calloc(i + 1, sizeof(char));
 	i = 0;
 	while (var_ass[i] && var_ass[i] != '=')

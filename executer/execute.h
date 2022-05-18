@@ -12,13 +12,14 @@
 # include "../libft/libft.h"
 # include "../builtins/builtins.h"
 
-int	execute(t_bin *bin);
-int	exec_with_pipes(t_bin *bin, int *pid, int fd[]);
-int	heredoc_handler(t_cmd_line *cmd_line, int fdout);
-int	append(int fdin, int fdout);
-int	exec_el(char **arg, t_bin *bin, int fdin, int fdout);
+int		execute(t_bin *bin);
+int		exec_with_pipes(t_bin *bin, int *pid, int fd[]);
+void	close_ifn_inout(int fd);
+int		heredoc_handler(t_cmd_line *cmd_line, int fdout);
+int		append(int fdin, int fdout);
+int		exec_el(char **arg, t_bin *bin, int fdin, int fdout);
 
-int	exec_builtin(t_bin *bin, char **args, int fdout);
-int	handle_dup2error(void);
+int		exec_builtin(t_bin *bin, char **args, int fdout);
+int		handle_dup2error(void);
 
 #endif
