@@ -34,29 +34,40 @@ char	*get_full_path(char *cd, char *gd)
 	return (res);
 }
 
-int	exec_echo(int inout[], char **args)
+int	exec_echo(int fdout, char **args)
 {
-	int	i;
+	int		i;
 
 	i = 1;
+	if (!args[i])
+		return (0);
 	if (!ft_strncmp(args[i], "-n", 2))
 		i++;
 	while (args[i])
-		printf("%s", args[i++]);
-	if (!ft_strncmp(args[1], "-n", 2))
-		printf("\n");
-	inout[0]++;
-	inout[1]++;
+	{
+		write(fdout, args[i], ft_strlen(args[i]));
+		i++;
+		if (args[i])
+			write(1, " ", 1);
+	}
+	if (ft_strncmp(args[1], "-n", 2))
+		write(1, "\n", 1);
 	return (0);
 }
 
 //by far not really good. f.ex.: "" are missing
-int	exec_export(int inout[], t_bin *bin, char *var_ass)
+int	exec_export(int fdout, t_bin *bin, char *var_ass)
 {
 	t_env_var	*env;
 	int			i;
 	int			i2;
 
+	if (fdout != STDOUT_FILENO)
+	{
+		if (dup2(fdout, STDOUT_FILENO) < 0)
+			return (handle_dup2error());
+		close(fdout);
+	}
 	i = 0;
 	if (!var_ass)
 	{
@@ -64,8 +75,7 @@ int	exec_export(int inout[], t_bin *bin, char *var_ass)
 			printf("declare -x %s\n", bin->env_arr[i++]);
 		return (0);
 	}
-	while (var_ass[i] && var_ass[i] != '=')
-		i++;
+	while (var_ass[i] && var_ass[i] != '=') i++;
 	if (!var_ass[i])
 		return (1);
 	if (!var_ass[i + 1])
@@ -94,12 +104,10 @@ int	exec_export(int inout[], t_bin *bin, char *var_ass)
 		env->val[i2] = var_ass[i + i2];
 		i2++;
 	}
-	inout[0]++;
-	inout[1]++;
 	return (0);
 }
 
-int	exec_cd(int inout[], char *dir)
+int	exec_cd(char *dir)
 {
 	int		i;
 	char	*curdir;
@@ -111,8 +119,39 @@ int	exec_cd(int inout[], char *dir)
 	i = chdir(dir);
 	if (i == -1)
 		perror("chdir failed");
-	inout[0]++;
-	inout[1]++;
+	return (0);
+}
+
+int	exec_pwd(int fdout)
+{
+	if (fdout != STDOUT_FILENO)
+	{
+		if (dup2(fdout, STDOUT_FILENO) < 0)
+			return (handle_dup2error());
+		close(fdout);
+	}
+	printf("%s\n", getcwd(NULL, 0));
+	return (0);
+}
+
+int exec_unset(char *unset_key, t_bin *bin)
+{
+	t_env_var *env;
+	t_env_var *tmp;
+
+	env = bin->env;
+	while (env && !ft_strcmp(env->key, unset_key))
+	{
+		tmp = env;
+		env = env->next;
+	}
+	if (!env)
+		return (0);
+	tmp->next = env->next;
+	printf("unset: key=%s, val=%s", env->key, env->val);
+	free(env->key);
+	free(env->val);
+	free(env);
 	return (0);
 }
 
@@ -123,10 +162,25 @@ int	exec_builtin(t_bin *bin, char **args, int fdin, int fdout)
 	inout[0] = fdin;
 	inout[1] = fdout;
 	if (ft_strcmp(args[0], "echo"))
-		exec_echo(inout, args);
-	if (ft_strcmp(args[0], "cd"))
-		exec_cd(inout, args[1]);
-	if (ft_strcmp(args[0], "export"))
-		exec_export(inout, bin, args[1]);
+		bin->exit_code = exec_echo(inout[1], args);
+	else if (bin->cmd_line->smp_cmds[0]->is_builtin == ENV)
+		bin->exit_code = exec_env(fdout, bin->env, args);
+	else if (ft_strcmp(args[0], "pwd"))
+		bin->exit_code = exec_pwd(inout[1]);
+	else if (ft_strcmp(args[0], "export") && !args[1])
+		bin->exit_code = exec_export(inout[1], bin, args[1]);
+	else if (bin->cmd_line->smp_cmds[1])
+		return (0);
+	else if (ft_strcmp(args[0], "export"))
+		bin->exit_code = exec_export(inout[1], bin, args[1]);
+	else if (ft_strcmp(args[0], "cd"))
+		bin->exit_code = exec_cd(args[1]);
+	else if (ft_strcmp(args[0], "unset"))
+		bin->exit_code = exec_unset(args[1], bin);
+	if (bin->cmd_line->smp_cmds[0]->is_builtin == EXIT)
+	{
+		bin->exit_code = exec_exit(bin->exit_code, args,
+				(bin->cmd_line->pipe_count > 0));
+	}
 	return (0);
 }

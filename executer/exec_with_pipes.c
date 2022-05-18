@@ -15,10 +15,10 @@ int	exec_in_to_pipe(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 		heredoc_handler(bin->cmd_line, fd[1]);
 		(*i)[1] = (*i)[1] - 1;
 	}
-	else if (bin->cmd_line->simple_commands[0]->is_builtin)
+	else if (bin->cmd_line->smp_cmds[0]->is_builtin)
 	{
-		exec_builtin(bin, bin->cmd_line->simple_commands[0]->args, fd[4], fd[1]);
-		bin->cmd_line->simple_commands = bin->cmd_line->simple_commands + 1;
+		exec_builtin(bin, bin->cmd_line->smp_cmds[0]->args, fd[4], fd[1]);
+		bin->cmd_line->smp_cmds = bin->cmd_line->smp_cmds + 1;
 		(*i)[1] = (*i)[1] - 1;
 	}
 	else
@@ -28,9 +28,9 @@ int	exec_in_to_pipe(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 		{
 			close_ifn_inout(fd[5]);
 			close(fd[0]);
-			exec_el(bin->cmd_line->simple_commands[0]->args, bin, fd[4], fd[1]);
+			exec_el(bin->cmd_line->smp_cmds[0]->args, bin, fd[4], fd[1]);
 		}
-		bin->cmd_line->simple_commands = bin->cmd_line->simple_commands + 1;
+		bin->cmd_line->smp_cmds = bin->cmd_line->smp_cmds + 1;
 		(**i)++;
 	}
 	return (0);
@@ -41,10 +41,10 @@ int	exec_pipe1_to_pipe2(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 	close(fd[1]);
 	if (pipe(&(fd[2])) == -1)
 		return (3);
-	if (bin->cmd_line->simple_commands[0]->is_builtin)
+	if (bin->cmd_line->smp_cmds[0]->is_builtin)
 	{
-		exec_builtin(bin, bin->cmd_line->simple_commands[0]->args, fd[0], fd[3]);
-		bin->cmd_line->simple_commands = bin->cmd_line->simple_commands + 1;
+		exec_builtin(bin, bin->cmd_line->smp_cmds[0]->args, fd[0], fd[3]);
+		bin->cmd_line->smp_cmds = bin->cmd_line->smp_cmds + 1;
 		(*i)[1] = (*i)[1] - 1;
 	}
 	else
@@ -55,9 +55,9 @@ int	exec_pipe1_to_pipe2(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 			close(fd[2]);
 			close_ifn_inout(fd[5]);
 			close_ifn_inout(fd[4]);
-			exec_el(bin->cmd_line->simple_commands[0]->args, bin, fd[0], fd[3]);
+			exec_el(bin->cmd_line->smp_cmds[0]->args, bin, fd[0], fd[3]);
 		}
-		bin->cmd_line->simple_commands = bin->cmd_line->simple_commands + 1;
+		bin->cmd_line->smp_cmds = bin->cmd_line->smp_cmds + 1;
 		(**i)++;
 	}
 	close(fd[0]);
@@ -69,10 +69,10 @@ int	exec_pipe2_to_pipe1(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 	if (pipe(&(fd[0])) == -1)
 		return (3);
 	close(fd[3]);
-	if (bin->cmd_line->simple_commands[0]->is_builtin)
+	if (bin->cmd_line->smp_cmds[0]->is_builtin)
 	{
-		exec_builtin(bin, bin->cmd_line->simple_commands[0]->args, fd[2], fd[1]);
-		bin->cmd_line->simple_commands = bin->cmd_line->simple_commands + 1;
+		exec_builtin(bin, bin->cmd_line->smp_cmds[0]->args, fd[2], fd[1]);
+		bin->cmd_line->smp_cmds = bin->cmd_line->smp_cmds + 1;
 		(*i)[1] = (*i)[1] - 1;
 	}
 	else
@@ -83,9 +83,9 @@ int	exec_pipe2_to_pipe1(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 			close(fd[0]);
 			close_ifn_inout(fd[5]);
 			close_ifn_inout(fd[4]);
-			exec_el(bin->cmd_line->simple_commands[0]->args, bin, fd[2], fd[1]);
+			exec_el(bin->cmd_line->smp_cmds[0]->args, bin, fd[2], fd[1]);
 		}
-		bin->cmd_line->simple_commands = bin->cmd_line->simple_commands + 1;
+		bin->cmd_line->smp_cmds = bin->cmd_line->smp_cmds + 1;
 		(**i)++;
 	}
 	close(fd[2]);
@@ -101,19 +101,16 @@ int	exec_pipe_to_out(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 		i_fd = 2;
 	close(fd[1 + i_fd]);
 	if (bin->cmd_line->append > 0)
-	{
 		append(fd[i_fd], fd[5]);
-		((*i)[1])--;
-	}
-	else if (bin->cmd_line->simple_commands[0]->is_builtin)
-		exec_builtin(bin, bin->cmd_line->simple_commands[0]->args, fd[i_fd], fd[5]);
+	else if (bin->cmd_line->smp_cmds[0]->is_builtin)
+		exec_builtin(bin, bin->cmd_line->smp_cmds[0]->args, fd[i_fd], fd[5]);
 	else
 	{
 		pid[**i] = fork();
 		if (pid[**i] == 0)
 		{
 			close_ifn_inout(fd[4]);
-			exec_el(bin->cmd_line->simple_commands[0]->args, bin, fd[i_fd], fd[5]);
+			exec_el(bin->cmd_line->smp_cmds[0]->args, bin, fd[i_fd], fd[5]);
 		}
 	}
 	close(fd[i_fd]);

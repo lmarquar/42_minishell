@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 10:39:02 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/10 17:20:45 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/18 09:50:34 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,13 @@
 
 void	handle_signals(int signo)
 {
-	printf("\n");
-	rl_on_new_line();
+	if (signo == SIGINT)
+	{
+		rl_replace_line("", 0);
+		printf("\n");
+		rl_on_new_line();
+	}
 	rl_redisplay();
-	if (signo != 2)
-		exit(0);
 }
 
 int	init_env(char *envp[], t_env_var **e_v)
@@ -27,19 +29,6 @@ int	init_env(char *envp[], t_env_var **e_v)
 	t_env_var	*last;
 	size_t		i;
 
-	(*e_v) = NULL;
-	if (!envp)
-	{
-		(*e_v) = malloc(sizeof(t_env_var));
-		(*e_v)->key = "PATH";
-		(*e_v)->val = getenv("PATH");
-		var = malloc(sizeof(t_env_var));
-		var->key = "PWD";
-		var->val = getcwd(NULL, 0);
-		var->next = NULL;
-		(*e_v)->next = var;
-		return (0);
-	}
 	i = 0;
 	while (envp[i])
 	{
@@ -69,27 +58,21 @@ int	main(int argc, char *argv[], char *envp[])
 
 	(void) argc;
 	(void) argv;
-	// init env
 	init_env(envp, &env_vars);
 	init_bin(&bin, env_vars);
-	signal(SIGINT, &handle_signals);
 	while (1)
 	{
+		signal(SIGINT, &handle_signals);
+		signal(SIGQUIT, SIG_IGN);
 		bin->in = readline(SHELL_PROMT);
-		if (!bin->in || !ft_strncmp(bin->in, "exit", 5))
-		{
-			// printf("exit");
-			rl_replace_line("minishell>exit", 0);
-			rl_redisplay();
-			break ;
-		}
+		if (!bin->in)
+			bin->in = ft_strdup("exit");
 		add_history(bin->in);
-		// transform env_vars
-		// check syntax
-		// parse / analyse
-		parse(bin->in, &cmd_line, env_vars, bin);
-		// execute
-		execute(bin);
+		if (parse(bin->in, &cmd_line, env_vars, bin) == 0)
+		{
+			execute(bin);
+		}
+		clear_cmd_line(&cmd_line);
 		free(bin->in);
 	}
 	// clear list of env_vars

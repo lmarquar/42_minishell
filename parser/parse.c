@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 10:17:17 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/10 13:18:42 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/18 10:28:17 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,12 +31,10 @@ void	interpret_quotes(char **str, t_env_var *env)
 	}
 	if (text_chunk)
 		ft_lstadd_back(&text_chunks, ft_lstnew(text_chunk));
-	(void) env;
-	print_text_chunks(text_chunks);
-	expansion(text_chunks, env);
+	print_text_chunks(text_chunks); // debug
+	expansion(text_chunks, env, 0);
 	result = join_chunks(text_chunks);
-	//clear text_chunks
-	ft_lstclear(&text_chunks, &free);
+	ft_lstclear(&text_chunks, &clear_chunk);
 	free(*str);
 	*str = result;
 }
@@ -51,12 +49,13 @@ int	parse_operator(const char *input, char *token, t_cmds *cmds,
 					t_cmd_line *cmd_line)
 {
 	if (ft_strncmp("<", token, 2) == 0)
-		cmd_line->infile = next_token(input, 0);
+		assign_token(&cmd_line->infile, next_token(input, 0));
 	else if (ft_strncmp("<<", token, 3) == 0)
-		cmd_line->heredoc_delimiter = next_token(input, 0);
+		assign_token(&cmd_line->heredoc_delimiter, next_token(input, 0));
 	else if (token[0] == '>')
 	{
-		cmd_line->outfile = next_token(input, 0);
+		assign_token(&cmd_line->outfile, next_token(input, 0));
+		cmd_line->append = 0;
 		if (token[1] == '>')
 			cmd_line->append = 1;
 	}
@@ -70,7 +69,7 @@ int	parse_operator(const char *input, char *token, t_cmds *cmds,
 	}
 	else
 	{
-		printf("Control charater ('%s') not regonized.\n", token);
+		printf("Control operator ('%s') not supported.\n", token);
 		return (1);
 	}
 	return (0);
@@ -94,8 +93,9 @@ void	package_info(t_cmd_line *cmd_line, t_env_var *env, t_bin *bin)
 	bin->cmd_line = cmd_line;
 	bin->env = env; // really need to do it here?
 	bin->env_arr = create_env_arr(env);
-	bin->cwd = find_in_env("PWD", 3, env);
-	bin->paths = create_path_arr(find_in_env("PATH", 4, env), bin->cwd);
+	if (!bin->cwd)
+		bin->cwd = getcwd(NULL, 0);
+	bin->paths = create_path_arr(find_in_env("PATH", 4, env));
 }
 
 int	parse(const char *input, t_cmd_line *cmd_line, t_env_var *env, t_bin *bin)
@@ -105,6 +105,11 @@ int	parse(const char *input, t_cmd_line *cmd_line, t_env_var *env, t_bin *bin)
 	t_cmds	cmds;
 
 	error = 0;
+	if (has_unclosed_quotes(input))
+	{
+		bin->exit_code = 2;
+		return (ft_error(2, "Unclosed quotes!"));
+	}
 	token = next_token(input, 1);
 	init_cmd_line(cmd_line);
 	cmds.cmd_lst = NULL;
@@ -113,15 +118,20 @@ int	parse(const char *input, t_cmd_line *cmd_line, t_env_var *env, t_bin *bin)
 	{
 		printf("token:%s\n", token);
 		if (is_ctrlchr(token[0]))
+		{
 			error = parse_operator(input, token, &cmds, cmd_line);
+			free(token);
+		}
 		else
 			parse_word(token, env, &cmds);
 		token = next_token(input, 0);
 	}
 	ft_lstadd_back(&cmds.cmd_lst, ft_lstnew(cmds.current_cmd));
-	cmd_line->simple_commands = create_cmd_arr(cmds.cmd_lst);
+	cmd_line->smp_cmds = create_cmd_arr(cmds.cmd_lst);
+	cmd_line->smp_cmds_start = cmd_line->smp_cmds;
 	ft_lstclear(&cmds.cmd_lst, NULL);
 	show_cmd_line(cmd_line); // debug
 	package_info(cmd_line, env, bin);
+	print_path_arr(bin->paths); // debug
 	return (error);
 }

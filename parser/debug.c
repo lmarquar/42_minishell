@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/03 11:21:44 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/09 15:32:36 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/18 10:01:06 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	show_cmd_line(t_cmd_line *cmd_line)
 {
 	printf("cmdline:\n in:%s out:%s, cmd_count:%zu, pipe_count:%zu\n", cmd_line->infile, cmd_line->outfile, cmd_line->cmd_count, cmd_line->pipe_count);
 	printf(" append:%d, heredoc_delimiter:%s\n", cmd_line->append, cmd_line->heredoc_delimiter);
-	show_cmds(cmd_line->simple_commands, cmd_line->cmd_count);
+	show_cmds(cmd_line->smp_cmds, cmd_line->cmd_count);
 }
 
 // debug
@@ -64,6 +64,17 @@ void	print_text_chunks(t_list *chunks)
 		ft_strlcpy(buffer, chunk->str, size);
 		printf("text_chunk[%zu]:%s, len:%zu, expand:%d|\n", i, buffer, chunk->len, chunk->expand);
 		chunks = chunks->next;
+		free(buffer);
 		i++;
+	}
+}
+
+void	print_path_arr(char **paths)
+{
+	printf("paths\n");
+	while (paths && *paths)
+	{
+		printf("%s|\n", *paths);
+		paths++;
 	}
 }

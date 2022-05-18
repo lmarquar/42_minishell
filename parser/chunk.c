@@ -6,7 +6,11 @@
 /*   By: leon <leon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/06 13:22:23 by chelmerd          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2022/05/18 11:11:22 by leon             ###   ########.fr       */
+=======
+/*   Updated: 2022/05/17 14:12:13 by chelmerd         ###   ########.fr       */
+>>>>>>> execute
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +24,8 @@ t_text_chunk	*new_chunk(char *str, int expand)
 {
 	t_text_chunk	*chunk;
 
+	if (!str || *str == '\0')
+		return (NULL);
 	chunk = malloc(sizeof (t_text_chunk));
 	chunk->str = str;
 	chunk->len = 1;
@@ -27,12 +33,25 @@ t_text_chunk	*new_chunk(char *str, int expand)
 	return (chunk);
 }
 
+void	clear_chunk(void *chk_ptr)
+{
+	t_text_chunk	*chunk;
+
+	if (!chk_ptr)
+		return ;
+	chunk = (t_text_chunk *) chk_ptr;
+	if (chunk->expand == 2 && chunk->str)
+		free(chunk->str);
+	free(chunk);
+}
+
 void	split_into_chunks(t_list **chunks,
 							t_text_chunk **chunk,
 							int *state,
 							char *s)
 {
-	if (change_quote_state(*state, *s) != 0 || (*state != 1 && *s == '$'))
+	if (change_quote_state(*state, *s) != 0
+		|| (*state != SINGLE_QUOTE && *s == '$'))
 	{
 		*state = *state + change_quote_state(*state, *s);
 		if (*chunk)
@@ -40,16 +59,15 @@ void	split_into_chunks(t_list **chunks,
 			ft_lstadd_back(chunks, ft_lstnew(*chunk));
 			*chunk = NULL;
 		}
-		if (*state != 1 && *s == '$')
+		if (*state != SINGLE_QUOTE && *s == '$')
 			*chunk = new_chunk(s, 1);
 	}
-	else if (*chunk && (*chunk)->str[0] == '$' && *state != 1
-		&& (is_quote(*s) || *s == '$'))
+	else if (*chunk && (*chunk)->str[0] == '$' && *state != SINGLE_QUOTE
+		&& (is_quote(*s) || *s == '$' || is_space(*s)
+			|| ((*chunk)->len >= 2 && (*chunk)->str[1] == '?')))
 	{
 		ft_lstadd_back(chunks, ft_lstnew(*chunk));
-		*chunk = NULL;
-		if (*s == '$')
-			*chunk = new_chunk(s, 1);
+		*chunk = new_chunk(s, is_dollarchr(*s));
 	}
 	else if (*chunk == NULL)
 		*chunk = new_chunk(s, 0);
@@ -98,22 +116,4 @@ char	*join_chunks(t_list *chunks)
 		chunks = chunks->next;
 	}
 	return (buffer);
-}
-
-void	expansion(t_list *chunks, t_env_var *env)
-{
-	t_text_chunk	*chunk;
-
-	while (chunks)
-	{
-		chunk = (t_text_chunk *) chunks->content;
-		if (chunk->expand)
-		{
-			if (chunk->len == 1)
-				chunk->expand = 0;
-			else
-				expand_env_var(chunk, env);
-		}
-		chunks = chunks->next;
-	}
 }

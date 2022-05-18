@@ -3,3 +3,5 @@ cat file1 > out1 | cat > out2 #copy file1 to out1, create empty out2
 cat <<$arg #no variable expansion
 cat <file1 -e
 cat file1 | wc > out -l
+cat difficult_commands | cat <<here #read from here-doc, not from pipe
+echo hi | cat <<here | cat #same here

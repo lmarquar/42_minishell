@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/29 12:17:48 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/10 12:38:02 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/18 09:46:59 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,15 +32,28 @@ int	execute_init_vars(t_cmd_line **cmd_line, int (*fd)[], int **pid)
 
 int	exec_in_to_out(t_bin *bin, int *pid, int fd[])
 {
-	if (bin->cmd_line->simple_commands[0]->is_builtin)
-		exec_builtin(bin, bin->cmd_line->simple_commands[0]->args, fd[4], fd[5]);
+	if (bin->cmd_line->smp_cmds[0]->is_builtin)
+		exec_builtin(bin, bin->cmd_line->smp_cmds[0]->args, fd[4], fd[5]);
 	else
 	{
 		*pid = fork();
 		if (*pid == 0)
-			exec_el(bin->cmd_line->simple_commands[0]->args, bin, fd[4], fd[5]);
+			exec_el(bin->cmd_line->smp_cmds[0]->args, bin, fd[4], fd[5]);
 	}
 	return (0);
+}
+
+void	set_exit_code(t_bin *bin, int exit_code)
+{
+	if (WIFSIGNALED(exit_code))
+		bin->exit_code = 128 + WTERMSIG(exit_code);
+	else if (WIFEXITED(exit_code))
+	{
+		printf("EXIT STATUS:%d\n", WEXITSTATUS(exit_code)); // debug
+		bin->exit_code = WEXITSTATUS(exit_code);
+	}
+	else
+		perror("program failed");
 }
 
 int	execute(t_bin *bin)
@@ -56,11 +69,13 @@ int	execute(t_bin *bin)
 		exec_with_pipes(bin, pid, fd);
 	while (*pid)
 	{
+		signal(SIGINT, SIG_IGN);
+		signal(SIGQUIT, SIG_IGN);
 		waitpid(*pid, &exit_code, 0);
 		printf("PID: %d, exit_code: %d\n", *pid, exit_code);
-		if (exit_code != 0 && exit_code != 256)
-			perror("program failed");
+		set_exit_code(bin, exit_code);
 		pid++;
 	}
+	bin->exit_code = exit_code;
 	return (0);
 }

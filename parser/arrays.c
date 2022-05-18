@@ -6,36 +6,47 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 12:02:58 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/12 13:09:34 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/18 09:40:02 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 
-char	**create_path_arr(char *path, char *cwd)
+char	**create_path_arr(char *path);
+char	**create_env_arr(t_env_var *env);
+
+void	clear_pointer_arr(void **arr);
+
+/**
+ * @brief Create a null terminated array with directories to search binaries in.
+ * This includes dirs from the $PATH, the CWD and the root.
+ *
+ * @param path value of $PATH
+ * @return char** array of directories (as strings ending with /)
+ */
+char	**create_path_arr(char *path)
 {
 	char	**paths;
 	int		i;
-	char	*cmd;
 	char	*tmp;
 
-	tmp = ft_strjoin(path, ":");
-	path = ft_strjoin(tmp, cwd);
-	free(tmp);
 	paths = ft_split(path, ':');
 	if (!paths)
-	{
-		free(path);
 		return (NULL);
-	}
 	i = -1;
 	while (paths[++i])
 	{
-		cmd = ft_strjoin(paths[i], "/");
+		if (ft_strlen(paths[i]) == 1)
+			break ;
+		tmp = ft_strjoin(paths[i], "/");
 		free(paths[i]);
-		paths[i] = cmd;
+		if (!tmp)
+		{
+			clear_pointer_arr((void **) paths);
+			return (NULL);
+		}
+		paths[i] = tmp;
 	}
-	free(path);
 	return (paths);
 }
 
@@ -50,9 +61,44 @@ char	**create_env_arr(t_env_var *env)
 	i = 0;
 	while (env)
 	{
-		arr[i] = stringify(env, 1);
+		arr[i] = stringify(env, 0);
 		env = env->next;
 		i++;
 	}
 	return (arr);
+}
+
+t_smp_cmd	**create_cmd_arr(t_list *cmd_lst)
+{
+	t_smp_cmd	**arr;
+	size_t		len;
+	size_t		i;
+
+	len = ft_lstsize(cmd_lst);
+	arr = ft_calloc(len + 1, sizeof (t_smp_cmd *));
+	if (!arr)
+		return (NULL);
+	i = 0;
+	while (cmd_lst)
+	{
+		arr[i++] = (t_smp_cmd *) cmd_lst->content;
+		cmd_lst = cmd_lst->next;
+	}
+	return (arr);
+}
+
+/*
+* frees the array including all the elements in it
+*/
+void	clear_pointer_arr(void **arr)
+{
+	size_t	i;
+
+	i = 0;
+	while (arr && arr[i])
+	{
+		free(arr[i]);
+		i++;
+	}
+	free(arr);
 }
