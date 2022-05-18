@@ -6,7 +6,7 @@
 /*   By: leon <leon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 10:39:02 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/18 16:17:57 by leon             ###   ########.fr       */
+/*   Updated: 2022/05/18 16:31:48 by leon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ int	init_bin(t_bin **bin, t_env_var *env_vars)
 {
 	*bin = ft_calloc(1, sizeof(t_bin));
 	(*bin)->env = env_vars;
+	(*bin)->exit_code = 0;
 	return (0);
 }
 

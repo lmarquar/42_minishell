@@ -6,7 +6,7 @@
 /*   By: leon <leon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/29 12:17:48 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/18 15:12:14 by leon             ###   ########.fr       */
+/*   Updated: 2022/05/18 17:42:36 by leon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,8 +73,8 @@ int	execute(t_bin *bin)
 	{
 		signal(SIGINT, SIG_IGN);
 		signal(SIGQUIT, SIG_IGN);
-		waitpid(*pid, &exit_code, 0);
-		printf("PID: %d, exit_code: %d\n", *pid, exit_code);
+		waitpid(pid[i], &exit_code, 0);
+		printf("PID: %d, exit_code: %d\n", pid[i], exit_code);
 		set_exit_code(bin, exit_code);
 		i++;
 	}

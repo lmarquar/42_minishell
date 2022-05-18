@@ -3,12 +3,22 @@
 static int	without_args(int fdout, char **arr)
 {
 	int i;
+	int	i2;
 
 	i = -1;
+	if (!arr)
+		write(fdout, "no emv_arr\n", 12);
 	while (arr[++i] != NULL)
 	{
 		write(fdout, "declare -x ", 11);
-		write(fdout, arr[i], ft_strlen(arr[i]));
+		i2 = 0;
+		while (arr[i][i2] != '=')
+			write(fdout, &(arr[i][i2++]), 1);
+		write(fdout, &(arr[i][i2++]), 1);
+		write(fdout, "\"", 1);
+		while (arr[i][i2])
+			write(fdout, &(arr[i][i2++]), 1);
+		write(fdout, "\"", 1);
 		write(fdout, "\n", 1);
 	}
 	return (0);
@@ -19,6 +29,7 @@ int	init_key_val(t_env_var *env, char *var_ass)
 	int	i;
 	int	i2;
 
+	i = 0;
 	while (var_ass[i] && var_ass[i] != '=')
 		i++;
 	env->key = ft_calloc(i + 1, sizeof(char));
@@ -50,17 +61,20 @@ int	exec_export(int fdout, t_bin *bin, char *var_ass)
 	i = 0;
 	if (!var_ass)
 		without_args(fdout, bin->env_arr);
-	while (var_ass[i] && var_ass[i] != '=') i++;
-	if (!var_ass[i])
-		return (1);
-	if (!var_ass[i + 1])
-		return (1);
-	env = bin->env;
-	while (env->next)
+	else
+	{
+		while (var_ass[i] && var_ass[i] != '=') i++;
+		if (!var_ass[i])
+			return (1);
+		if (!var_ass[i + 1])
+			return (1);
+		env = bin->env;
+		while (env->next)
+			env = env->next;
+		env->next = malloc(sizeof(t_env_var));
 		env = env->next;
-	env->next = malloc(sizeof(t_env_var));
-	env = env->next;
-	env->next = NULL;
-	init_key_val(env, var_ass);
+		env->next = NULL;
+		init_key_val(env, var_ass);
+	}
 	return (0);
 }

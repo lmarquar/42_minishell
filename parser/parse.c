@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
+/*   By: leon <leon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 10:17:17 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/18 12:40:26 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/18 17:09:49 by leon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,8 +89,8 @@ void	package_info(t_cmd_line *cmd_line, t_env_var *env, t_bin *bin)
 	if (bin->env_arr)
 	{
 		clear_pointer_arr((void **) bin->env_arr);
-		bin->env_arr = create_env_arr(env);
 	}
+	bin->env_arr = create_env_arr(env);
 	if (!bin->cwd)
 		bin->cwd = getcwd(NULL, 0);
 	bin->paths = create_path_arr(find_in_env("PATH", 4, env));
