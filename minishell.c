@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
+/*   By: leon <leon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 10:39:02 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/18 09:50:34 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/18 11:47:55 by leon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,8 @@ int	main(int argc, char *argv[], char *envp[])
 		bin->in = readline(SHELL_PROMT);
 		if (!bin->in)
 			bin->in = ft_strdup("exit");
+		if (!ft_strncmp(bin->in, "exit", 5))
+			break ;
 		add_history(bin->in);
 		if (parse(bin->in, &cmd_line, env_vars, bin) == 0)
 		{
@@ -76,6 +78,6 @@ int	main(int argc, char *argv[], char *envp[])
 		free(bin->in);
 	}
 	// clear list of env_vars
-
+	
 	return (0);
 }

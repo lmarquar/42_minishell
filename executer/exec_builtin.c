@@ -62,17 +62,15 @@ int	exec_export(int fdout, t_bin *bin, char *var_ass)
 	int			i;
 	int			i2;
 
-	if (fdout != STDOUT_FILENO)
-	{
-		if (dup2(fdout, STDOUT_FILENO) < 0)
-			return (handle_dup2error());
-		close(fdout);
-	}
-	i = 0;
+	i = -1;
 	if (!var_ass)
 	{
-		while (bin->env_arr[i] != NULL)
-			printf("declare -x %s\n", bin->env_arr[i++]);
+		while (bin->env_arr[++i] != NULL)
+		{
+			write(fdout, "declare -x ", 11);
+			write(fdout, bin->env_arr[i], ft_strlen(bin->env_arr[i]));
+			write(fdout, "\n", 1);
+		}
 		return (0);
 	}
 	while (var_ass[i] && var_ass[i] != '=') i++;
@@ -155,29 +153,28 @@ int exec_unset(char *unset_key, t_bin *bin)
 	return (0);
 }
 
-int	exec_builtin(t_bin *bin, char **args, int fdin, int fdout)
+int	exec_builtin(t_bin *bin, char **args, int fdout)
 {
-	int	inout[2];
-
-	inout[0] = fdin;
-	inout[1] = fdout;
 	if (ft_strcmp(args[0], "echo"))
-		bin->exit_code = exec_echo(inout[1], args);
+		bin->exit_code = exec_echo(fdout, args);
 	else if (bin->cmd_line->smp_cmds[0]->is_builtin == ENV)
 		bin->exit_code = exec_env(fdout, bin->env, args);
 	else if (ft_strcmp(args[0], "pwd"))
-		bin->exit_code = exec_pwd(inout[1]);
+		bin->exit_code = exec_pwd(fdout);
 	else if (ft_strcmp(args[0], "export") && !args[1])
-		bin->exit_code = exec_export(inout[1], bin, args[1]);
+	{
+		write(1, "execute here\n", 14);
+		bin->exit_code = exec_export(fdout, bin, args[1]);
+	}
 	else if (bin->cmd_line->smp_cmds[1])
 		return (0);
 	else if (ft_strcmp(args[0], "export"))
-		bin->exit_code = exec_export(inout[1], bin, args[1]);
+		bin->exit_code = exec_export(fdout, bin, args[1]);
 	else if (ft_strcmp(args[0], "cd"))
 		bin->exit_code = exec_cd(args[1]);
 	else if (ft_strcmp(args[0], "unset"))
 		bin->exit_code = exec_unset(args[1], bin);
-	if (bin->cmd_line->smp_cmds[0]->is_builtin == EXIT)
+	else if (bin->cmd_line->smp_cmds[0]->is_builtin == EXIT)
 	{
 		bin->exit_code = exec_exit(bin->exit_code, args,
 				(bin->cmd_line->pipe_count > 0));
