@@ -65,6 +65,7 @@ int	init_key_val(t_env_var *env, char *var_ass)
 		env->key[i] = var_ass[i];
 		i++;
 	}
+	env->val = NULL;
 	if (!is_valid_identifier(env->key))
 		return (1);
 	i++;

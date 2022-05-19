@@ -1,4 +1,6 @@
 leon:
 make pid not leak on exit
+make bullshit commands still display error message
+
 
 chris:

@@ -24,7 +24,7 @@ int	exec_builtin(t_bin *bin, char **args, int fdout)
 		bin->exit_code = exec_pwd(fdout);
 	else if (ft_strcmp(args[0], "export") && !args[1])
 		bin->exit_code = exec_export(fdout, bin, args[1]);
-	else if (bin->cmd_line->smp_cmds[1])
+	else if (bin->cmd_line->pipe_count)
 		return (0);
 	else if (ft_strcmp(args[0], "export"))
 		bin->exit_code = exec_export(fdout, bin, args[1]);

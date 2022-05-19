@@ -6,5 +6,6 @@ int	exec_pwd(int fdout)
 
 	s = getcwd(NULL, 0);
 	write(fdout, s, ft_strlen(s));
+	write(fdout, "\n", 1);
 	return (0);
 }
