@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leon <leon@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 10:39:02 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/18 16:31:48 by leon             ###   ########.fr       */
+/*   Updated: 2022/05/19 22:27:19 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,12 @@ int	init_bin(t_bin **bin, t_env_var *env_vars)
 	*bin = ft_calloc(1, sizeof(t_bin));
 	(*bin)->env = env_vars;
 	(*bin)->exit_code = 0;
+	(*bin)->pid = NULL;
+	(*bin)->cmd_line = NULL;
+	(*bin)->cwd = NULL;
+	(*bin)->env_arr = NULL;
+	(*bin)->in = NULL;
+	(*bin)->paths = NULL;
 	return (0);
 }
 

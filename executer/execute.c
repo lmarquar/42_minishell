@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chelmerd <chelmerd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/29 12:17:48 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/19 14:17:52 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/19 22:22:30 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,6 @@ void	set_exit_code(t_bin *bin, int exit_code)
 
 int	execute(t_bin *bin)
 {
-	int	*pid;
 	int	i;
 	int	fd[6];
 	int	exit_code;
@@ -70,21 +69,21 @@ int	execute(t_bin *bin)
 	if (!bin->cmd_line->smp_cmds[0]->cmd)
 		return (0);
 	i = 0;
-	execute_init_vars(&bin->cmd_line, &fd, &pid, &exit_code);
+	execute_init_vars(&bin->cmd_line, &fd, &(bin->pid), &exit_code);
 	if (!bin->cmd_line->pipe_count)
-		exec_in_to_out(bin, pid, fd);
+		exec_in_to_out(bin, bin->pid, fd);
 	else
-		exec_with_pipes(bin, pid, fd);
-	while (pid[i])
+		exec_with_pipes(bin, bin->pid, fd);
+	while (bin->pid[i])
 	{
 		signal(SIGINT, SIG_IGN);
 		signal(SIGQUIT, SIG_IGN);
-		waitpid(pid[i], &exit_code, 0);
-		printf("PID: %d, exit_code: %d\n", pid[i], exit_code);
+		waitpid(bin->pid[i], &exit_code, 0);
+		printf("PID: %d, exit_code: %d\n", bin->pid[i], exit_code);
 		set_exit_code(bin, exit_code);
 		i++;
 	}
-	free(pid);
+	free(bin->pid);
 	bin->exit_code = exit_code;
 	return (0);
 }

@@ -50,6 +50,8 @@ static void	clean_up(t_bin *bin)
 		clear_pointer_arr((void **) bin->paths);
 	if (bin->cmd_line)
 		clear_cmd_line(bin->cmd_line);
+	if (bin->pid)
+		free(bin->pid);
 	rl_clear_history();
 	free(bin);
 }
