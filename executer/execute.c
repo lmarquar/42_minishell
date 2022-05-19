@@ -3,17 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
+/*   By: chelmerd <chelmerd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/29 12:17:48 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/18 09:46:59 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/19 14:17:52 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "execute.h"
 
-int	execute_init_vars(t_cmd_line **cmd_line, int (*fd)[], int **pid)
+static
+int	execute_init_vars(t_cmd_line **cmd_line, int (*fd)[], int **pid, int *exit)
 {
+	*exit = 0;
 	if ((*cmd_line)->infile)
 		(*fd)[4] = open((*cmd_line)->infile, O_RDONLY);
 	else
@@ -30,10 +32,11 @@ int	execute_init_vars(t_cmd_line **cmd_line, int (*fd)[], int **pid)
 	return (0);
 }
 
+static
 int	exec_in_to_out(t_bin *bin, int *pid, int fd[])
 {
 	if (bin->cmd_line->smp_cmds[0]->is_builtin)
-		exec_builtin(bin, bin->cmd_line->smp_cmds[0]->args, fd[4], fd[5]);
+		exec_builtin(bin, bin->cmd_line->smp_cmds[0]->args, fd[5]);
 	else
 	{
 		*pid = fork();
@@ -43,13 +46,14 @@ int	exec_in_to_out(t_bin *bin, int *pid, int fd[])
 	return (0);
 }
 
+static
 void	set_exit_code(t_bin *bin, int exit_code)
 {
 	if (WIFSIGNALED(exit_code))
 		bin->exit_code = 128 + WTERMSIG(exit_code);
 	else if (WIFEXITED(exit_code))
 	{
-		printf("EXIT STATUS:%d\n", WEXITSTATUS(exit_code)); // debug
+		printf("EXIT STATUS:%d\n", WEXITSTATUS(exit_code));
 		bin->exit_code = WEXITSTATUS(exit_code);
 	}
 	else
@@ -59,23 +63,28 @@ void	set_exit_code(t_bin *bin, int exit_code)
 int	execute(t_bin *bin)
 {
 	int	*pid;
+	int	i;
 	int	fd[6];
 	int	exit_code;
 
-	execute_init_vars(&bin->cmd_line, &fd, &pid);
+	if (!bin->cmd_line->smp_cmds[0]->cmd)
+		return (0);
+	i = 0;
+	execute_init_vars(&bin->cmd_line, &fd, &pid, &exit_code);
 	if (!bin->cmd_line->pipe_count)
 		exec_in_to_out(bin, pid, fd);
 	else
 		exec_with_pipes(bin, pid, fd);
-	while (*pid)
+	while (pid[i])
 	{
 		signal(SIGINT, SIG_IGN);
 		signal(SIGQUIT, SIG_IGN);
-		waitpid(*pid, &exit_code, 0);
-		printf("PID: %d, exit_code: %d\n", *pid, exit_code);
+		waitpid(pid[i], &exit_code, 0);
+		printf("PID: %d, exit_code: %d\n", pid[i], exit_code);
 		set_exit_code(bin, exit_code);
-		pid++;
+		i++;
 	}
+	free(pid);
 	bin->exit_code = exit_code;
 	return (0);
 }

@@ -1,5 +1,11 @@
 #include "execute.h"
 
+void	close_ifn_inout(int fd)
+{
+	if (fd != STDOUT_FILENO && fd != STDIN_FILENO)
+		close(fd);
+}
+
 int	handle_dup2error(void)
 {
 	perror("dup2 failed(system error)\n");

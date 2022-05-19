@@ -3,7 +3,7 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+         #
+#    By: leon <leon@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/01/18 12:03:48 by chelmerd          #+#    #+#              #
 #    Updated: 2022/05/17 12:36:48by lmarquar         ###   ########.fr        #
@@ -35,7 +35,7 @@ PARSER			=	parse.c special_character.c replace.c debug.c \
 					chunk.c token.c cmd_line.c quote.c arrays.c \
 					smp_cmd.c
 SRCS_PARSER		= $(addprefix parser/, $(PARSER))
-BUILTINS		=	builtin_utils.c env.c exit.c
+BUILTINS		=	builtin_utils.c env.c exit.c echo.c export.c pwd.c unset.c cd.c
 SRCS_BUILTINS	= $(addprefix builtins/, $(BUILTINS))
 ENV				=	env.c env_list.c
 SRCS_ENV		= $(addprefix env/, $(ENV))

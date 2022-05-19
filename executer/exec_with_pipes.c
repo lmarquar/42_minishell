@@ -1,15 +1,7 @@
 #include "execute.h"
 
-void	close_ifn_inout(int fd)
-{
-	if (fd != STDOUT_FILENO && fd != STDIN_FILENO)
-		close(fd);
-}
-
 int	exec_in_to_pipe(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 {
-	if (pipe(&(fd[0])) == -1)
-		return (3);
 	if (bin->cmd_line->heredoc_delimiter)
 	{
 		heredoc_handler(bin->cmd_line, fd[1]);
@@ -17,7 +9,7 @@ int	exec_in_to_pipe(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 	}
 	else if (bin->cmd_line->smp_cmds[0]->is_builtin)
 	{
-		exec_builtin(bin, bin->cmd_line->smp_cmds[0]->args, fd[4], fd[1]);
+		exec_builtin(bin, bin->cmd_line->smp_cmds[0]->args, fd[1]);
 		bin->cmd_line->smp_cmds = bin->cmd_line->smp_cmds + 1;
 		(*i)[1] = (*i)[1] - 1;
 	}
@@ -39,11 +31,9 @@ int	exec_in_to_pipe(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 int	exec_pipe1_to_pipe2(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 {
 	close(fd[1]);
-	if (pipe(&(fd[2])) == -1)
-		return (3);
 	if (bin->cmd_line->smp_cmds[0]->is_builtin)
 	{
-		exec_builtin(bin, bin->cmd_line->smp_cmds[0]->args, fd[0], fd[3]);
+		exec_builtin(bin, bin->cmd_line->smp_cmds[0]->args, fd[3]);
 		bin->cmd_line->smp_cmds = bin->cmd_line->smp_cmds + 1;
 		(*i)[1] = (*i)[1] - 1;
 	}
@@ -66,12 +56,10 @@ int	exec_pipe1_to_pipe2(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 
 int	exec_pipe2_to_pipe1(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 {
-	if (pipe(&(fd[0])) == -1)
-		return (3);
 	close(fd[3]);
 	if (bin->cmd_line->smp_cmds[0]->is_builtin)
 	{
-		exec_builtin(bin, bin->cmd_line->smp_cmds[0]->args, fd[2], fd[1]);
+		exec_builtin(bin, bin->cmd_line->smp_cmds[0]->args, fd[1]);
 		bin->cmd_line->smp_cmds = bin->cmd_line->smp_cmds + 1;
 		(*i)[1] = (*i)[1] - 1;
 	}
@@ -103,7 +91,7 @@ int	exec_pipe_to_out(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 	if (bin->cmd_line->append > 0)
 		append(fd[i_fd], fd[5]);
 	else if (bin->cmd_line->smp_cmds[0]->is_builtin)
-		exec_builtin(bin, bin->cmd_line->smp_cmds[0]->args, fd[i_fd], fd[5]);
+		exec_builtin(bin, bin->cmd_line->smp_cmds[0]->args, fd[5]);
 	else
 	{
 		pid[**i] = fork();
@@ -123,12 +111,18 @@ int	exec_with_pipes(t_bin *bin, int *pid, int fd[])
 
 	i[0] = 0;
 	i[1] = bin->cmd_line->pipe_count;
+	if (pipe(&(fd[0])) == -1)
+		return (3);
 	exec_in_to_pipe(bin, pid, fd, &i);
 	while (i[0] < i[1])
 	{
+		if (pipe(&(fd[2])) == -1)
+			return (3);
 		exec_pipe1_to_pipe2(bin, pid, fd, &i);
 		if (i[0] >= i[1])
 			break ;
+		if (pipe(&(fd[0])) == -1)
+			return (3);
 		exec_pipe2_to_pipe1(bin, pid, fd, &i);
 	}
 	exec_pipe_to_out(bin, pid, fd, &i);

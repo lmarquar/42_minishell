@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
+/*   By: leon <leon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 15:36:23 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/17 17:08:36 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/18 16:22:22 by leon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 
 # include "../libft/libft.h"
 # include "../env/env.h"
+# include "../parser/parser.h"
 
 // utils
 
@@ -43,6 +44,11 @@ enum e_BUILTIN
 // env
 int	exec_env(int out, t_env_var *env, char **args);
 // exit
-int	exec_exit(int exit_code, char **args, int is_pipeline);
+int	exec_exit(t_bin *bin, char **args, int is_pipeline);
+int	exec_pwd(int fdout);
+int	exec_cd(char *dir);
+int	exec_export(int fdout, t_bin *bin, char *var_ass);
+int	exec_echo(int fdout, char **args);
+int exec_unset(char *unset_key, t_bin *bin);
 
 #endif

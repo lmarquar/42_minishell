@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
+/*   By: leon <leon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 10:17:17 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/18 10:28:17 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/18 17:09:49 by leon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,12 +38,6 @@ void	interpret_quotes(char **str, t_env_var *env)
 	free(*str);
 	*str = result;
 }
-
-typedef struct s_cmds
-{
-	t_list		*cmd_lst;
-	t_smp_cmd	*current_cmd;
-}	t_cmds;
 
 int	parse_operator(const char *input, char *token, t_cmds *cmds,
 					t_cmd_line *cmd_line)
@@ -92,6 +86,10 @@ void	package_info(t_cmd_line *cmd_line, t_env_var *env, t_bin *bin)
 {
 	bin->cmd_line = cmd_line;
 	bin->env = env; // really need to do it here?
+	if (bin->env_arr)
+	{
+		clear_pointer_arr((void **) bin->env_arr);
+	}
 	bin->env_arr = create_env_arr(env);
 	if (!bin->cwd)
 		bin->cwd = getcwd(NULL, 0);

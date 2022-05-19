@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
+/*   By: leon <leon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 10:39:02 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/18 09:50:34 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/18 16:31:48 by leon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ int	init_env(char *envp[], t_env_var **e_v)
 	t_env_var	*last;
 	size_t		i;
 
+	*e_v = NULL;
 	i = 0;
 	while (envp[i])
 	{
@@ -47,6 +48,7 @@ int	init_bin(t_bin **bin, t_env_var *env_vars)
 {
 	*bin = ft_calloc(1, sizeof(t_bin));
 	(*bin)->env = env_vars;
+	(*bin)->exit_code = 0;
 	return (0);
 }
 
@@ -73,9 +75,8 @@ int	main(int argc, char *argv[], char *envp[])
 			execute(bin);
 		}
 		clear_cmd_line(&cmd_line);
+		clear_pointer_arr((void **) bin->paths);
 		free(bin->in);
 	}
-	// clear list of env_vars
-
 	return (0);
 }

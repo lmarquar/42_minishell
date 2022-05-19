@@ -1,4 +1,4 @@
 leon:
-
+make pid not leak on exit
 
 chris:
