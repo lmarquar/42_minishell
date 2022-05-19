@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_el.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leon <leon@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: chelmerd <chelmerd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/08 11:35:15 by leon              #+#    #+#             */
-/*   Updated: 2022/05/18 14:51:28 by leon             ###   ########.fr       */
+/*   Updated: 2022/05/19 14:20:50 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static int	com_not_found_exit(void)
 	return (1);
 }
 
-int	is_absolute_or_relative_path(char *path)
+static int	is_absolute_or_relative_path(char *path)
 {
 	if (ft_strncmp(path, "/", 1) == 0
 		|| ft_strncmp(path, "./", 2) == 0
@@ -28,7 +28,7 @@ int	is_absolute_or_relative_path(char *path)
 	return (0);
 }
 
-int exec_in_current_dir(char **arg, t_bin *bin, int fdin, int fdout)
+static int	exec_in_current_dir(char **arg, t_bin *bin, int fdin, int fdout)
 {
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);

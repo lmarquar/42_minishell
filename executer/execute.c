@@ -3,17 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leon <leon@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: chelmerd <chelmerd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/29 12:17:48 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/18 17:42:36 by leon             ###   ########.fr       */
+/*   Updated: 2022/05/19 14:17:52 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "execute.h"
 
-int	execute_init_vars(t_cmd_line **cmd_line, int (*fd)[], int **pid)
+static
+int	execute_init_vars(t_cmd_line **cmd_line, int (*fd)[], int **pid, int *exit)
 {
+	*exit = 0;
 	if ((*cmd_line)->infile)
 		(*fd)[4] = open((*cmd_line)->infile, O_RDONLY);
 	else
@@ -30,6 +32,7 @@ int	execute_init_vars(t_cmd_line **cmd_line, int (*fd)[], int **pid)
 	return (0);
 }
 
+static
 int	exec_in_to_out(t_bin *bin, int *pid, int fd[])
 {
 	if (bin->cmd_line->smp_cmds[0]->is_builtin)
@@ -43,6 +46,7 @@ int	exec_in_to_out(t_bin *bin, int *pid, int fd[])
 	return (0);
 }
 
+static
 void	set_exit_code(t_bin *bin, int exit_code)
 {
 	if (WIFSIGNALED(exit_code))
@@ -63,12 +67,14 @@ int	execute(t_bin *bin)
 	int	fd[6];
 	int	exit_code;
 
-	execute_init_vars(&bin->cmd_line, &fd, &pid);
+	if (!bin->cmd_line->smp_cmds[0]->cmd)
+		return (0);
+	i = 0;
+	execute_init_vars(&bin->cmd_line, &fd, &pid, &exit_code);
 	if (!bin->cmd_line->pipe_count)
 		exec_in_to_out(bin, pid, fd);
 	else
 		exec_with_pipes(bin, pid, fd);
-	i = 0;
 	while (pid[i])
 	{
 		signal(SIGINT, SIG_IGN);
