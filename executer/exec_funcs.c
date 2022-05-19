@@ -29,6 +29,8 @@ int	heredoc_handler(t_cmd_line *cmd_line, int fdout)
 	char	*delimiter;
 	int		p_count;
 
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
 	delimiter = cmd_line->heredoc_delimiter;
 	p_count = cmd_line->pipe_count;
 	if (cmd_line->heredoc_delimiter)
@@ -41,7 +43,7 @@ int	heredoc_handler(t_cmd_line *cmd_line, int fdout)
 		in = readline(term);
 		if (!in)
 			break ;
-		if (!ft_strncmp(delimiter, in, ft_strlen(in)))
+		if (!ft_strncmp(delimiter, in, ft_strlen(delimiter)))
 			break ;
 		write(fdout, in, ft_strlen(in));
 		write(fdout, "\n", 1);
