@@ -82,7 +82,7 @@ int	init_key_val(t_env_var *env, char *var_ass)
 	return (0);
 }
 
-int	exec_export(int fdout, t_bin *bin, char *var_ass)
+int	exec_export(int fdout, t_bin *bin, char *var_ass, int o_err_msg)
 {
 	t_env_var	*env;
 	int			i;
@@ -106,7 +106,13 @@ int	exec_export(int fdout, t_bin *bin, char *var_ass)
 			env->next = NULL;
 			return (ft_error(1, "Identifier not valid"));
 		}
-		env->next->next = NULL;
+		else if (o_err_msg)
+		{
+			clear_env_var(env->next);
+			env->next = NULL;
+		}
+		else
+			env->next->next = NULL;
 	}
 	return (0);
 }

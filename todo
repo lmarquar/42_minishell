@@ -1,6 +1,9 @@
 leon:
-make pid not leak on exit
-make bullshit commands still display error message
+make pid not leak on exit<<-check_if_works
 make [] and {} with $ work
+make builtin commands still display error message<<-check_if_works
+learn how to NOT add random files into the repository
+
 
 chris:
+refactor a bunch of garbage code so other are able to understand it

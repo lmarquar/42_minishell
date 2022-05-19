@@ -6,7 +6,7 @@
 /*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/29 12:17:48 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/19 22:22:30 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/05/19 22:45:16 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,6 @@ int	execute(t_bin *bin)
 		set_exit_code(bin, exit_code);
 		i++;
 	}
-	free(bin->pid);
 	bin->exit_code = exit_code;
 	return (0);
 }

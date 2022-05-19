@@ -16,6 +16,11 @@ int	ft_strcmp(char *s1, char *s2)
 
 int	exec_builtin(t_bin *bin, char **args, int fdout)
 {
+	int only_err_msg;
+
+	only_err_msg = 0;
+	if (bin->cmd_line->pipe_count)
+		only_err_msg = 1;
 	if (ft_strcmp(args[0], "echo"))
 		bin->exit_code = exec_echo(fdout, args);
 	else if (bin->cmd_line->smp_cmds[0]->is_builtin == ENV)
@@ -23,19 +28,17 @@ int	exec_builtin(t_bin *bin, char **args, int fdout)
 	else if (ft_strcmp(args[0], "pwd"))
 		bin->exit_code = exec_pwd(fdout);
 	else if (ft_strcmp(args[0], "export") && !args[1])
-		bin->exit_code = exec_export(fdout, bin, args[1]);
-	else if (bin->cmd_line->pipe_count)
-		return (0);
+		bin->exit_code = exec_export(fdout, bin, args[1], only_err_msg);
+
 	else if (ft_strcmp(args[0], "export"))
-		bin->exit_code = exec_export(fdout, bin, args[1]);
+		bin->exit_code = exec_export(fdout, bin, args[1], only_err_msg);
 	else if (ft_strcmp(args[0], "cd"))
-		bin->exit_code = exec_cd(args[1]);
+		bin->exit_code = exec_cd(args[1], only_err_msg);
 	else if (ft_strcmp(args[0], "unset"))
 		bin->exit_code = exec_unset(args[1], bin);
 	else if (bin->cmd_line->smp_cmds[0]->is_builtin == EXIT)
 	{
-		exec_exit(bin, args,
-				(bin->cmd_line->pipe_count > 0));
+		exec_exit(bin, args, only_err_msg);
 	}
 	return (0);
 }
