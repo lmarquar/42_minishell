@@ -1,6 +1,8 @@
 leon:
 make pid not leak on exit
-make bullshit commands still display error message
+make builtin commands still display error message
+learn how to NOT add random files into the repository
 
 
 chris:
+refactor a bunch of garbage code so other are able to understand it
