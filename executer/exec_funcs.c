@@ -25,22 +25,14 @@ int	append(int fdin, int fdout)
 int	heredoc_handler(t_cmd_line *cmd_line, int fdout)
 {
 	char	*in;
-	char	*term;
 	char	*delimiter;
-	int		p_count;
 
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
 	delimiter = cmd_line->heredoc_delimiter;
-	p_count = cmd_line->pipe_count;
-	if (cmd_line->heredoc_delimiter)
-		p_count--;
-	if (cmd_line->append > 0)
-		p_count--;
-	term = "> ";
 	while (1)
 	{
-		in = readline(term);
+		in = readline("> ");
 		if (!in)
 			break ;
 		if (!ft_strncmp(delimiter, in, ft_strlen(delimiter)))

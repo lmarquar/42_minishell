@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 10:39:02 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/17 11:57:20 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/05/18 09:50:34 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,19 +29,6 @@ int	init_env(char *envp[], t_env_var **e_v)
 	t_env_var	*last;
 	size_t		i;
 
-	(*e_v) = NULL;
-	if (!envp)
-	{
-		(*e_v) = malloc(sizeof(t_env_var));
-		(*e_v)->key = "PATH";
-		(*e_v)->val = getenv("PATH");
-		var = malloc(sizeof(t_env_var));
-		var->key = "PWD";
-		var->val = getcwd(NULL, 0);
-		var->next = NULL;
-		(*e_v)->next = var;
-		return (0);
-	}
 	i = 0;
 	while (envp[i])
 	{
@@ -71,7 +58,6 @@ int	main(int argc, char *argv[], char *envp[])
 
 	(void) argc;
 	(void) argv;
-	// init env
 	init_env(envp, &env_vars);
 	init_bin(&bin, env_vars);
 	while (1)
@@ -80,18 +66,13 @@ int	main(int argc, char *argv[], char *envp[])
 		signal(SIGQUIT, SIG_IGN);
 		bin->in = readline(SHELL_PROMT);
 		if (!bin->in)
-		{
 			bin->in = ft_strdup("exit");
-		}
 		add_history(bin->in);
-		// transform env_vars
-		// check syntax
-		// parse / analyse
 		if (parse(bin->in, &cmd_line, env_vars, bin) == 0)
 		{
-			
 			execute(bin);
 		}
+		clear_cmd_line(&cmd_line);
 		free(bin->in);
 	}
 	// clear list of env_vars

@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 13:20:00 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/16 12:43:08 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/18 10:30:09 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,12 @@
 # include "../builtins/builtins.h"
 # include "../env/env.h"
 
-# define NO_QUOTE 0
-# define SINGLE_QUOTE 1
-# define DOUBLE_QUOTE 2
+enum e_QUOTE
+{
+	NO_QUOTE = 0,
+	SINGLE_QUOTE,
+	DOUBLE_QUOTE
+};
 
 typedef struct s_smp_cmd
 {
@@ -39,7 +42,8 @@ typedef struct s_cmd_line
 	char		*outfile;
 	size_t		pipe_count;
 	size_t		cmd_count;
-	t_smp_cmd	**simple_commands;
+	t_smp_cmd	**smp_cmds; // pointer gets moved by execute()
+	t_smp_cmd	**smp_cmds_start; // points to the beginning of the array
 	int			append;
 	char		*heredoc_delimiter;
 }	t_cmd_line;
@@ -52,7 +56,7 @@ typedef struct s_bin
 	char		**env_arr;
 	int			exit_code;
 	char		*cwd;
-	char		**paths; // {"/bin/", ... , "/<cwd>/"}
+	char		**paths;
 }	t_bin;
 
 typedef struct s_text_chunk
@@ -87,8 +91,9 @@ t_smp_cmd		*new_smp_cmd(
 					size_t arg_count,
 					int is_builtin);
 void			add_arg(t_smp_cmd **old, char *arg);
-void			clear_smp_cmd(void *cmd_ptr);
-t_smp_cmd		**create_cmd_arr(t_list *cmd_lst);
+void			clear_smp_cmd(t_smp_cmd *cmd_ptr);
+void			assign_token(char **member, char *token);
+void			clear_cmd_line(t_cmd_line *cmd);
 
 // chunk
 
@@ -116,8 +121,9 @@ void			expansion(t_list *chunks, t_env_var *env, int exit_code);
 
 // array
 
-char			**create_path_arr(char	*path, char *cwd);
+char			**create_path_arr(char	*path);
 char			**create_env_arr(t_env_var *env);
+t_smp_cmd		**create_cmd_arr(t_list *cmd_lst);
 void			clear_pointer_arr(void **arr);
 
 //debug

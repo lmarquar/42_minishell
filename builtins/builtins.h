@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 15:36:23 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/16 15:50:29 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/17 17:08:36 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,12 @@ int	builtin_error(int error_code, char *builtin_name, char *msg);
 enum e_BUILTIN
 {
 	ECHO = 1,
-	CD = 2,
-	PWD = 3,
-	EXPORT = 4,
-	UNSET = 5,
-	ENV = 6,
-	EXIT = 7
+	CD,
+	PWD,
+	EXPORT,
+	UNSET,
+	ENV,
+	EXIT
 };
 
 // actual builtins

@@ -6,7 +6,7 @@
 /*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/06 13:22:23 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/16 17:38:24 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/05/19 15:47:51 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,8 @@ void	split_into_chunks(t_list **chunks,
 							int *state,
 							char *s)
 {
-	if (change_quote_state(*state, *s) != 0 || (*state != 1 && *s == '$'))
+	if (change_quote_state(*state, *s) != 0
+		|| (*state != SINGLE_QUOTE && *s == '$'))
 	{
 		*state = *state + change_quote_state(*state, *s);
 		if (*chunk)
@@ -54,10 +55,10 @@ void	split_into_chunks(t_list **chunks,
 			ft_lstadd_back(chunks, ft_lstnew(*chunk));
 			*chunk = NULL;
 		}
-		if (*state != 1 && *s == '$')
+		if (*state != SINGLE_QUOTE && *s == '$')
 			*chunk = new_chunk(s, 1);
 	}
-	else if (*chunk && (*chunk)->str[0] == '$' && *state != 1
+	else if (*chunk && (*chunk)->str[0] == '$' && *state != SINGLE_QUOTE
 		&& (is_quote(*s) || *s == '$' || is_space(*s)
 			|| ((*chunk)->len >= 2 && (*chunk)->str[1] == '?')))
 	{
