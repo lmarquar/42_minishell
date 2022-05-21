@@ -11,6 +11,7 @@
 # include "../parser/parser.h"
 # include "../libft/libft.h"
 # include "../builtins/builtins.h"
+# include "../libmin/libmin.h"
 
 int		execute(t_bin *bin);
 int		exec_with_pipes(t_bin *bin, int *pid, int fd[]);

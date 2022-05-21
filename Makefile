@@ -31,6 +31,8 @@ LIBFT = libft/libft.a
 
 INCLUDES = -I$(READLINE_INCLUDE) -Iparser -Ibuiltin -Iexecuter
 
+LIBMIN			= universal_funcs.c
+SRCS_LIBMIN		= $(addprefix libmin/, $(LIBMIN))
 PARSER			=	parse.c special_character.c replace.c debug.c \
 					chunk.c token.c cmd_line.c quote.c arrays.c \
 					smp_cmd.c
@@ -41,7 +43,7 @@ ENV				=	env.c env_list.c
 SRCS_ENV		= $(addprefix env/, $(ENV))
 EXECUTER		= execute.c exec_funcs.c exec_el.c exec_with_pipes.c exec_builtin.c
 SRCS_EXECUTER	= $(addprefix executer/, $(EXECUTER))
-SRCS_MANDATORY	= minishell.c $(SRCS_PARSER) $(SRCS_EXECUTER) $(SRCS_BUILTINS) $(SRCS_ENV)
+SRCS_MANDATORY	= minishell.c $(SRCS_PARSER) $(SRCS_EXECUTER) $(SRCS_BUILTINS) $(SRCS_ENV) $(SRCS_LIBMIN)
 OBJS_MANDATORY	= $(patsubst %.c, %.o, $(SRCS_MANDATORY))
 
 all: $(NAME)

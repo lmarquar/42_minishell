@@ -1,19 +1,5 @@
 #include "execute.h"
 
-//delete this
-int	ft_strcmp(char *s1, char *s2)
-{
-	while (*s1 == *s2 && *s1 && *s2)
-	{
-		s1++;
-		s2++;
-	}
-	if (!(*s1) && !(*s2))
-		return (1);
-	return (0);
-}
-//delete until here
-
 int	exec_builtin(t_bin *bin, char **args, int fdout)
 {
 	int only_err_msg;
@@ -21,11 +7,11 @@ int	exec_builtin(t_bin *bin, char **args, int fdout)
 	only_err_msg = 0;
 	if (bin->cmd_line->pipe_count)
 		only_err_msg = 1;
-	if (ft_strcmp(args[0], "echo"))
+	if (ft_strcmp_ci(args[0], "echo"))
 		bin->exit_code = exec_echo(fdout, args);
 	else if (bin->cmd_line->smp_cmds[0]->is_builtin == ENV)
 		bin->exit_code = exec_env(fdout, bin->env, args);
-	else if (ft_strcmp(args[0], "pwd"))
+	else if (ft_strcmp_ci(args[0], "pwd"))
 		bin->exit_code = exec_pwd(fdout);
 	else if (ft_strcmp(args[0], "export") && !args[1])
 		bin->exit_code = exec_export(fdout, bin, args[1], only_err_msg);

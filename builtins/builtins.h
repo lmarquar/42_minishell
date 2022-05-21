@@ -18,6 +18,7 @@
 # include "../libft/libft.h"
 # include "../env/env.h"
 # include "../parser/parser.h"
+# include "../libmin/libmin.h"
 
 // utils
 

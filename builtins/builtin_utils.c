@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
+/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 15:35:23 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/16 15:25:33 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/22 00:02:28 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,19 @@
 
 int	is_builtin(const char *s)
 {
-	if (ft_strncmp(s, "echo", 5) == 0)
+	if (ft_strcmp_ci(s, "echo") == 1)
 		return (1);
-	else if (ft_strncmp(s, "cd", 3) == 0)
+	else if (ft_strcmp(s, "cd") == 1)
 		return (2);
-	else if (ft_strncmp(s, "pwd", 4) == 0)
+	else if (ft_strcmp_ci(s, "pwd") == 1)
 		return (3);
-	else if (ft_strncmp(s, "export", 7) == 0)
+	else if (ft_strcmp(s, "export") == 1)
 		return (4);
-	else if (ft_strncmp(s, "unset", 6) == 0)
+	else if (ft_strcmp(s, "unset") == 1)
 		return (5);
-	else if (ft_strncmp(s, "env", 4) == 0)
+	else if (ft_strcmp_ci(s, "env") == 1)
 		return (6);
-	else if (ft_strncmp(s, "exit", 5) == 0)
+	else if (ft_strcmp(s, "exit") == 1)
 		return (7);
 	else
 		return (0);
