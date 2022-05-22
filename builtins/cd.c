@@ -27,6 +27,8 @@ int	exec_cd(char *dir, int o_err_msg)
 	char	*cwd;
 	char	*curdir;
 
+	if (!dir)
+		return (0);
 	cwd = getcwd(NULL, 0);
 	curdir = ft_strjoin(cwd, "/");
 	if (dir[0] != '/')
