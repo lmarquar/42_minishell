@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/29 12:17:48 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/19 22:45:16 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/05/23 11:48:26 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "execute.h"
+#include <errno.h>
 
 static
 int	execute_init_vars(t_cmd_line **cmd_line, int (*fd)[], int **pid, int *exit)
@@ -78,11 +79,13 @@ int	execute(t_bin *bin)
 	{
 		signal(SIGINT, SIG_IGN);
 		signal(SIGQUIT, SIG_IGN);
-		waitpid(bin->pid[i], &exit_code, 0);
-		printf("PID: %d, exit_code: %d\n", bin->pid[i], exit_code);
+		if (waitpid(bin->pid[i], &exit_code, 0) == -1)
+		{
+			perror("waitpid"); // debugger triggers this, anything else?
+			continue ; // maybe decide based on the errno waht should happen?
+		}
 		set_exit_code(bin, exit_code);
 		i++;
 	}
-	bin->exit_code = exit_code;
 	return (0);
 }

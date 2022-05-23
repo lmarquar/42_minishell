@@ -10,3 +10,6 @@ refactor a bunch of garbage code so other are able to understand it
 
 maybe not so important:
 cd with ~ and no arguments
+
+leaks:
+cd 

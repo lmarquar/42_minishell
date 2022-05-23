@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leon <leon@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 10:17:17 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/18 17:09:49 by leon             ###   ########.fr       */
+/*   Updated: 2022/05/23 11:57:16 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	interpret_quotes(char **str, t_env_var *env)
+void	interpret_quotes(char **str, t_env_var *env, int exit_code)
 {
 	char			*result;
 	int				quote_state;
@@ -32,7 +32,7 @@ void	interpret_quotes(char **str, t_env_var *env)
 	if (text_chunk)
 		ft_lstadd_back(&text_chunks, ft_lstnew(text_chunk));
 	print_text_chunks(text_chunks); // debug
-	expansion(text_chunks, env, 0);
+	expansion(text_chunks, env, exit_code);
 	result = join_chunks(text_chunks);
 	ft_lstclear(&text_chunks, &clear_chunk);
 	free(*str);
@@ -69,9 +69,9 @@ int	parse_operator(const char *input, char *token, t_cmds *cmds,
 	return (0);
 }
 
-int	parse_word(char *token, t_env_var *env, t_cmds *cmds)
+int	parse_word(char *token, t_env_var *env, int exit_code, t_cmds *cmds)
 {
-	interpret_quotes(&token, env);
+	interpret_quotes(&token, env, exit_code);
 	if (!cmds->current_cmd->cmd)
 	{
 		cmds->current_cmd->cmd = token;
@@ -84,6 +84,7 @@ int	parse_word(char *token, t_env_var *env, t_cmds *cmds)
 static
 void	package_info(t_cmd_line *cmd_line, t_env_var *env, t_bin *bin)
 {
+	cmd_line->smp_cmds_start = cmd_line->smp_cmds;
 	bin->cmd_line = cmd_line;
 	bin->env = env; // really need to do it here?
 	if (bin->env_arr)
@@ -121,15 +122,13 @@ int	parse(const char *input, t_cmd_line *cmd_line, t_env_var *env, t_bin *bin)
 			free(token);
 		}
 		else
-			parse_word(token, env, &cmds);
+			parse_word(token, env, bin->exit_code, &cmds);
 		token = next_token(input, 0);
 	}
 	ft_lstadd_back(&cmds.cmd_lst, ft_lstnew(cmds.current_cmd));
 	cmd_line->smp_cmds = create_cmd_arr(cmds.cmd_lst);
-	cmd_line->smp_cmds_start = cmd_line->smp_cmds;
 	ft_lstclear(&cmds.cmd_lst, NULL);
 	show_cmd_line(cmd_line); // debug
 	package_info(cmd_line, env, bin);
-	print_path_arr(bin->paths); // debug
 	return (error);
 }
