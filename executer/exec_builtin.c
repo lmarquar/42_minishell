@@ -12,14 +12,14 @@ int	exec_builtin(t_bin *bin, char **args, int fdout)
 	else if (bin->cmd_line->smp_cmds[0]->is_builtin == ENV)
 		bin->exit_code = exec_env(fdout, bin->env, args);
 	else if (ft_strcmp_ci(args[0], "pwd"))
-		bin->exit_code = exec_pwd(fdout);
+		bin->exit_code = exec_pwd(bin->cwd, fdout);
 	else if (ft_strcmp(args[0], "export") && !args[1])
 		bin->exit_code = exec_export(fdout, bin, args[1], only_err_msg);
 
 	else if (ft_strcmp(args[0], "export"))
 		bin->exit_code = exec_export(fdout, bin, args[1], only_err_msg);
 	else if (ft_strcmp(args[0], "cd"))
-		bin->exit_code = exec_cd(args[1], only_err_msg);
+		bin->exit_code = exec_cd(args[1], &bin->cwd, only_err_msg);
 	else if (ft_strcmp(args[0], "unset"))
 		bin->exit_code = exec_unset(args[1], bin);
 	else if (bin->cmd_line->smp_cmds[0]->is_builtin == EXIT)

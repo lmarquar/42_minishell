@@ -1,45 +1,30 @@
 #include "builtins.h"
 
-static char	*get_full_path(char *cd, char *gd)
-{
-	int		i;
-	char	*res;
-	char	*tmp;
-
-	res = ft_strjoin(cd, gd);
-	i = 0;
-	while (res[i])
-		i++;
-	if (res[--i] != '/')
-	{
-		tmp = res;
-		res = ft_strjoin(res, "/");
-		free(tmp);
-	}
-	free(cd);
-	return (res);
-}
-
-int	exec_cd(char *dir, int o_err_msg)
+int	exec_cd(char *dir, char **cwd, int o_err_msg)
 {
 	int		i;
 	int		i2;
-	char	*cwd;
 	char	*curdir;
 
 	if (!dir)
-		return (0);
-	cwd = getcwd(NULL, 0);
-	curdir = ft_strjoin(cwd, "/");
-	if (dir[0] != '/')
-		dir = get_full_path(curdir, dir);
+		return (builtin_error(2, "cd", "no releatic or abolute path found"));
 	i = chdir(dir);
 	if (i == -1)
-		perror("chdir failed");
+	{
+		return (builtin_error(1, "cd", strerror(errno)));
+	}
 	i2 = 0;
 	if (o_err_msg && i != -1)
-		i2 = chdir(cwd);
+		i2 = chdir(*cwd);
 	if (i2 == -1 && o_err_msg)
-		perror("chdir failed while undoing itself");
+		return (builtin_error(1, "cd", strerror(errno)));
+	curdir = getcwd(NULL, 0); // refresh the cwd
+	if (curdir)
+	{
+		free(*cwd);
+		*cwd = curdir;
+	}
+	else
+		perror("getcwd");
 	return (0);
 }

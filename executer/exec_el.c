@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_el.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/08 11:35:15 by leon              #+#    #+#             */
-/*   Updated: 2022/05/19 16:08:32 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/05/23 13:45:06 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,12 +44,8 @@ static int	exec_in_current_dir(char **arg, t_bin *bin, int fdin, int fdout)
 			return (handle_dup2error());
 		close(fdout);
 	}
-	if (is_absolute_or_relative_path(arg[0]))
-	{
-		execve(arg[0], arg, bin->env_arr);
-		return (com_not_found_exit());
-	}
-	return (1);
+	execve(arg[0], arg, bin->env_arr);
+	return (com_not_found_exit());
 }
 
 int exec_with_paths(char **arg, t_bin *bin, int fdin, int fdout)

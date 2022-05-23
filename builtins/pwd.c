@@ -1,11 +1,10 @@
 #include "builtins.h"
 
-int	exec_pwd(int fdout)
+int	exec_pwd(const char *cwd, int fdout)
 {
-	char	*s;
-
-	s = getcwd(NULL, 0);
-	write(fdout, s, ft_strlen(s));
+	if (!cwd)
+		builtin_error(1, "pwd", "internal PWD not set");
+	write(fdout, cwd, ft_strlen(cwd));
 	write(fdout, "\n", 1);
 	return (0);
 }

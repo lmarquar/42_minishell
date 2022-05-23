@@ -14,6 +14,8 @@
 # define BUILTINS_H
 
 # include <unistd.h>
+# include <string.h> // strerror
+# include <errno.h>
 
 # include "../libft/libft.h"
 # include "../env/env.h"
@@ -46,10 +48,10 @@ enum e_BUILTIN
 int	exec_env(int out, t_env_var *env, char **args);
 // exit
 int	exec_exit(t_bin *bin, char **args, int o_err_msg);
-int	exec_pwd(int fdout);
-int	exec_cd(char *dir, int o_err_msg);
+int	exec_pwd(const char *cwd, int fdout);
+int	exec_cd(char *dir, char **cwd, int o_err_msg);
 int	exec_export(int fdout, t_bin *bin, char *var_ass, int o_err_msg);
 int	exec_echo(int fdout, char **args);
-int exec_unset(char *unset_key, t_bin *bin);
+int	exec_unset(char *unset_key, t_bin *bin);
 
 #endif
