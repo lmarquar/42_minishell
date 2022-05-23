@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/29 12:17:48 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/23 11:48:26 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/23 14:57:54 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,5 +87,6 @@ int	execute(t_bin *bin)
 		set_exit_code(bin, exit_code);
 		i++;
 	}
+	free(bin->pid);
 	return (0);
 }
