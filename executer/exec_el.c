@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/08 11:35:15 by leon              #+#    #+#             */
-/*   Updated: 2022/05/23 13:45:06 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/24 12:16:24 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ static int	exec_in_current_dir(char **arg, t_bin *bin, int fdin, int fdout)
 	return (com_not_found_exit());
 }
 
-int exec_with_paths(char **arg, t_bin *bin, int fdin, int fdout)
+int	exec_with_paths(char **arg, t_bin *bin, int fdin, int fdout)
 {
 	int		i;
 	char	*cmd;
@@ -68,7 +68,7 @@ int exec_with_paths(char **arg, t_bin *bin, int fdin, int fdout)
 		close(fdout);
 	}
 	i = -1;
-	while (bin->paths[++i])
+	while (bin->paths && bin->paths[++i])
 	{
 		cmd = ft_strjoin(bin->paths[i], arg[0]);
 		execve(cmd, arg, bin->env_arr);
