@@ -7,7 +7,7 @@ int	exec_echo(int fdout, char **args)
 	i = 1;
 	if (!args[i])
 		return (0);
-	if (!ft_strncmp(args[i], "-n", 2))
+	while (!ft_strncmp(args[i], "-n", 2))
 		i++;
 	while (args[i])
 	{

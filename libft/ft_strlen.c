@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strlen.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chelmerd <chelmerd@student.wolfsburg.de    +#+  +:+       +#+        */
+/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/16 10:20:58 by chelmerd          #+#    #+#             */
-/*   Updated: 2021/11/26 13:06:16 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/23 17:16:59 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

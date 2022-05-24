@@ -6,6 +6,7 @@ void	close_ifn_inout(int fd)
 		close(fd);
 }
 
+
 int	handle_dup2error(void)
 {
 	perror("dup2 failed(system error)\n");
