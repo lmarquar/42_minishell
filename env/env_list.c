@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/12 12:40:23 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/23 18:46:54 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/24 13:49:47 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,18 +26,22 @@ size_t	env_var_len(t_env_var *env)
 	return (len);
 }
 
-void	add_env_var(t_env_var *lst, t_env_var *var)
+t_env_var	*add_env_var(t_env_var **lst, t_env_var *var)
 {
-	if (!lst)
+	t_env_var	*e;
+
+	e = *lst;
+	if (!e)
 	{
-		lst = var;
-		return ;
+		*lst = var;
+		return (var);
 	}
-	while (lst->next)
+	while (e->next)
 	{
-		lst = lst->next;
+		e = e->next;
 	}
-	lst->next = var;
+	e->next = var;
+	return (var);
 }
 
 /**
