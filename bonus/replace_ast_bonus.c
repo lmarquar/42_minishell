@@ -55,7 +55,8 @@ char	*ls_to_str(void)
 	if (waitpid(pid, &fd, 0) == -1)
 	{
 		perror("waitpid failed hopefully due to active debugging");
-		waitpid(pid, &fd, 0);
+		if (waitpid(pid, &fd, 0) == -1)
+			perror("this shouldn't have happened");
 	}
 	free(args);
 	out = file_to_str(tmp_file);

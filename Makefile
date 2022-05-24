@@ -43,7 +43,9 @@ ENV				=	env.c env_list.c
 SRCS_ENV		= $(addprefix env/, $(ENV))
 EXECUTER		= execute.c exec_funcs.c exec_el.c exec_with_pipes.c exec_builtin.c
 SRCS_EXECUTER	= $(addprefix executer/, $(EXECUTER))
-SRCS_MANDATORY	= minishell.c $(SRCS_PARSER) $(SRCS_EXECUTER) $(SRCS_BUILTINS) $(SRCS_ENV) $(SRCS_LIBMIN)
+BONUS			= ft_split_pattern.c replace_ast_bonus.c
+SRCS_BONUS		= $(addprefix bonus/, $(BONUS))
+SRCS_MANDATORY	= minishell.c $(SRCS_PARSER) $(SRCS_EXECUTER) $(SRCS_BUILTINS) $(SRCS_ENV) $(SRCS_LIBMIN) $(SRCS_BONUS)
 OBJS_MANDATORY	= $(patsubst %.c, %.o, $(SRCS_MANDATORY))
 
 all: $(NAME)

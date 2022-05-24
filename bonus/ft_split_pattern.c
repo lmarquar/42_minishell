@@ -1,4 +1,4 @@
-#include "bonus/bonus.h"
+#include "bonus.h"
 
 static int	chrn_in_str(char *s, char c)
 {

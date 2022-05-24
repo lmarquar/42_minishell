@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   replace.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
+/*   By: leon <leon@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/04 13:25:25 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/17 17:33:48 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/24 23:29:40 by leon             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,30 @@ void	expand_env_var(t_text_chunk *chunk, t_env_var *env_vars)
 	// printf("value of key:%s|\n", val); // debug
 }
 
+int		expand_wildcard_bonus(t_list *chunks)
+{
+	char	**arr;
+	t_list	*tmp;
+	int		i;
+
+	arr = replace_ast_bonus(((t_text_chunk *)chunks->content)->str);
+	if (!arr)
+		return (0);
+	free(((t_text_chunk *)chunks->content)->str);
+	((t_text_chunk *)chunks->content)->str = arr[0];
+	i = 0;
+	while (arr[++i])
+	{
+		tmp = chunks->next;
+		chunks->next = ft_calloc(1, sizeof(t_list));
+		chunks = chunks->next;
+		chunks->content = ft_calloc(1, sizeof(t_text_chunk));
+		((t_text_chunk *)chunks->content)->str = arr[i];
+		chunks->next = tmp;
+	}
+	return (0);
+}
+
 /**
  * @brief replace the text in a chunk if needed
  *
@@ -76,6 +100,8 @@ void	expansion(t_list *chunks, t_env_var *env, int exit_code)
 			if (replace_question_mark(chunk, exit_code) != 0)
 				break ; //TODO: handle error
 		}
+//		else if (ft_strchr(chunk->str, '*'))
+//			expand_wildcard_bonus(chunks);
 		else
 			expand_env_var(chunk, env);
 		chunks = chunks->next;
