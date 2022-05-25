@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 10:39:02 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/25 16:58:04 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/25 17:22:21 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	handle_signals(int signo)
 	if (signo == SIGINT)
 	{
 		rl_replace_line("", 0);
-		printf("\n");
+		write(1, "\n", 1);
 		rl_on_new_line();
 	}
 	rl_redisplay();

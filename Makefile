@@ -11,7 +11,7 @@
 # **************************************************************************** #
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g
+CFLAGS = -Wall -Wextra -Werror
 
 NAME = minishell
 NAME_LEAKS = minishell_leaks
@@ -34,7 +34,7 @@ INCLUDES = -I$(READLINE_INCLUDE) -Iparser -Ibuiltin -Iexecuter
 
 LIBMIN			= universal_funcs.c
 SRCS_LIBMIN		= $(addprefix libmin/, $(LIBMIN))
-PARSER			=	parse.c parse2.c special_character.c replace.c debug.c \
+PARSER			=	parse.c parse2.c special_character.c replace.c \
 					chunk.c token.c cmd_line.c quote.c arrays.c parse_nobonus.c \
 					smp_cmd.c
 SRCS_PARSER		= $(addprefix parser/, $(PARSER))
@@ -69,14 +69,8 @@ $(NAME_BONUS): $(SRCS_BONUS) $(LIBFT)
 $(NAME_LEAKS): $(SRCS_MANDATORY) $(LIBFT)
 	$(CC) $(CFLAGS) -fsanitize=address $^ -o $@ $(INCLUDES) -lreadline $(RL_LIBARY)
 
-# $(LIBS):
-# 	make -C pipex/
-
 debug: CFLAGS := $(CFLAGS) -g
 debug: all
-
-# $(OBJS_MANDATORY): $(SRCS_MANDATORY)
-# 	$(CC) $(CFLAGS) -c $^ -Iparser/
 
 $(LIBFT):
 	make -C libft

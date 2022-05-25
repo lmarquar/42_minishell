@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   replace.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/04 13:25:25 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/25 13:24:53 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/05/25 17:10:42 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,13 +41,11 @@ void	expand_env_var(t_text_chunk *chunk, t_env_var *env_vars)
 {
 	char	*val;
 
-	// printf("key:%.*s", (int)(chunk->len - 1), chunk->str + 1); // debug
 	val = find_in_env(chunk->str + 1, chunk->len - 1, env_vars);
 	if (!val)
 		val = "";
 	chunk->str = val;
 	chunk->len = ft_strlen(val);
-	// printf("value of key:%s|\n", val); // debug
 }
 
 /**

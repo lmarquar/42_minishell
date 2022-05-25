@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/29 12:17:48 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/25 13:35:05 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/05/25 17:12:43 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,10 +52,7 @@ void	set_exit_code(t_bin *bin, int exit_code)
 	if (WIFSIGNALED(exit_code))
 		bin->exit_code = 128 + WTERMSIG(exit_code);
 	else if (WIFEXITED(exit_code))
-	{
-		// printf("EXIT STATUS:%d\n", WEXITSTATUS(exit_code));
 		bin->exit_code = WEXITSTATUS(exit_code);
-	}
 	else
 		perror("program failed");
 }

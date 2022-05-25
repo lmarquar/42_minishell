@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 10:17:17 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/25 16:59:40 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/25 17:12:18 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ void	interpret_quotes(char **str, t_env_var *env, int exit_code)
 	}
 	if (text_chunk)
 		ft_lstadd_back(&text_chunks, ft_lstnew(text_chunk));
-	// print_text_chunks(text_chunks); // debug
 	expansion(text_chunks, env, exit_code);
 	result = join_chunks(text_chunks);
 	ft_lstclear(&text_chunks, &clear_chunk);
@@ -126,7 +125,6 @@ int	parse(const char *input, t_cmd_line *cmd_line, t_env_var *env, t_bin *bin)
 	error = 0;
 	while (token && !error)
 	{
-		// printf("token:%s\n", token);
 		if (is_ctrlchr(token[0]))
 		{
 			error = parse_operator(input, token, &cmds, cmd_line);
@@ -139,7 +137,6 @@ int	parse(const char *input, t_cmd_line *cmd_line, t_env_var *env, t_bin *bin)
 	ft_lstadd_back(&cmds.cmd_lst, ft_lstnew(cmds.current_cmd));
 	cmd_line->smp_cmds = create_cmd_arr(cmds.cmd_lst);
 	ft_lstclear(&cmds.cmd_lst, NULL);
-	// show_cmd_line(cmd_line); // debug
 	package_info(cmd_line, bin);
 	return (error);
 }
