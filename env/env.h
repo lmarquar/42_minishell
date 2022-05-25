@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
+/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/12 12:27:14 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/12 13:13:21 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/24 13:50:11 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,8 @@ t_env_var	*get_env_from_str(char *env_str);
 // list
 
 size_t		env_var_len(t_env_var *env);
-void		add_env_var(t_env_var *lst, t_env_var *var);
-void		remove_env_var(t_env_var *env, const char *key);
+t_env_var	*add_env_var(t_env_var **lst, t_env_var *var);
+t_env_var	*remove_env_var(t_env_var *env, const char *key);
 void		clear_env_vars(t_env_var *lst);
 char		*find_in_env(char *key, size_t key_len, t_env_var *env_vars);
 

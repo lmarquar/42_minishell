@@ -1,7 +1,7 @@
 #include "builtins.h"
-#include "../libft/libft.h"
 
-static int	without_args(int fdout, char **arr)
+static
+int	without_args(int fdout, char **arr)
 {
 	int	i;
 	int	i2;
@@ -18,7 +18,11 @@ static int	without_args(int fdout, char **arr)
 		write(fdout, &(arr[i][i2++]), 1);
 		write(fdout, "\"", 1);
 		while (arr[i][i2])
+		{
+			if (arr[i][i2] == '\"')
+				write(fdout, "\\", 1);
 			write(fdout, &(arr[i][i2++]), 1);
+		}
 		write(fdout, "\"", 1);
 		write(fdout, "\n", 1);
 	}
@@ -50,69 +54,29 @@ int	is_valid_identifier(char *s)
 	return (1);
 }
 
-int	init_key_val(t_env_var *env, char *var_ass)
-{
-	int	i;
-	int	i2;
-
-	i = 0;
-	while (var_ass[i] && var_ass[i] != '=')
-		i++;
-	env->key = ft_calloc(i + 1, sizeof(char));
-	i = 0;
-	while (var_ass[i] && var_ass[i] != '=')
-	{
-		env->key[i] = var_ass[i];
-		i++;
-	}
-	env->val = NULL;
-	if (!is_valid_identifier(env->key))
-		return (1);
-	i++;
-	i2 = 0;
-	while (var_ass[i + i2])
-		i2++;
-	env->val = ft_calloc(i2 + 1, sizeof(char));
-	i2 = 0;
-	while (var_ass[i + i2])
-	{
-		env->val[i2] = var_ass[i + i2];
-		i2++;
-	}
-	return (0);
-}
-
 int	exec_export(int fdout, t_bin *bin, char *var_ass, int o_err_msg)
 {
-	t_env_var	*env;
-	int			i;
+	char		*val;
+	t_env_var	*env_var;
 
-	i = 0;
 	if (!var_ass)
-		without_args(fdout, bin->env_arr);
-	else
+		return (without_args(fdout, bin->env_arr));
+	env_var = get_env_from_str(var_ass);
+	if (!env_var)
 	{
-		while (var_ass[i] && var_ass[i] != '=')
-			i++;
-		if (!var_ass[i])
-			return (1);
-		env = bin->env;
-		while (env->next)
-			env = env->next;
-		env->next = malloc(sizeof(t_env_var));
-		if (init_key_val(env->next, var_ass) != 0)
-		{
-			clear_env_var(env->next);
-			env->next = NULL;
-			return (ft_error(1, "Identifier not valid"));
-		}
-		else if (o_err_msg)
-		{
-			clear_env_var(env->next);
-			env->next = NULL;
-		}
-		else
-			env->next->next = NULL;
+		perror("malloc error while init env var");
+		return (1);
 	}
+	if (!is_valid_identifier(env_var->key))
+		return (builtin_error(1, "export", "identifier is not valid"));
+	if (o_err_msg)
+	{
+		clear_env_var(env_var);
+		return (0);
+	}
+	val = find_in_env(env_var->key, ft_strlen(env_var->key), bin->env);
+	if (val)
+		bin->env = remove_env_var(bin->env, env_var->key);
+	add_env_var(&bin->env, env_var);
 	return (0);
 }

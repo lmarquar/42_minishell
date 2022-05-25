@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_list.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
+/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/12 12:40:23 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/17 18:03:01 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/24 13:49:47 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,33 +26,56 @@ size_t	env_var_len(t_env_var *env)
 	return (len);
 }
 
-void	add_env_var(t_env_var *lst, t_env_var *var)
+t_env_var	*add_env_var(t_env_var **lst, t_env_var *var)
 {
-	if (!lst)
-		return ;
-	while (lst->next)
+	t_env_var	*e;
+
+	e = *lst;
+	if (!e)
 	{
-		lst = lst->next;
+		*lst = var;
+		return (var);
 	}
-	lst->next = var;
+	while (e->next)
+	{
+		e = e->next;
+	}
+	e->next = var;
+	return (var);
 }
 
-void	remove_env_var(t_env_var *env, const char *key)
+/**
+ * @brief remove and frees the enviroment variable that correspond to key
+ * 
+ * @param env the list of env_vars (NON-NULL)
+ * @param key the key to look for (NON-NULL) [key=value, next]
+ * @return t_env_var* the list of env_vars (could be NULL)
+ */
+t_env_var	*remove_env_var(t_env_var *env, const char *key)
 {
 	size_t		key_len;
 	t_env_var	*tmp;
+	t_env_var	*start;
 
-	if (!env || !key)
-		return ;
+	start = env;
 	key_len = ft_strlen(key);
+	if (env && env->key && !ft_strncmp(env->key, key, key_len + 1))
+	{
+		tmp = env->next;
+		clear_env_var(env);
+		return (tmp);
+	}
 	while (env->next && env->next->key
-		&& ft_strncmp(env->next->key, key, key_len))
+		&& ft_strncmp(env->next->key, key, key_len + 1))
 	{
 		env = env->next;
 	}
+	if (!env->next)
+		return (start);
 	tmp = env->next->next;
 	clear_env_var(env->next);
 	env->next = tmp;
+	return (start);
 }
 
 void	clear_env_vars(t_env_var *lst)

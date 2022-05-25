@@ -6,12 +6,13 @@
 /*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 10:17:17 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/25 12:30:51 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/05/25 12:40:47 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
+static
 void	interpret_quotes(char **str, t_env_var *env, int exit_code)
 {
 	char			*result;
@@ -41,6 +42,7 @@ void	interpret_quotes(char **str, t_env_var *env, int exit_code)
 	*str = result;
 }
 
+static
 int	parse_word(char *token, t_env_var *env, int exit_code, t_cmds *cmds)
 {
 	if (ft_strchr(token, '*') && !ft_strchr(token, '\'') && \
@@ -65,6 +67,7 @@ int	parse_word(char *token, t_env_var *env, int exit_code, t_cmds *cmds)
 	return (0); //TODO: what could be an error here?
 }
 
+static
 int	parse_operator(const char *input, char *token, t_cmds *cmds,
 					t_cmd_line *cmd_line)
 {
@@ -96,19 +99,18 @@ int	parse_operator(const char *input, char *token, t_cmds *cmds,
 }
 
 static
-void	package_info(t_cmd_line *cmd_line, t_env_var *env, t_bin *bin)
+void	package_info(t_cmd_line *cmd_line, t_bin *bin)
 {
 	cmd_line->smp_cmds_start = cmd_line->smp_cmds;
 	bin->cmd_line = cmd_line;
-	bin->env = env; // really need to do it here?
 	if (bin->env_arr)
 	{
 		clear_pointer_arr((void **) bin->env_arr);
 	}
-	bin->env_arr = create_env_arr(env);
+	bin->env_arr = create_env_arr(bin->env);
 	if (!bin->cwd)
 		bin->cwd = getcwd(NULL, 0);
-	bin->paths = create_path_arr(find_in_env("PATH", 4, env));
+	bin->paths = create_path_arr(find_in_env("PATH", 4, bin->env));
 }
 
 int	parse(const char *input, t_cmd_line *cmd_line, t_env_var *env, t_bin *bin)
@@ -143,6 +145,6 @@ int	parse(const char *input, t_cmd_line *cmd_line, t_env_var *env, t_bin *bin)
 	cmd_line->smp_cmds = create_cmd_arr(cmds.cmd_lst);
 	ft_lstclear(&cmds.cmd_lst, NULL);
 	show_cmd_line(cmd_line); // debug
-	package_info(cmd_line, env, bin);
+	package_info(cmd_line, bin);
 	return (error);
 }

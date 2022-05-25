@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 10:39:02 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/19 22:27:19 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/05/23 18:07:10 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,10 @@ int	init_env(char *envp[], t_env_var **e_v)
 	return (0);
 }
 
-int	init_bin(t_bin **bin, t_env_var *env_vars)
+int	init_bin(t_bin **bin, char *envp[])
 {
 	*bin = ft_calloc(1, sizeof(t_bin));
-	(*bin)->env = env_vars;
+	// (*bin)->env = env_vars;
 	(*bin)->exit_code = 0;
 	(*bin)->pid = NULL;
 	(*bin)->cmd_line = NULL;
@@ -55,19 +55,20 @@ int	init_bin(t_bin **bin, t_env_var *env_vars)
 	(*bin)->env_arr = NULL;
 	(*bin)->in = NULL;
 	(*bin)->paths = NULL;
+	init_env(envp, &(*bin)->env);
 	return (0);
 }
 
 int	main(int argc, char *argv[], char *envp[])
 {
-	t_env_var	*env_vars;
+	// t_env_var	*env_vars;
 	t_bin		*bin;
 	t_cmd_line	cmd_line;
 
 	(void) argc;
 	(void) argv;
-	init_env(envp, &env_vars);
-	init_bin(&bin, env_vars);
+	// init_env(envp, &env_vars);
+	init_bin(&bin, envp);
 	while (1)
 	{
 		signal(SIGINT, &handle_signals);
@@ -76,7 +77,7 @@ int	main(int argc, char *argv[], char *envp[])
 		if (!bin->in)
 			bin->in = ft_strdup("exit");
 		add_history(bin->in);
-		if (parse(bin->in, &cmd_line, env_vars, bin) == 0)
+		if (parse(bin->in, &cmd_line, bin->env, bin) == 0)
 		{
 			execute(bin);
 		}

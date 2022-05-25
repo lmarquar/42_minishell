@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/29 12:17:48 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/23 11:48:26 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/24 14:13:40 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,13 @@ void	set_exit_code(t_bin *bin, int exit_code)
 		perror("program failed");
 }
 
+static
+void	ignore_signals(void)
+{
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
+}
+
 int	execute(t_bin *bin)
 {
 	int	i;
@@ -75,10 +82,9 @@ int	execute(t_bin *bin)
 		exec_in_to_out(bin, bin->pid, fd);
 	else
 		exec_with_pipes(bin, bin->pid, fd);
+	ignore_signals();
 	while (bin->pid[i])
 	{
-		signal(SIGINT, SIG_IGN);
-		signal(SIGQUIT, SIG_IGN);
 		if (waitpid(bin->pid[i], &exit_code, 0) == -1)
 		{
 			perror("waitpid"); // debugger triggers this, anything else?
@@ -87,5 +93,6 @@ int	execute(t_bin *bin)
 		set_exit_code(bin, exit_code);
 		i++;
 	}
+	free(bin->pid);
 	return (0);
 }
