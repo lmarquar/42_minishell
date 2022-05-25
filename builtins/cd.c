@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 12:51:24 by lmarquar          #+#    #+#             */
-/*   Updated: 2022/05/25 12:52:36 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/05/25 14:07:13 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	exec_cd(char *dir, char **cwd, int o_err_msg)
 	char	*curdir;
 
 	if (!dir)
-		return (builtin_error(2, "cd", "no releatic or abolute path found"));
+		return (builtin_error(2, "cd", "no relative or absolute path found"));
 	i = chdir(dir);
 	if (i == -1)
 	{

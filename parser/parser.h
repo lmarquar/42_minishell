@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 13:20:00 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/25 13:27:16 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/05/25 17:00:53 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,7 +138,7 @@ void			expansion(t_list *chunks, t_env_var *env, int exit_code);
 char			**create_path_arr(char	*path);
 char			**create_env_arr(t_env_var *env);
 t_smp_cmd		**create_cmd_arr(t_list *cmd_lst);
-void			clear_pointer_arr(void **arr);
+void			clear_pointer_arr(char ***arr);
 
 //debug
 

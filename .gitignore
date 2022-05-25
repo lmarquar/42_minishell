@@ -54,6 +54,7 @@ dkms.conf
 
 # Custom
 minishell
+minishell_bonus
 *.pdf
 *.txt
 .DS_Store

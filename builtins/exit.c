@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 12:52:54 by lmarquar          #+#    #+#             */
-/*   Updated: 2022/05/25 12:52:55 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/05/25 17:00:09 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int	exec_exit(t_bin *bin, char **args, int o_err_msg)
 	}
 	if (!o_err_msg)
 		clean_exit(bin, error);
-	return (o_err_msg);
+	return (exit_code);
 }
 
 static void	clean_exit(t_bin *bin, int exit_code)
@@ -55,9 +55,9 @@ static void	clean_up(t_bin *bin)
 	if (bin->env)
 		clear_env_vars(bin->env);
 	if (bin->env_arr)
-		clear_pointer_arr((void **) bin->env_arr);
+		clear_pointer_arr(&bin->env_arr);
 	if (bin->paths)
-		clear_pointer_arr((void **) bin->paths);
+		clear_pointer_arr(&bin->paths);
 	if (bin->cmd_line)
 		clear_cmd_line(bin->cmd_line);
 	if (bin->pid)

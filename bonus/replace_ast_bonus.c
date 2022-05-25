@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   replace_ast_bonus.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 12:50:40 by lmarquar          #+#    #+#             */
-/*   Updated: 2022/05/25 12:51:09 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/05/25 15:28:01 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ char	*ls_to_str(void)
 	int		pid;
 	char	**args;
 
-	tmp_file = "ls_out";
+	tmp_file = ".ls_out";
 	fd = open(tmp_file, O_RDWR | O_CREAT, 0777);
 	args = ft_calloc(2, sizeof(char *));
 	args[0] = "ls";

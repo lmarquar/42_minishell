@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split_pattern.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 12:50:37 by lmarquar          #+#    #+#             */
-/*   Updated: 2022/05/25 12:50:38 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/05/25 15:18:11 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

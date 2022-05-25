@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 15:35:23 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/22 00:02:28 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/05/25 16:38:21 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,19 +15,19 @@
 int	is_builtin(const char *s)
 {
 	if (ft_strcmp_ci(s, "echo") == 1)
-		return (1);
+		return (ECHO);
 	else if (ft_strcmp(s, "cd") == 1)
-		return (2);
+		return (CD);
 	else if (ft_strcmp_ci(s, "pwd") == 1)
-		return (3);
+		return (PWD);
 	else if (ft_strcmp(s, "export") == 1)
-		return (4);
+		return (EXPORT);
 	else if (ft_strcmp(s, "unset") == 1)
-		return (5);
+		return (UNSET);
 	else if (ft_strcmp_ci(s, "env") == 1)
-		return (6);
+		return (ENV);
 	else if (ft_strcmp(s, "exit") == 1)
-		return (7);
+		return (EXIT);
 	else
 		return (0);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_line.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
+/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/06 14:44:32 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/18 10:28:47 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/25 16:31:19 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ void	init_cmd_line(t_cmd_line *cmd)
 	cmd->cmd_count = 1;
 	cmd->pipe_count = 0;
 	cmd->smp_cmds = NULL;
+	cmd->smp_cmds_start = NULL;
 	cmd->heredoc_delimiter = NULL;
 	cmd->append = 0;
 }
@@ -34,6 +35,8 @@ void	clear_cmd_line(t_cmd_line *cmd)
 {
 	size_t	i;
 
+	if (!cmd)
+		return ;
 	i = 0;
 	if (cmd->infile)
 		free(cmd->infile);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 15:36:23 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/25 12:53:15 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/05/25 16:38:56 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,14 +39,8 @@ enum e_BUILTIN
 };
 
 // actual builtins
-// echo
-// cd
-// pwd
-// export
-// unset
-// env
+
 int	exec_env(int out, t_env_var *env, char **args);
-// exit
 int	exec_exit(t_bin *bin, char **args, int o_err_msg);
 int	exec_pwd(const char *cwd, int fdout);
 int	exec_cd(char *dir, char **cwd, int o_err_msg);

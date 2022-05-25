@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 10:39:02 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/25 13:18:18 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/05/25 16:58:04 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,8 +78,8 @@ int	main(int argc, char *argv[], char *envp[])
 		if (parse(bin->in, &cmd_line, bin->env, bin) == 0)
 			execute(bin);
 		clear_cmd_line(&cmd_line);
-		clear_pointer_arr((void **) bin->paths);
-		free(bin->in);
+		clear_pointer_arr(&bin->paths);
+		bin->paths = NULL;
 	}
 	return (0);
 }
