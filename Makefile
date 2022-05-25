@@ -15,6 +15,7 @@ CFLAGS = -Wall -Wextra -Werror -g
 
 NAME = minishell
 NAME_LEAKS = minishell_leaks
+NAME_BONUS = minishell_bonus
 HEADER = minishell.h
 
 UNAME = $(shell uname -s)
@@ -34,7 +35,7 @@ INCLUDES = -I$(READLINE_INCLUDE) -Iparser -Ibuiltin -Iexecuter
 LIBMIN			= universal_funcs.c
 SRCS_LIBMIN		= $(addprefix libmin/, $(LIBMIN))
 PARSER			=	parse.c special_character.c replace.c debug.c \
-					chunk.c token.c cmd_line.c quote.c arrays.c \
+					chunk.c token.c cmd_line.c quote.c arrays.c parse_nobonus.c \
 					smp_cmd.c
 SRCS_PARSER		= $(addprefix parser/, $(PARSER))
 BUILTINS		=	builtin_utils.c env.c exit.c echo.c export.c pwd.c unset.c cd.c
@@ -44,15 +45,27 @@ SRCS_ENV		= $(addprefix env/, $(ENV))
 EXECUTER		= execute.c exec_funcs.c exec_el.c exec_with_pipes.c exec_builtin.c
 SRCS_EXECUTER	= $(addprefix executer/, $(EXECUTER))
 BONUS			= ft_split_pattern.c replace_ast_bonus.c
-SRCS_BONUS		= $(addprefix bonus/, $(BONUS))
-SRCS_MANDATORY	= minishell.c $(SRCS_PARSER) $(SRCS_EXECUTER) $(SRCS_BUILTINS) $(SRCS_ENV) $(SRCS_LIBMIN) $(SRCS_BONUS)
-OBJS_MANDATORY	= $(patsubst %.c, %.o, $(SRCS_MANDATORY))
+SRCS_BONUS_DIR	= $(addprefix bonus/, $(BONUS))
+PARSER_BON		=	parse.c special_character.c replace.c debug.c \
+					chunk.c token.c cmd_line.c quote.c arrays.c parse_bonus.c \
+					smp_cmd.c
+SRCS_PARSER_BON	= $(addprefix parser/, $(PARSER_BON))
+SRCS_MANDATORY	= minishell.c $(SRCS_PARSER) $(SRCS_EXECUTER) $(SRCS_BUILTINS) $(SRCS_ENV) $(SRCS_LIBMIN)
+# OBJS_MANDATORY	= $(patsubst %.c, %.o, $(SRCS_MANDATORY))
+SRCS_BONUS		= minishell.c $(SRCS_PARSER_BON) $(SRCS_EXECUTER) $(SRCS_BUILTINS) $(SRCS_ENV) $(SRCS_LIBMIN) $(SRCS_BONUS_DIR) 
 
-all: $(NAME)
+all: $(NAME) $(NAME_BONUS)
+
+mandatory: $(NAME)
+
+bonus: $(NAME_BONUS)
 
 leaks: $(NAME_LEAKS)
 
 $(NAME): $(SRCS_MANDATORY) $(LIBFT)
+	$(CC) $(CFLAGS) $^ -o $@ $(INCLUDES) -lreadline $(RL_LIBARY)
+
+$(NAME_BONUS): $(SRCS_BONUS) $(LIBFT)
 	$(CC) $(CFLAGS) $^ -o $@ $(INCLUDES) -lreadline $(RL_LIBARY)
 
 $(NAME_LEAKS): $(SRCS_MANDATORY) $(LIBFT)
@@ -64,8 +77,8 @@ $(NAME_LEAKS): $(SRCS_MANDATORY) $(LIBFT)
 debug: CFLAGS := $(CFLAGS) -g
 debug: all
 
-$(OBJS_MANDATORY): $(SRCS_MANDATORY)
-	$(CC) $(CFLAGS) -c $^ -Iparser/
+# $(OBJS_MANDATORY): $(SRCS_MANDATORY)
+# 	$(CC) $(CFLAGS) -c $^ -Iparser/
 
 $(LIBFT):
 	make -C libft
@@ -76,14 +89,18 @@ show:
 
 clean:
 	rm -f $(OBJS_MANDATORY)
-	rm -rfd minishell.dSYM
+	rm -rfd $(NAME).dSYM
+	rm -rfd $(NAME_BONUS).dSYM
+	rm -rfd $(NAME_LEAKS).dSYM
 	make -C libft clean
 
 fclean: clean
 	rm -f $(NAME)
+	rm -f $(NAME_BONUS)
+	rm -f $(NAME_LEAKS)
 	make -C libft fclean
 
 re: fclean
 	make all
 
-.PHONY: all clean fclean re show debug
+.PHONY: all clean fclean re show debug bonus

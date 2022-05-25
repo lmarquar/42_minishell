@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leon <leon@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 10:17:17 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/23 14:43:38 by leon             ###   ########.fr       */
+/*   Updated: 2022/05/25 12:30:51 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@ void	interpret_quotes(char **str, t_env_var *env, int exit_code)
 	t_list			*text_chunks;
 	t_text_chunk	*text_chunk;
 
+	if (!*str)
+		return ;
 	text_chunk = NULL;
 	text_chunks = NULL;
 	i = 0;
@@ -37,6 +39,30 @@ void	interpret_quotes(char **str, t_env_var *env, int exit_code)
 	ft_lstclear(&text_chunks, &clear_chunk);
 	free(*str);
 	*str = result;
+}
+
+int	parse_word(char *token, t_env_var *env, int exit_code, t_cmds *cmds)
+{
+	if (ft_strchr(token, '*') && !ft_strchr(token, '\'') && \
+	 !ft_strchr(token, '\"') && !ft_strchr(token, '$'))
+	{
+		if (!expand_wildcard_bonus(cmds, token))
+		{
+			free(token);
+			token = NULL;
+		}
+	}
+	if (token)
+	{
+		interpret_quotes(&token, env, exit_code);
+		if (!cmds->current_cmd->cmd)
+		{
+			cmds->current_cmd->cmd = token;
+			cmds->current_cmd->is_builtin = is_builtin(token);
+		}
+		add_arg(&cmds->current_cmd, token);
+	}
+	return (0); //TODO: what could be an error here?
 }
 
 int	parse_operator(const char *input, char *token, t_cmds *cmds,
@@ -67,18 +93,6 @@ int	parse_operator(const char *input, char *token, t_cmds *cmds,
 		return (1);
 	}
 	return (0);
-}
-
-int	parse_word(char *token, t_env_var *env, int exit_code, t_cmds *cmds)
-{
-	interpret_quotes(&token, env, exit_code);
-	if (!cmds->current_cmd->cmd)
-	{
-		cmds->current_cmd->cmd = token;
-		cmds->current_cmd->is_builtin = is_builtin(token);
-	}
-	add_arg(&cmds->current_cmd, token);
-	return (0); //TODO: what could be an error here?
 }
 
 static

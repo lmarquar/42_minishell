@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
+/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/06 13:08:52 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/06 14:36:08 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/25 11:38:17 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

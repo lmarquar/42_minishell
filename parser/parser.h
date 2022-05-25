@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leon <leon@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 13:20:00 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/24 22:43:44 by leon             ###   ########.fr       */
+/*   Updated: 2022/05/25 12:29:41 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,5 +145,8 @@ void			print_path_arr(char **paths);
 
 //builtins
 int				is_builtin(const char *s);
+
+//parse_bonus
+int				expand_wildcard_bonus(t_cmds *cmds, char *token);
 
 #endif

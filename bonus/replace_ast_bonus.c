@@ -81,7 +81,6 @@ char	**replace_ast_bonus(char *s)
 		return (NULL);
 	ls_out = ls_to_str();
 	res = ft_split_pattern(ls_out, '\n', s);
-	printf("%s\n", ls_out);
 	free(ls_out);
 	return (res);
 }
