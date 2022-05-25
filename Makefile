@@ -34,7 +34,7 @@ INCLUDES = -I$(READLINE_INCLUDE) -Iparser -Ibuiltin -Iexecuter
 
 LIBMIN			= universal_funcs.c
 SRCS_LIBMIN		= $(addprefix libmin/, $(LIBMIN))
-PARSER			=	parse.c special_character.c replace.c debug.c \
+PARSER			=	parse.c parse2.c special_character.c replace.c debug.c \
 					chunk.c token.c cmd_line.c quote.c arrays.c parse_nobonus.c \
 					smp_cmd.c
 SRCS_PARSER		= $(addprefix parser/, $(PARSER))
@@ -46,9 +46,7 @@ EXECUTER		= execute.c exec_funcs.c exec_el.c exec_with_pipes.c exec_builtin.c
 SRCS_EXECUTER	= $(addprefix executer/, $(EXECUTER))
 BONUS			= ft_split_pattern.c replace_ast_bonus.c
 SRCS_BONUS_DIR	= $(addprefix bonus/, $(BONUS))
-PARSER_BON		=	parse.c special_character.c replace.c debug.c \
-					chunk.c token.c cmd_line.c quote.c arrays.c parse_bonus.c \
-					smp_cmd.c
+PARSER_BON		= $(subst nobonus,bonus,$(PARSER))
 SRCS_PARSER_BON	= $(addprefix parser/, $(PARSER_BON))
 SRCS_MANDATORY	= minishell.c $(SRCS_PARSER) $(SRCS_EXECUTER) $(SRCS_BUILTINS) $(SRCS_ENV) $(SRCS_LIBMIN)
 # OBJS_MANDATORY	= $(patsubst %.c, %.o, $(SRCS_MANDATORY))

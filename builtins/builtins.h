@@ -6,7 +6,7 @@
 /*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 15:36:23 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/19 23:08:14y lmarquar         ###   ########.fr       */
+/*   Updated: 2022/05/25 12:53:15 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define BUILTINS_H
 
 # include <unistd.h>
-# include <string.h> // strerror
+# include <string.h>
 # include <errno.h>
 
 # include "../libft/libft.h"

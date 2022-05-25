@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/29 12:17:48 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/24 14:13:40 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/25 13:35:05 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "execute.h"
-#include <errno.h>
 
 static
 int	execute_init_vars(t_cmd_line **cmd_line, int (*fd)[], int **pid, int *exit)
@@ -54,7 +53,7 @@ void	set_exit_code(t_bin *bin, int exit_code)
 		bin->exit_code = 128 + WTERMSIG(exit_code);
 	else if (WIFEXITED(exit_code))
 	{
-		printf("EXIT STATUS:%d\n", WEXITSTATUS(exit_code));
+		// printf("EXIT STATUS:%d\n", WEXITSTATUS(exit_code));
 		bin->exit_code = WEXITSTATUS(exit_code);
 	}
 	else
@@ -87,8 +86,8 @@ int	execute(t_bin *bin)
 	{
 		if (waitpid(bin->pid[i], &exit_code, 0) == -1)
 		{
-			perror("waitpid"); // debugger triggers this, anything else?
-			continue ; // maybe decide based on the errno waht should happen?
+			perror("waitpid");
+			continue ;
 		}
 		set_exit_code(bin, exit_code);
 		i++;

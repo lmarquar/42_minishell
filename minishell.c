@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 10:39:02 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/23 18:07:10 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/25 13:18:18 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ int	init_env(char *envp[], t_env_var **e_v)
 int	init_bin(t_bin **bin, char *envp[])
 {
 	*bin = ft_calloc(1, sizeof(t_bin));
-	// (*bin)->env = env_vars;
 	(*bin)->exit_code = 0;
 	(*bin)->pid = NULL;
 	(*bin)->cmd_line = NULL;
@@ -61,13 +60,11 @@ int	init_bin(t_bin **bin, char *envp[])
 
 int	main(int argc, char *argv[], char *envp[])
 {
-	// t_env_var	*env_vars;
 	t_bin		*bin;
 	t_cmd_line	cmd_line;
 
 	(void) argc;
 	(void) argv;
-	// init_env(envp, &env_vars);
 	init_bin(&bin, envp);
 	while (1)
 	{
@@ -77,10 +74,9 @@ int	main(int argc, char *argv[], char *envp[])
 		if (!bin->in)
 			bin->in = ft_strdup("exit");
 		add_history(bin->in);
+		init_cmd_line(&cmd_line);
 		if (parse(bin->in, &cmd_line, bin->env, bin) == 0)
-		{
 			execute(bin);
-		}
 		clear_cmd_line(&cmd_line);
 		clear_pointer_arr((void **) bin->paths);
 		free(bin->in);

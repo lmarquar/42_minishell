@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse_bonus.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/05/25 13:20:57 by lmarquar          #+#    #+#             */
+/*   Updated: 2022/05/25 13:33:24 by lmarquar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "parser.h"
 
 int	expand_wildcard_bonus(t_cmds *cmds, char *token)
@@ -5,9 +17,7 @@ int	expand_wildcard_bonus(t_cmds *cmds, char *token)
 	char	**arr;
 	int		i;
 
-	printf("before exp_wildcard\n");
 	arr = replace_ast_bonus(token);
-	printf("after exp_wildcard\n");
 	if (!arr)
 		return (1);
 	if (!cmds->current_cmd->cmd)

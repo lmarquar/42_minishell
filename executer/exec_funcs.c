@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_funcs.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/05/25 12:54:48 by lmarquar          #+#    #+#             */
+/*   Updated: 2022/05/25 12:54:54 by lmarquar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "execute.h"
 
 void	close_ifn_inout(int fd)
@@ -5,7 +17,6 @@ void	close_ifn_inout(int fd)
 	if (fd != STDOUT_FILENO && fd != STDIN_FILENO)
 		close(fd);
 }
-
 
 int	handle_dup2error(void)
 {

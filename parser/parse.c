@@ -6,7 +6,7 @@
 /*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 10:17:17 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/25 12:40:47 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/05/25 13:37:52 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	interpret_quotes(char **str, t_env_var *env, int exit_code)
 	}
 	if (text_chunk)
 		ft_lstadd_back(&text_chunks, ft_lstnew(text_chunk));
-	print_text_chunks(text_chunks); // debug
+	// print_text_chunks(text_chunks); // debug
 	expansion(text_chunks, env, exit_code);
 	result = join_chunks(text_chunks);
 	ft_lstclear(&text_chunks, &clear_chunk);
@@ -46,7 +46,7 @@ static
 int	parse_word(char *token, t_env_var *env, int exit_code, t_cmds *cmds)
 {
 	if (ft_strchr(token, '*') && !ft_strchr(token, '\'') && \
-	 !ft_strchr(token, '\"') && !ft_strchr(token, '$'))
+		!ft_strchr(token, '\"') && !ft_strchr(token, '$'))
 	{
 		if (!expand_wildcard_bonus(cmds, token))
 		{
@@ -64,7 +64,7 @@ int	parse_word(char *token, t_env_var *env, int exit_code, t_cmds *cmds)
 		}
 		add_arg(&cmds->current_cmd, token);
 	}
-	return (0); //TODO: what could be an error here?
+	return (0);
 }
 
 static
@@ -119,19 +119,14 @@ int	parse(const char *input, t_cmd_line *cmd_line, t_env_var *env, t_bin *bin)
 	char	*token;
 	t_cmds	cmds;
 
-	error = 0;
 	if (has_unclosed_quotes(input))
-	{
-		bin->exit_code = 2;
-		return (ft_error(2, "Unclosed quotes!"));
-	}
+		return (handle_unclosed_quotes(bin));
 	token = next_token(input, 1);
-	init_cmd_line(cmd_line);
-	cmds.cmd_lst = NULL;
-	cmds.current_cmd = new_smp_cmd(NULL, ft_calloc(2, sizeof (char *)), 0, 0);
+	init_cmds(&cmds);
+	error = 0;
 	while (token && !error)
 	{
-		printf("token:%s\n", token);
+		// printf("token:%s\n", token);
 		if (is_ctrlchr(token[0]))
 		{
 			error = parse_operator(input, token, &cmds, cmd_line);
@@ -144,7 +139,7 @@ int	parse(const char *input, t_cmd_line *cmd_line, t_env_var *env, t_bin *bin)
 	ft_lstadd_back(&cmds.cmd_lst, ft_lstnew(cmds.current_cmd));
 	cmd_line->smp_cmds = create_cmd_arr(cmds.cmd_lst);
 	ft_lstclear(&cmds.cmd_lst, NULL);
-	show_cmd_line(cmd_line); // debug
+	// show_cmd_line(cmd_line); // debug
 	package_info(cmd_line, bin);
 	return (error);
 }

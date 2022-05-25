@@ -1,8 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_builtin.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/05/25 12:54:22 by lmarquar          #+#    #+#             */
+/*   Updated: 2022/05/25 12:54:40 by lmarquar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "execute.h"
 
 int	exec_builtin(t_bin *bin, char **args, int fdout)
 {
-	int only_err_msg;
+	int	only_err_msg;
 
 	only_err_msg = 0;
 	if (bin->cmd_line->pipe_count)
@@ -15,7 +27,6 @@ int	exec_builtin(t_bin *bin, char **args, int fdout)
 		bin->exit_code = exec_pwd(bin->cwd, fdout);
 	else if (ft_strcmp(args[0], "export") && !args[1])
 		bin->exit_code = exec_export(fdout, bin, args[1], only_err_msg);
-
 	else if (ft_strcmp(args[0], "export"))
 		bin->exit_code = exec_export(fdout, bin, args[1], only_err_msg);
 	else if (ft_strcmp(args[0], "cd"))

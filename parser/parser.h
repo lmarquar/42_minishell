@@ -6,7 +6,7 @@
 /*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 13:20:00 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/25 12:29:41 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/05/25 13:27:16 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,8 @@ typedef struct s_cmd_line
 	char		*outfile;
 	size_t		pipe_count;
 	size_t		cmd_count;
-	t_smp_cmd	**smp_cmds; // pointer gets moved by execute()
-	t_smp_cmd	**smp_cmds_start; // points to the beginning of the array
+	t_smp_cmd	**smp_cmds;
+	t_smp_cmd	**smp_cmds_start;
 	int			append;
 	char		*heredoc_delimiter;
 }	t_cmd_line;
@@ -77,6 +77,10 @@ enum e_QUOTE
 
 int				parse(const char *input, t_cmd_line *cmd_line, t_env_var *env,
 					t_bin *bin);
+
+//parse2
+int				handle_unclosed_quotes(t_bin *bin);
+int				init_cmds(t_cmds *cmds);
 
 // special character
 

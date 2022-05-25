@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cd.c                                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/05/25 12:51:24 by lmarquar          #+#    #+#             */
+/*   Updated: 2022/05/25 12:52:36 by lmarquar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "builtins.h"
 
 int	exec_cd(char *dir, char **cwd, int o_err_msg)
@@ -18,7 +30,7 @@ int	exec_cd(char *dir, char **cwd, int o_err_msg)
 		i2 = chdir(*cwd);
 	if (i2 == -1 && o_err_msg)
 		return (builtin_error(1, "cd", strerror(errno)));
-	curdir = getcwd(NULL, 0); // refresh the cwd
+	curdir = getcwd(NULL, 0);
 	if (curdir)
 	{
 		free(*cwd);

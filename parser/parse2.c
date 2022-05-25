@@ -1,27 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env.c                                              :+:      :+:    :+:   */
+/*   parse2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/05/25 12:52:48 by lmarquar          #+#    #+#             */
-/*   Updated: 2022/05/25 12:52:49 by lmarquar         ###   ########.fr       */
+/*   Created: 2022/05/25 13:08:53 by lmarquar          #+#    #+#             */
+/*   Updated: 2022/05/25 13:20:48 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "builtins.h"
+#include "parser.h"
 
-int	exec_env(int out, t_env_var *env, char **args)
+int	init_cmds(t_cmds *cmds)
 {
-	if (args && args[1])
-		ft_putendl_fd("WARNNG: options and arguments are ignored.", 2);
-	while (env)
-	{
-		ft_putstr_fd(env->key, out);
-		ft_putstr_fd("=", out);
-		ft_putendl_fd(env->val, out);
-		env = env->next;
-	}
+	cmds->cmd_lst = NULL;
+	cmds->current_cmd = new_smp_cmd(NULL, ft_calloc(2, sizeof (char *)), 0, 0);
 	return (0);
+}
+
+int	handle_unclosed_quotes(t_bin *bin)
+{
+	bin->exit_code = 2;
+	return (ft_error(2, "Unclosed quotes!"));
 }

@@ -6,7 +6,7 @@
 /*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/04 13:25:25 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/25 11:37:53 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/05/25 13:24:53 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ void	expansion(t_list *chunks, t_env_var *env, int exit_code)
 		else if (chunk->len == 2 && chunk->str[1] == '?')
 		{
 			if (replace_question_mark(chunk, exit_code) != 0)
-				break ; //TODO: handle error
+				break ;
 		}
 		else
 			expand_env_var(chunk, env);
