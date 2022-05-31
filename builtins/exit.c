@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 12:52:54 by lmarquar          #+#    #+#             */
-/*   Updated: 2022/05/25 17:00:09 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/31 11:17:26 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,12 @@ int	exec_exit(t_bin *bin, char **args, int o_err_msg)
 	exit_code = bin->exit_code;
 	if ((!args || args[1] == NULL) && !o_err_msg)
 		clean_exit(bin, exit_code);
-	error = ft_atoi(args[1]) % 256;
 	if (!is_numeric(args[1]))
-		error = builtin_error(255, "exit", "numeric argument required");
-	if (args[2] != NULL)
+		clean_exit(bin, builtin_error(2, "exit", "numeric argument required"));
+	error = ft_atoi(args[1]) % 256;
+	if (args[2] && args[2][0])
 	{
-		error = builtin_error(1, "exit", "too many arguments");
-		return (error);
+		return (builtin_error(1, "exit", "too many arguments"));
 	}
 	if (!o_err_msg)
 		clean_exit(bin, error);
@@ -68,7 +67,11 @@ static void	clean_up(t_bin *bin)
 
 static int	is_numeric(const char *s)
 {
-	while (s && *s && ft_isdigit(*s))
+	if (!s)
+		return (0);
+	if (*s == '+' || *s == '-')
+		s++;
+	while (*s && ft_isdigit(*s))
 	{
 		s++;
 	}
