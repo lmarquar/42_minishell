@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_el.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/08 11:35:15 by leon              #+#    #+#             */
-/*   Updated: 2022/05/24 12:16:24 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/31 11:23:01 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,7 @@ static int	com_not_found_exit(void)
 
 static int	is_absolute_or_relative_path(char *path)
 {
-	if (ft_strncmp(path, "/", 1) == 0
-		|| ft_strncmp(path, "./", 2) == 0
-		|| ft_strncmp(path, "../", 3) == 0)
+	if (ft_strchr(path, '/'))
 		return (1);
 	return (0);
 }
