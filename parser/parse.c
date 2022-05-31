@@ -1,0 +1,145 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/05/02 10:17:17 by chelmerd          #+#    #+#             */
+/*   Updated: 2022/05/25 13:37:52 by lmarquar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../minishell.h"
+
+static
+void	interpret_quotes(char **str, t_env_var *env, int exit_code)
+{
+	char			*result;
+	int				quote_state;
+	size_t			i;
+	t_list			*text_chunks;
+	t_text_chunk	*text_chunk;
+
+	if (!*str)
+		return ;
+	text_chunk = NULL;
+	text_chunks = NULL;
+	i = 0;
+	quote_state = -1;
+	while ((*str)[i])
+	{
+		split_into_chunks(&text_chunks, &text_chunk, &quote_state, &(*str)[i]);
+		i++;
+	}
+	if (text_chunk)
+		ft_lstadd_back(&text_chunks, ft_lstnew(text_chunk));
+	// print_text_chunks(text_chunks); // debug
+	expansion(text_chunks, env, exit_code);
+	result = join_chunks(text_chunks);
+	ft_lstclear(&text_chunks, &clear_chunk);
+	free(*str);
+	*str = result;
+}
+
+static
+int	parse_word(char *token, t_env_var *env, int exit_code, t_cmds *cmds)
+{
+	if (ft_strchr(token, '*') && !ft_strchr(token, '\'') && \
+		!ft_strchr(token, '\"') && !ft_strchr(token, '$'))
+	{
+		if (!expand_wildcard_bonus(cmds, token))
+		{
+			free(token);
+			token = NULL;
+		}
+	}
+	if (token)
+	{
+		interpret_quotes(&token, env, exit_code);
+		if (!cmds->current_cmd->cmd)
+		{
+			cmds->current_cmd->cmd = token;
+			cmds->current_cmd->is_builtin = is_builtin(token);
+		}
+		add_arg(&cmds->current_cmd, token);
+	}
+	return (0);
+}
+
+static
+int	parse_operator(const char *input, char *token, t_cmds *cmds,
+					t_cmd_line *cmd_line)
+{
+	if (ft_strncmp("<", token, 2) == 0)
+		assign_token(&cmd_line->infile, next_token(input, 0));
+	else if (ft_strncmp("<<", token, 3) == 0)
+		assign_token(&cmd_line->heredoc_delimiter, next_token(input, 0));
+	else if (token[0] == '>')
+	{
+		assign_token(&cmd_line->outfile, next_token(input, 0));
+		cmd_line->append = 0;
+		if (token[1] == '>')
+			cmd_line->append = 1;
+	}
+	else if (ft_strncmp("|", token, 2) == 0)
+	{
+		ft_lstadd_back(&cmds->cmd_lst, ft_lstnew(cmds->current_cmd));
+		cmds->current_cmd
+			= new_smp_cmd(NULL, ft_calloc(2, sizeof (char *)), 0, 0);
+		cmd_line->pipe_count++;
+		cmd_line->cmd_count++;
+	}
+	else
+	{
+		printf("Control operator ('%s') not supported.\n", token);
+		return (1);
+	}
+	return (0);
+}
+
+static
+void	package_info(t_cmd_line *cmd_line, t_bin *bin)
+{
+	cmd_line->smp_cmds_start = cmd_line->smp_cmds;
+	bin->cmd_line = cmd_line;
+	if (bin->env_arr)
+	{
+		clear_pointer_arr((void **) bin->env_arr);
+	}
+	bin->env_arr = create_env_arr(bin->env);
+	if (!bin->cwd)
+		bin->cwd = getcwd(NULL, 0);
+	bin->paths = create_path_arr(find_in_env("PATH", 4, bin->env));
+}
+
+int	parse(const char *input, t_cmd_line *cmd_line, t_env_var *env, t_bin *bin)
+{
+	int		error;
+	char	*token;
+	t_cmds	cmds;
+
+	if (has_unclosed_quotes(input))
+		return (handle_unclosed_quotes(bin));
+	token = next_token(input, 1);
+	init_cmds(&cmds);
+	error = 0;
+	while (token && !error)
+	{
+		// printf("token:%s\n", token);
+		if (is_ctrlchr(token[0]))
+		{
+			error = parse_operator(input, token, &cmds, cmd_line);
+			free(token);
+		}
+		else
+			parse_word(token, env, bin->exit_code, &cmds);
+		token = next_token(input, 0);
+	}
+	ft_lstadd_back(&cmds.cmd_lst, ft_lstnew(cmds.current_cmd));
+	cmd_line->smp_cmds = create_cmd_arr(cmds.cmd_lst);
+	ft_lstclear(&cmds.cmd_lst, NULL);
+	// show_cmd_line(cmd_line); // debug
+	package_info(cmd_line, bin);
+	return (error);
+}
