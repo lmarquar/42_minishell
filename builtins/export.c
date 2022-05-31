@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 12:52:57 by lmarquar          #+#    #+#             */
-/*   Updated: 2022/05/31 15:07:42 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/06/07 11:09:46 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,6 @@ int	exec_export(int fdout, t_bin *bin, char **args, int o_err_msg)
 		}
 		if (find_in_env(env_var->key, ft_strlen(env_var->key), bin->env))
 			bin->env = remove_env_var(bin->env, env_var->key);
-		printf("added key: %s=%s", env_var->key, env_var->val);
 		add_env_var(&bin->env, env_var);
 	}
 	return (0);
