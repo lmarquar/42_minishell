@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 12:52:54 by lmarquar          #+#    #+#             */
-/*   Updated: 2022/05/25 17:00:09 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/31 16:53:28 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	exec_exit(t_bin *bin, char **args, int o_err_msg)
 	error = ft_atoi(args[1]) % 256;
 	if (!is_numeric(args[1]))
 		error = builtin_error(255, "exit", "numeric argument required");
-	if (args[2] != NULL)
+	else if (args[2] != NULL)
 	{
 		error = builtin_error(1, "exit", "too many arguments");
 		return (error);

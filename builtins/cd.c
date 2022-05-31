@@ -3,28 +3,30 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 12:51:24 by lmarquar          #+#    #+#             */
-/*   Updated: 2022/05/25 14:07:13 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/31 17:11:50 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtins.h"
 
-int	exec_cd(char *dir, char **cwd, int o_err_msg)
+int	exec_cd(char *dir, char **cwd, t_env_var *env_var, int o_err_msg)
 {
 	int		i;
 	int		i2;
 	char	*curdir;
 
 	if (!dir)
-		return (builtin_error(2, "cd", "no relative or absolute path found"));
+	{
+		dir = find_in_env("HOME", 4, env_var);
+		if (!dir)
+			return (builtin_error(1, "cd", "HOME not set"));
+	}
 	i = chdir(dir);
 	if (i == -1)
-	{
 		return (builtin_error(1, "cd", strerror(errno)));
-	}
 	i2 = 0;
 	if (o_err_msg && i != -1)
 		i2 = chdir(*cwd);

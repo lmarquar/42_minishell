@@ -6,19 +6,22 @@
 /*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 12:54:00 by lmarquar          #+#    #+#             */
-/*   Updated: 2022/05/25 12:54:01 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/05/31 17:00:19 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtins.h"
 
-int	exec_unset(char *unset_key, t_bin *bin)
+int	exec_unset(char **unset_keys, t_bin *bin)
 {
 	t_env_var	*env;
+	int			i;
 
 	env = bin->env;
-	if (!env || !unset_key)
+	if (!env || !unset_keys)
 		return (0);
-	bin->env = remove_env_var(env, unset_key);
+	i = -1;
+	while (unset_keys[++i])
+		bin->env = remove_env_var(env, unset_keys[i]);
 	return (0);
 }

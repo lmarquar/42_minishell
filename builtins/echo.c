@@ -6,11 +6,37 @@
 /*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 12:52:45 by lmarquar          #+#    #+#             */
-/*   Updated: 2022/05/25 13:44:00 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/05/31 16:46:12 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtins.h"
+
+
+
+int	skip_n_flags(char **args)
+{
+	int	i;
+	int	n;
+	int	k;
+
+	i = 1;
+	n = 0;
+	while (args[i] && args[i][0] == '-')
+	{
+		k = 1;
+		while (args[i][k] == 'n')
+			k++;
+		if (!args[i][k])
+		{
+			n = 1;
+			i++;
+		}
+		else
+			break ;
+	}
+	return (i);
+}
 
 /**
  * @brief writes the arguments to the given filedescriptor
@@ -22,15 +48,18 @@
 int	exec_echo(int fdout, char **args)
 {
 	int		i;
+	int		n_flag;
 
 	i = 1;
+	n_flag = 0;
 	if (!args[i])
 	{
 		write(fdout, "\n", 1);
 		return (0);
 	}
-	while (args[i] && !ft_strncmp(args[i], "-n", 3))
-		i++;
+	i = skip_n_flags(args);
+	if (i > 1)
+		n_flag = 1;
 	while (args[i])
 	{
 		write(fdout, args[i], ft_strlen(args[i]));
@@ -38,7 +67,7 @@ int	exec_echo(int fdout, char **args)
 		if (args[i])
 			write(fdout, " ", 1);
 	}
-	if (ft_strncmp(args[1], "-n", 3))
+	if (!n_flag)
 		write(fdout, "\n", 1);
 	return (0);
 }

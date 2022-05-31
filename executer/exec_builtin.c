@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_builtin.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 12:54:22 by lmarquar          #+#    #+#             */
-/*   Updated: 2022/05/31 15:07:42 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/31 17:10:41 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,9 @@ int	exec_builtin(t_bin *bin, char **args, int fdout)
 	else if (bin->cmd_line->smp_cmds[0]->is_builtin == EXPORT)
 		bin->exit_code = exec_export(fdout, bin, &(args[1]), only_err_msg);
 	else if (bin->cmd_line->smp_cmds[0]->is_builtin == CD)
-		bin->exit_code = exec_cd(args[1], &bin->cwd, only_err_msg);
+		bin->exit_code = exec_cd(args[1], &bin->cwd, bin->env, only_err_msg);
 	else if (bin->cmd_line->smp_cmds[0]->is_builtin == UNSET)
-		bin->exit_code = exec_unset(args[1], bin);
+		bin->exit_code = exec_unset(&args[1], bin);
 	else if (bin->cmd_line->smp_cmds[0]->is_builtin == EXIT)
 		bin->exit_code = exec_exit(bin, args, only_err_msg);
 	return (0);

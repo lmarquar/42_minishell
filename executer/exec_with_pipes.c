@@ -6,7 +6,7 @@
 /*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 12:55:02 by lmarquar          #+#    #+#             */
-/*   Updated: 2022/05/25 12:55:03 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/05/31 17:15:08 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,9 +100,7 @@ int	exec_pipe_to_out(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 	if (!(bin->cmd_line->pipe_count % 2))
 		i_fd = 2;
 	close(fd[1 + i_fd]);
-	if (bin->cmd_line->append > 0)
-		append(fd[i_fd], fd[5]);
-	else if (bin->cmd_line->smp_cmds[0]->is_builtin)
+	if (bin->cmd_line->smp_cmds[0]->is_builtin)
 		exec_builtin(bin, bin->cmd_line->smp_cmds[0]->args, fd[5]);
 	else
 	{
