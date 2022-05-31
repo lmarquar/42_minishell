@@ -3,92 +3,127 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 12:52:57 by lmarquar          #+#    #+#             */
-/*   Updated: 2022/05/25 12:52:58 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/05/31 15:07:42 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtins.h"
 
+char	*next_smallest_string_uc(char **arr, char *s, char c)
+{
+	int		i;
+	int		diff;
+	char	*t;
+
+	i = -1;
+	while (arr[++i])
+	{
+		if (ft_strccmp(arr[i], s, '=') > 0)
+			break ;
+	}
+	if (!arr[i])
+		return (NULL);
+	t = arr[i];
+	i = -1;
+	while (arr[++i])
+	{
+		diff = ft_strccmp(arr[i], t, c);
+		if (diff < 0 && ft_strccmp(arr[i], s, c) > 0)
+			t = arr[i];
+	}
+	return (t);
+}
+
+static
+char	**ft_strsort(char **arr)
+{
+	int		i;
+	int		k;
+	char	**res;
+
+	i = 0;
+	while (arr[i])
+		i++;
+	res = ft_calloc(i + 1, sizeof(char *));
+	res[0] = next_smallest_string_uc(arr, "", '=');
+	k = 1;
+	while (k < i)
+	{
+		res[k] = next_smallest_string_uc(arr, res[k - 1], '=');
+		k++;
+	}
+	return (res);
+}
+
+static
+int	without_args_write(int fdout, char *s)
+{
+	int	i;
+
+	write(fdout, "declare -x ", 11);
+	i = 0;
+	while (s[i] != '=' && s[i])
+		write(fdout, &(s[i++]), 1);
+	if (s[i])
+	{
+		write(fdout, &(s[i++]), 1);
+		write(fdout, "\"", 1);
+		while (s[i])
+		{
+			if (s[i] == '\"')
+				write(fdout, "\\", 1);
+			write(fdout, &(s[i++]), 1);
+		}
+		write(fdout, "\"", 1);
+	}
+	write(fdout, "\n", 1);
+	return (0);
+}
+
 static
 int	without_args(int fdout, char **arr)
 {
-	int	i;
-	int	i2;
+	int		i;
+	char	**arr_sorted;
 
 	i = -1;
 	if (!arr)
 		return (write(fdout, "no env_arr\n", 12));
-	while (arr[++i] != NULL)
-	{
-		write(fdout, "declare -x ", 11);
-		i2 = 0;
-		while (arr[i][i2] != '=')
-			write(fdout, &(arr[i][i2++]), 1);
-		write(fdout, &(arr[i][i2++]), 1);
-		write(fdout, "\"", 1);
-		while (arr[i][i2])
-		{
-			if (arr[i][i2] == '\"')
-				write(fdout, "\\", 1);
-			write(fdout, &(arr[i][i2++]), 1);
-		}
-		write(fdout, "\"", 1);
-		write(fdout, "\n", 1);
-	}
+	arr_sorted = ft_strsort(arr);
+	while (arr_sorted[++i] != NULL)
+		without_args_write(fdout, arr_sorted[i]);
+	free(arr_sorted);
 	return (0);
 }
 
-static
-int	is_valid_identifier_chr(int c, int pos)
+int	exec_export(int fdout, t_bin *bin, char **args, int o_err_msg)
 {
-	if (ft_isdigit(c) && pos == 0)
-		return (0);
-	else if (ft_isalnum(c) || c == '_')
-		return (1);
-	return (0);
-}
-
-static
-int	is_valid_identifier(char *s)
-{
-	int	i;
-
-	i = 0;
-	while (s && s[i])
-	{
-		if (!is_valid_identifier_chr(s[i], i))
-			return (0);
-		i++;
-	}
-	return (1);
-}
-
-int	exec_export(int fdout, t_bin *bin, char *var_ass, int o_err_msg)
-{
-	char		*val;
 	t_env_var	*env_var;
+	int			i;
 
-	if (!var_ass)
+	if (!*args)
 		return (without_args(fdout, bin->env_arr));
-	env_var = get_env_from_str(var_ass);
-	if (!env_var)
+	i = -1;
+	while(args[++i])
 	{
-		perror("malloc error while init env var");
-		return (1);
+		env_var = get_env_from_str(args[i]);
+		if (!env_var)
+		{
+			bin->exit_code = builtin_error(1, "export", "identifier is not valid");
+			continue ;
+		}
+		if (o_err_msg)
+		{
+			clear_env_var(env_var);
+			continue ;
+		}
+		if (find_in_env(env_var->key, ft_strlen(env_var->key), bin->env))
+			bin->env = remove_env_var(bin->env, env_var->key);
+		printf("added key: %s=%s", env_var->key, env_var->val);
+		add_env_var(&bin->env, env_var);
 	}
-	if (!is_valid_identifier(env_var->key))
-		return (builtin_error(1, "export", "identifier is not valid"));
-	if (o_err_msg)
-	{
-		clear_env_var(env_var);
-		return (0);
-	}
-	val = find_in_env(env_var->key, ft_strlen(env_var->key), bin->env);
-	if (val)
-		bin->env = remove_env_var(bin->env, env_var->key);
-	add_env_var(&bin->env, env_var);
 	return (0);
 }

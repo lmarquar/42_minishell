@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   chunk.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/06 13:22:23 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/19 16:08:32 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/05/31 15:13:24 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void	split_into_chunks(t_list **chunks,
 			*chunk = new_chunk(s, 1);
 	}
 	else if (*chunk && (*chunk)->str[0] == '$' && *state != SINGLE_QUOTE
-		&& (is_quote(*s) || *s == '$' || is_space(*s)
+		&& (is_quote(*s) || *s == '$' || is_space(*s) || *s == '='
 			|| ((*chunk)->len >= 2 && (*chunk)->str[1] == '?')))
 	{
 		ft_lstadd_back(chunks, ft_lstnew(*chunk));
