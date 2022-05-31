@@ -6,7 +6,7 @@
 /*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/29 12:17:48 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/31 17:14:39 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/05/31 17:23:10 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,8 @@ int	exec_in_to_out(t_bin *bin, int *pid, int fd[])
 static
 void	set_exit_code(t_bin *bin, int exit_code)
 {
+	if (bin->cmd_line->smp_cmds[0]->is_builtin)
+		return ;
 	if (WIFSIGNALED(exit_code))
 		bin->exit_code = 128 + WTERMSIG(exit_code);
 	else if (WIFEXITED(exit_code))
@@ -86,9 +88,9 @@ int	execute(t_bin *bin)
 			perror("waitpid");
 			continue ;
 		}
-		set_exit_code(bin, exit_code);
 		i++;
 	}
+	set_exit_code(bin, exit_code);
 	free(bin->pid);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 12:54:48 by lmarquar          #+#    #+#             */
-/*   Updated: 2022/05/25 12:54:54 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/05/31 18:19:52 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,19 +44,27 @@ int	heredoc_handler(t_cmd_line *cmd_line, int fdout)
 {
 	char	*in;
 	char	*delimiter;
+	int		i;
 
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
 	delimiter = cmd_line->heredoc_delimiter;
-	while (1)
+	i = 0;
+	while (cmd_line->heredoc_delimiter[i])
 	{
 		in = readline("> ");
 		if (!in)
 			break ;
 		if (!ft_strncmp(delimiter, in, ft_strlen(delimiter)))
-			break ;
-		write(fdout, in, ft_strlen(in));
-		write(fdout, "\n", 1);
+			i++;
+		if (!cmd_line->heredoc_delimiter[i])
+			break;
+		if (!cmd_line->heredoc_delimiter[i + 1])
+		{
+			write(fdout, in, ft_strlen(in));
+			write(fdout, "\n", 1);
+		}
+		free(in);
 	}
 	return (0);
 }

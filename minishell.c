@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 10:39:02 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/31 15:07:42 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/05/31 18:04:57 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,16 +70,21 @@ int	main(int argc, char *argv[], char *envp[])
 	{
 		signal(SIGINT, &handle_signals);
 		signal(SIGQUIT, SIG_IGN);
-		bin->in = readline(SHELL_PROMT);
+		if (!bin->in)
+		{
+			bin->in = readline(SHELL_PROMT);
+		}
 		if (!bin->in)
 			bin->in = ft_strdup("exit");
-		add_history(bin->in);
 		init_cmd_line(&cmd_line);
 		if (parse(bin->in, &cmd_line, bin->env, bin) == 0)
 			execute(bin);
+		if (cmd_line.smp_cmds_start[0]->args[0])
+			add_history(bin->in);
 		clear_cmd_line(&cmd_line);
 		clear_pointer_arr(&bin->paths);
 		bin->paths = NULL;
+		free(bin->in);
 	}
 	return (0);
 }
