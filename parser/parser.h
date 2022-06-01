@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 13:20:00 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/25 17:00:53 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/06/01 12:45:25 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,11 @@ typedef struct s_smp_cmd
 	char	**args;
 	size_t	arg_count;
 	int		is_builtin;
+	char	*infile;
+	char	**heredoc;
+	int		heredoc_count;
+	char	*outfile;
+	char	*outfile_append;
 }	t_smp_cmd;
 
 typedef struct s_cmd_line

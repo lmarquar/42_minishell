@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/29 12:17:48 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/06/01 11:31:36 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/06/01 13:43:00 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,20 +15,30 @@
 static
 int	execute_init_vars(t_cmd_line **cmd_line, int (*fd)[], int **pid, int *exit)
 {
+	if ((*cmd_line)->heredoc_delimiter)
+		(*cmd_line)->pipe_count = (*cmd_line)->pipe_count + 1;
+	*pid = ft_calloc((*cmd_line)->pipe_count + 2, sizeof(int));
 	*exit = 0;
 	if ((*cmd_line)->infile)
 		(*fd)[4] = open((*cmd_line)->infile, O_RDONLY);
 	else
 		(*fd)[4] = STDIN_FILENO;
+	if ((*fd)[4] == -1)
+	{
+		perror("inputfile not found");
+		return (1);
+	}
 	if ((*cmd_line)->outfile && (*cmd_line)->append > 0)
 		(*fd)[5] = open((*cmd_line)->outfile, O_CREAT | O_APPEND | O_RDWR, 0777);
 	else if ((*cmd_line)->outfile)
 		(*fd)[5] = open((*cmd_line)->outfile, O_CREAT | O_TRUNC | O_RDWR, 0777);
 	else
 		(*fd)[5] = STDOUT_FILENO;
-	if ((*cmd_line)->heredoc_delimiter)
-		(*cmd_line)->pipe_count = (*cmd_line)->pipe_count + 1;
-	*pid = ft_calloc((*cmd_line)->pipe_count + 2, sizeof(int));
+	if ((*fd)[5] == -1)
+	{
+		perror("outputfile failed to be created");
+		return (1);
+	}
 	return (0);
 }
 
