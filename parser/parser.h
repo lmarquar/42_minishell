@@ -6,7 +6,11 @@
 /*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 13:20:00 by chelmerd          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2022/05/31 18:14:09 by lmarquar         ###   ########.fr       */
+=======
+/*   Updated: 2022/06/01 12:45:25 by chelmerd         ###   ########.fr       */
+>>>>>>> 2e827740ab600a96aafb6bca24d38731dea0f708
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +31,11 @@ typedef struct s_smp_cmd
 	char	**args;
 	size_t	arg_count;
 	int		is_builtin;
+	char	*infile;
+	char	**heredoc;
+	int		heredoc_count;
+	char	*outfile;
+	char	*outfile_append;
 }	t_smp_cmd;
 
 typedef struct s_cmd_line

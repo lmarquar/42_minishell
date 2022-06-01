@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_with_pipes.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 12:55:02 by lmarquar          #+#    #+#             */
-/*   Updated: 2022/05/31 17:15:08 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/06/01 13:39:19 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_el.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
+/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/08 11:35:15 by leon              #+#    #+#             */
-/*   Updated: 2022/05/31 11:23:01 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/06/01 13:41:01 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ static int	exec_in_current_dir(char **arg, t_bin *bin, int fdin, int fdout)
 			return (handle_dup2error());
 		close(fdout);
 	}
+	ft_putstr_fd("in exec in current dir\n", open("out.txt", O_CREAT));
 	execve(arg[0], arg, bin->env_arr);
 	return (com_not_found_exit());
 }
@@ -66,6 +67,7 @@ int	exec_with_paths(char **arg, t_bin *bin, int fdin, int fdout)
 		close(fdout);
 	}
 	i = -1;
+	ft_putstr_fd("in exec in current dir\n", open("out.txt", O_CREAT));
 	while (bin->paths && bin->paths[++i])
 	{
 		cmd = ft_strjoin(bin->paths[i], arg[0]);
@@ -83,5 +85,6 @@ int	exec_el(char **arg, t_bin *bin, int fdin, int fdout)
 		i = exec_in_current_dir(arg, bin, fdin, fdout);
 	else
 		i = exec_with_paths(arg, bin, fdin, fdout);
-	return (i);
+	exit(i);
+	return (0);
 }
