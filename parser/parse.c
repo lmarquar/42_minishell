@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 10:17:17 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/06/01 16:14:49 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/06/01 16:56:39 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,15 +72,21 @@ int	parse_operator(const char *input, char *token, t_cmds *cmds,
 					t_cmd_line *cmd_line)
 {
 	if (ft_strncmp("<", token, 2) == 0)
-		assign_token(&cmd_line->infile, next_token(input, 0));
+		return (handle_redirection(&cmd_line->infile, next_token(input, 0)));
 	else if (ft_strncmp("<<", token, 3) == 0)
-		assign_token(&cmd_line->heredoc_delimiter, next_token(input, 0));
+	{
+		return (handle_heredoc(&cmd_line->heredoc_delimiter, next_token(input, 0)));
+	}
 	else if (token[0] == '>')
 	{
-		assign_token(&cmd_line->outfile, next_token(input, 0));
 		cmd_line->append = 0;
+		if (handle_redirection(&cmd_line->outfile, next_token(input, 0)) != 0)
+			return (2);
+		printf("%s\n", cmd_line->outfile);
 		if (token[1] == '>')
+		{
 			cmd_line->append = 1;
+		}
 	}
 	else if (ft_strncmp("|", token, 2) == 0)
 	{
