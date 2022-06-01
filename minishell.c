@@ -6,7 +6,7 @@
 /*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 10:39:02 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/06/01 13:54:16 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/06/01 14:29:53 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,10 +70,7 @@ int	main(int argc, char *argv[], char *envp[])
 	{
 		signal(SIGINT, &handle_signals);
 		signal(SIGQUIT, SIG_IGN);
-		if (!bin->in)
-		{
-			bin->in = readline(SHELL_PROMT);
-		}
+		bin->in = readline(SHELL_PROMT);
 		if (!bin->in)
 			bin->in = ft_strdup("exit");
 		init_cmd_line(&cmd_line);
