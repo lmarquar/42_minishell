@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 10:39:02 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/31 15:07:42 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/06/01 11:19:26 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,7 @@ int	main(int argc, char *argv[], char *envp[])
 		clear_cmd_line(&cmd_line);
 		clear_pointer_arr(&bin->paths);
 		bin->paths = NULL;
+		free(bin->in);
 	}
 	return (0);
 }
