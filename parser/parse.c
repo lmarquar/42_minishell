@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 10:17:17 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/25 17:12:18 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/06/01 14:37:33 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,9 +98,14 @@ int	parse_operator(const char *input, char *token, t_cmds *cmds,
 }
 
 static
-void	package_info(t_cmd_line *cmd_line, t_bin *bin)
+int	package_info(t_cmd_line *cmd_line, t_bin *bin)
 {
 	cmd_line->smp_cmds_start = cmd_line->smp_cmds;
+	if (!cmd_line->smp_cmds[cmd_line->cmd_count - 1]->cmd)
+	{
+		bin->exit_code = 2;
+		return (ft_error(2, "unexpected token at the end"));
+	}
 	bin->cmd_line = cmd_line;
 	if (bin->env_arr)
 	{
@@ -110,6 +115,7 @@ void	package_info(t_cmd_line *cmd_line, t_bin *bin)
 	if (!bin->cwd)
 		bin->cwd = getcwd(NULL, 0);
 	bin->paths = create_path_arr(find_in_env("PATH", 4, bin->env));
+	return (0);
 }
 
 int	parse(const char *input, t_cmd_line *cmd_line, t_env_var *env, t_bin *bin)
@@ -137,6 +143,6 @@ int	parse(const char *input, t_cmd_line *cmd_line, t_env_var *env, t_bin *bin)
 	ft_lstadd_back(&cmds.cmd_lst, ft_lstnew(cmds.current_cmd));
 	cmd_line->smp_cmds = create_cmd_arr(cmds.cmd_lst);
 	ft_lstclear(&cmds.cmd_lst, NULL);
-	package_info(cmd_line, bin);
+	error = package_info(cmd_line, bin);
 	return (error);
 }
