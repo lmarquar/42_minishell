@@ -6,14 +6,14 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 10:17:17 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/06/01 15:26:41 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/06/01 16:14:49 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
 static
-void	interpret_quotes(char **str, t_env_var *env, int exit_code)
+void	interpret_quotes(char **str, t_env_var *env, int exit_code, int expand)
 {
 	char			*result;
 	int				quote_state;
@@ -34,7 +34,8 @@ void	interpret_quotes(char **str, t_env_var *env, int exit_code)
 	}
 	if (text_chunk)
 		ft_lstadd_back(&text_chunks, ft_lstnew(text_chunk));
-	expansion(text_chunks, env, exit_code);
+	if (expand)
+		expansion(text_chunks, env, exit_code);
 	result = join_chunks(text_chunks);
 	ft_lstclear(&text_chunks, &clear_chunk);
 	free(*str);
@@ -55,7 +56,7 @@ int	parse_word(char *token, t_env_var *env, int exit_code, t_cmds *cmds)
 	}
 	if (token)
 	{
-		interpret_quotes(&token, env, exit_code);
+		interpret_quotes(&token, env, exit_code, 1);
 		if (!cmds->current_cmd->cmd)
 		{
 			cmds->current_cmd->cmd = token;
@@ -102,6 +103,9 @@ int	package_info(t_cmd_line *cmd_line, t_bin *bin, int error)
 {
 	if (error)
 		return (error);
+	interpret_quotes(&cmd_line->infile, bin->env, bin->exit_code, 1);
+	interpret_quotes(&cmd_line->outfile, bin->env, bin->exit_code, 1);
+	interpret_quotes(&cmd_line->heredoc_delimiter, bin->env, bin->exit_code, 0);
 	cmd_line->smp_cmds_start = cmd_line->smp_cmds;
 	if (cmd_line->cmd_count > 1
 		&& !cmd_line->smp_cmds[cmd_line->cmd_count - 1]->cmd)
