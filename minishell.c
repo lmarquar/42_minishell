@@ -3,17 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-<<<<<<< HEAD
 /*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 10:39:02 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/31 18:04:57 by lmarquar         ###   ########.fr       */
-=======
-/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/28 10:39:02 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/06/01 11:19:26 by chelmerd         ###   ########.fr       */
->>>>>>> 2e827740ab600a96aafb6bca24d38731dea0f708
+/*   Updated: 2022/06/01 13:54:16 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

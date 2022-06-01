@@ -3,14 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 12:52:54 by lmarquar          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2022/05/31 17:23:09 by lmarquar         ###   ########.fr       */
-=======
-/*   Updated: 2022/06/01 11:44:45 by chelmerd         ###   ########.fr       */
->>>>>>> 2e827740ab600a96aafb6bca24d38731dea0f708
+/*   Updated: 2022/06/01 13:54:16 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,21 +37,8 @@ int	exec_exit(t_bin *bin, char **args, int o_err_msg)
 	if ((!args || !args[1]) && o_err_msg)
 		return (exit_code);
 	if (!is_numeric(args[1]))
-<<<<<<< HEAD
-		error = builtin_error(255, "exit", "numeric argument required");
-	else if (args[2] != NULL)
-	{
-		error = builtin_error(2, "exit", "numeric argument required");
-		if (o_err_msg)
-			return (error);
-		clean_exit(bin, error);
-	}
-	error = ft_atoi(args[1]) % 256;
-	if (args[2] && args[2][0])
-=======
 		exit_code = builtin_error(255, "exit", "numeric argument required");
 	else if (args[2])
->>>>>>> 2e827740ab600a96aafb6bca24d38731dea0f708
 		return (builtin_error(1, "exit", "too many arguments"));
 	else
 		exit_code = ft_atoi(args[1]) % 256;

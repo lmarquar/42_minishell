@@ -3,14 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_funcs.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 12:54:48 by lmarquar          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2022/05/31 18:19:52 by lmarquar         ###   ########.fr       */
-=======
-/*   Updated: 2022/06/01 12:51:40 by chelmerd         ###   ########.fr       */
->>>>>>> 2e827740ab600a96aafb6bca24d38731dea0f708
+/*   Updated: 2022/06/01 13:54:16 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,23 +56,12 @@ int	heredoc_handler(t_cmd_line *cmd_line, int fdout)
 		if (!in)
 			break ;
 		if (!ft_strncmp(delimiter, in, ft_strlen(delimiter)))
-<<<<<<< HEAD
-			i++;
-		if (!cmd_line->heredoc_delimiter[i])
-			break;
-		if (!cmd_line->heredoc_delimiter[i + 1])
-		{
-			write(fdout, in, ft_strlen(in));
-			write(fdout, "\n", 1);
-		}
-=======
 		{
 			free(in);
 			break ;
 		}
 		write(fdout, in, ft_strlen(in));
 		write(fdout, "\n", 1);
->>>>>>> 2e827740ab600a96aafb6bca24d38731dea0f708
 		free(in);
 	}
 	return (0);
