@@ -6,7 +6,7 @@
 /*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/29 12:17:48 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/06/01 13:54:16 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/06/03 17:29:05 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,23 +84,27 @@ int	execute(t_bin *bin)
 
 	if (!bin->cmd_line->smp_cmds[0]->cmd)
 		return (0);
-	i = 0;
-	execute_init_vars(&bin->cmd_line, &fd, &(bin->pid), &exit_code);
-	if (!bin->cmd_line->pipe_count)
-		exec_in_to_out(bin, bin->pid, fd);
-	else
-		exec_with_pipes(bin, bin->pid, fd);
-	ignore_signals();
-	while (bin->pid[i])
+	while (bin->cmd_line->smp_cmds[0])
 	{
-		if (waitpid(bin->pid[i], &exit_code, 0) == -1)
+		i = 0;
+		execute_init_vars(&bin->cmd_line, &fd, &(bin->pid), &exit_code);
+		if (!bin->cmd_line->pipe_count)
+			exec_in_to_out(bin, bin->pid, fd);
+		else
+			exec_with_pipes(bin, bin->pid, fd);
+		ignore_signals();
+		while (bin->pid[i])
 		{
-			perror("waitpid");
-			continue ;
+			if (waitpid(bin->pid[i], &exit_code, 0) == -1)
+			{
+				perror("waitpid");
+				continue ;
+			}
+			i++;
 		}
-		i++;
+		set_exit_code(bin, exit_code);
+		bin->cmd_line->smp_cmds = bin->cmd_line->smp_cmds + 1;
 	}
-	set_exit_code(bin, exit_code);
 	free(bin->pid);
 	return (0);
 }
