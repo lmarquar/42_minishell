@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 13:20:00 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/06/03 13:05:08 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/06/03 16:10:49 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,10 @@ enum e_QUOTE
 int				parse(const char *input, t_cmd_line *cmd_line, t_env_var *env,
 					t_bin *bin);
 
+void			interpret_quotes(char **str, t_env_var *env, int exit_code, int expand);
+
 //parse2
+
 int				handle_unclosed_quotes(t_bin *bin);
 int				init_cmds(t_cmds *cmds);
 
@@ -164,6 +167,7 @@ void			clear_pointer_arr(char ***arr);
 int				handle_redirection(t_smp_cmd *cmd, char *token, int type);
 t_redir			*new_redir(char *name, int type);
 void			clear_redir(void *redir);
+void			expand_redirections(t_list *smp_cmds, t_env_var *env, int exit_code);
 
 //builtins
 int				is_builtin(const char *s);

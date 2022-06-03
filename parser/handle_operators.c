@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/01 14:17:12 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/06/03 13:03:19 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/06/03 17:55:39 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ t_redir	*new_redir(char *name, int type)
 
 void	clear_redir(void *redir)
 {
-	t_redir *r;
+	t_redir	*r;
 
 	if (!redir)
 		return ;
@@ -69,10 +69,28 @@ int	handle_redirection(t_smp_cmd *cmd, char *token, int type)
 	return (0);
 }
 
-int	handle_heredoc(char **heredoc_delimiter, char *token)
+void	expand_redirections(t_list *smp_cmds, t_env_var *env, int exit_code)
 {
-	if (check_token(token) != 0)
-		return (2);
-	assign_token(heredoc_delimiter, token);
-	return (0);
+	t_smp_cmd	*cmd;
+	t_list		*redirs;
+	t_redir		*r;
+	size_t		i;
+
+	while (smp_cmds)
+	{
+		cmd = (t_smp_cmd *) smp_cmds->content;
+		redirs = cmd->redirections;
+		if (cmd->heredoc_count)
+			cmd->heredoc_delims = ft_calloc(cmd->heredoc_count + 1, sizeof(char *));
+		i = 0;
+		while (redirs)
+		{
+			r = (t_redir *) redirs->content;
+			interpret_quotes(&r->name, env, exit_code, (r->type != HEREDOC));
+			if (r->type == HEREDOC)
+				cmd->heredoc_delims[i++] = ft_strdup(r->name);
+			redirs = redirs->next;
+		}
+		smp_cmds = smp_cmds->next;
+	}
 }

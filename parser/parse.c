@@ -6,13 +6,12 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 10:17:17 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/06/03 13:05:35 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/06/03 16:08:12 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-static
 void	interpret_quotes(char **str, t_env_var *env, int exit_code, int expand)
 {
 	char			*result;
@@ -152,6 +151,7 @@ int	parse(const char *input, t_cmd_line *cmd_line, t_env_var *env, t_bin *bin)
 		token = next_token(input, 0);
 	}
 	ft_lstadd_back(&cmds.cmd_lst, ft_lstnew(cmds.current_cmd));
+	expand_redirections(cmds.cmd_lst, env, bin->exit_code);
 	cmd_line->smp_cmds = create_cmd_arr(cmds.cmd_lst);
 	ft_lstclear(&cmds.cmd_lst, NULL);
 	error = package_info(cmd_line, bin, error);
