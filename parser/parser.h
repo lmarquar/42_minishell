@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 13:20:00 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/06/01 16:37:53 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/06/03 13:05:08 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,17 +21,30 @@
 # include "../env/env.h"
 # include "../bonus/bonus.h"
 
+enum e_redirection_type
+{
+	INPUT = 1,
+	HEREDOC,
+	OUTPUT,
+	APPEND
+};
+
+typedef struct s_redirection
+{
+	int		type;
+	char	*name;
+}	t_redir;
+
 typedef struct s_smp_cmd
 {
 	char	*cmd;
 	char	**args;
 	size_t	arg_count;
 	int		is_builtin;
-	char	*infile;
-	char	**heredoc;
-	int		heredoc_count;
-	char	*outfile;
-	char	*outfile_append;
+	t_list	*redirections;
+	size_t	redir_count;
+	char	**heredoc_delims;
+	size_t	heredoc_count;
 }	t_smp_cmd;
 
 typedef struct s_cmd_line
@@ -148,13 +161,17 @@ void			clear_pointer_arr(char ***arr);
 
 // handle_operators
 
-int				handle_redirection(char **member, char *token);
-int				handle_heredoc(char **heredoc_delimiter, char *token);
+int				handle_redirection(t_smp_cmd *cmd, char *token, int type);
+t_redir			*new_redir(char *name, int type);
+void			clear_redir(void *redir);
 
 //builtins
 int				is_builtin(const char *s);
 
 //parse_bonus
 int				expand_wildcard_bonus(t_cmds *cmds, char *token);
+
+//debug
+void	show_cmd_line(t_cmd_line *cmd_line);
 
 #endif

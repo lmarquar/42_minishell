@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 10:17:17 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/06/01 16:56:39 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/06/03 13:05:35 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,21 +72,18 @@ int	parse_operator(const char *input, char *token, t_cmds *cmds,
 					t_cmd_line *cmd_line)
 {
 	if (ft_strncmp("<", token, 2) == 0)
-		return (handle_redirection(&cmd_line->infile, next_token(input, 0)));
+		return (handle_redirection(cmds->current_cmd, next_token(input, 0), INPUT));
 	else if (ft_strncmp("<<", token, 3) == 0)
 	{
-		return (handle_heredoc(&cmd_line->heredoc_delimiter, next_token(input, 0)));
+		return (handle_redirection(cmds->current_cmd, next_token(input, 0), HEREDOC));
 	}
-	else if (token[0] == '>')
+	else if (ft_strncmp(">", token, 2) == 0)
 	{
-		cmd_line->append = 0;
-		if (handle_redirection(&cmd_line->outfile, next_token(input, 0)) != 0)
-			return (2);
-		printf("%s\n", cmd_line->outfile);
-		if (token[1] == '>')
-		{
-			cmd_line->append = 1;
-		}
+		return (handle_redirection(cmds->current_cmd, next_token(input, 0), OUTPUT));
+	}
+	else if (ft_strncmp(">>", token, 3) == 0)
+	{
+		return (handle_redirection(cmds->current_cmd, next_token(input, 0), APPEND));
 	}
 	else if (ft_strncmp("|", token, 2) == 0)
 	{
@@ -109,9 +106,10 @@ int	package_info(t_cmd_line *cmd_line, t_bin *bin, int error)
 {
 	if (error)
 		return (error);
-	interpret_quotes(&cmd_line->infile, bin->env, bin->exit_code, 1);
-	interpret_quotes(&cmd_line->outfile, bin->env, bin->exit_code, 1);
-	interpret_quotes(&cmd_line->heredoc_delimiter, bin->env, bin->exit_code, 0);
+	show_cmd_line(cmd_line); // debug
+	// interpret_quotes(&cmd_line->infile, bin->env, bin->exit_code, 1);
+	// interpret_quotes(&cmd_line->outfile, bin->env, bin->exit_code, 1);
+	// interpret_quotes(&cmd_line->heredoc_delimiter, bin->env, bin->exit_code, 0);
 	cmd_line->smp_cmds_start = cmd_line->smp_cmds;
 	if (cmd_line->cmd_count > 1
 		&& !cmd_line->smp_cmds[cmd_line->cmd_count - 1]->cmd)

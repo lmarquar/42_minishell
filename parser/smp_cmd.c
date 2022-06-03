@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   smp_cmd.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 09:41:37 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/25 11:41:38 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/06/03 13:01:56 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,10 @@ t_smp_cmd	*new_smp_cmd(
 	new->args = args;
 	new->arg_count = arg_count;
 	new->is_builtin = is_builtin;
+	new->redirections = NULL;
+	new->redir_count = 0;
+	new->heredoc_delims = NULL;
+	new->heredoc_count = 0;
 	return (new);
 }
 
@@ -76,5 +80,9 @@ void	clear_smp_cmd(t_smp_cmd *cmd_ptr)
 		i++;
 	}
 	free(cmd->args);
+	if (cmd->redirections)
+		ft_lstclear(&cmd->redirections, &clear_redir);
+	if (cmd->heredoc_delims)
+		clear_pointer_arr(&cmd->heredoc_delims);
 	free(cmd);
 }
