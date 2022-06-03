@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_with_pipes.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 12:55:02 by lmarquar          #+#    #+#             */
-/*   Updated: 2022/06/01 13:39:19 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/06/03 12:10:06 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@ int	exec_in_to_pipe(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 {
 	if (bin->cmd_line->heredoc_delimiter)
 	{
-		heredoc_handler(bin->cmd_line, fd[1]);
 		(*i)[1] = (*i)[1] - 1;
+		return (heredoc_handler(bin->cmd_line, fd[1]));
 	}
 	else if (bin->cmd_line->smp_cmds[0]->is_builtin)
 	{
@@ -123,7 +123,8 @@ int	exec_with_pipes(t_bin *bin, int *pid, int fd[])
 	i[1] = bin->cmd_line->pipe_count;
 	if (pipe(&(fd[0])) == -1)
 		return (3);
-	exec_in_to_pipe(bin, pid, fd, &i);
+	if (exec_in_to_pipe(bin, pid, fd, &i))
+		return (1);
 	while (i[0] < i[1])
 	{
 		if (pipe(&(fd[2])) == -1)

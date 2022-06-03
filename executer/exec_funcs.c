@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_funcs.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 12:54:48 by lmarquar          #+#    #+#             */
-/*   Updated: 2022/06/01 12:51:40 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/06/03 13:03:19 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,23 +44,39 @@ int	heredoc_handler(t_cmd_line *cmd_line, int fdout)
 {
 	char	*in;
 	char	*delimiter;
+	int		pid;
+	int		p_exit;
 
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_DFL);
 	delimiter = cmd_line->heredoc_delimiter;
-	while (1)
+	pid = fork();
+	if (pid == 0)
 	{
-		in = readline("> ");
-		if (!in)
-			break ;
-		if (!ft_strncmp(delimiter, in, ft_strlen(delimiter)))
+		signal(SIGINT, SIG_DFL);
+		while (1)
 		{
+			in = readline("> ");
+			if (!in)
+				exit(1);
+			if (ft_strcmp(delimiter, in))
+			{
+				free(in);
+				exit(0);
+			}
+			write(fdout, in, ft_strlen(in));
+			write(fdout, "\n", 1);
 			free(in);
-			break ;
 		}
-		write(fdout, in, ft_strlen(in));
-		write(fdout, "\n", 1);
-		free(in);
+		exit(1);
+	}
+	signal(SIGINT, SIG_IGN);
+	p_exit = 0;
+	waitpid(pid, &p_exit, 0);
+	if (p_exit == 2)
+	{
+		rl_replace_line("", 0);
+		write(1, "\n", 1);
+		rl_on_new_line();
+		return (1);
 	}
 	return (0);
 }
