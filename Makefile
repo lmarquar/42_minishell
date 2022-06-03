@@ -60,21 +60,20 @@ bonus: $(NAME_BONUS)
 
 leaks: $(NAME_LEAKS)
 
-debug: clean
-debug: CFLAGS := $(CFLAGS) -g
-debug: SRCS_MANDATORY := $(SRCS_MANDATORY) debug.c
-debug: show
-debug: all
 
 $(NAME): $(SRCS_MANDATORY) $(LIBFT)
-	$(CC) $(CFLAGS) $^ -o $@ $(INCLUDES) -lreadline $(RL_LIBARY)
+	$(CC) $(CFLAGS) $(SRCS_MANDATORY) $(LIBFT) -o $@ $(INCLUDES) -lreadline $(RL_LIBARY)
 
 $(NAME_BONUS): $(SRCS_BONUS) $(LIBFT)
-	$(CC) $(CFLAGS) $^ -o $@ $(INCLUDES) -lreadline $(RL_LIBARY)
+	$(CC) $(CFLAGS) $(SRCS_MANDATORY) $(LIBFT) -o $@ $(INCLUDES) -lreadline $(RL_LIBARY)
 
 $(NAME_LEAKS): $(SRCS_MANDATORY) $(LIBFT)
 	$(CC) $(CFLAGS) -fsanitize=address $^ -o $@ $(INCLUDES) -lreadline $(RL_LIBARY)
 
+debug: clean
+debug: CFLAGS := $(CFLAGS) -g
+debug: SRCS_MANDATORY += debug.c
+debug: all
 
 $(LIBFT):
 	make -C libft

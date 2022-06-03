@@ -6,21 +6,21 @@ void	print_redirs(t_list *redirs)
 	char	*redir_type;
 
 	if (!redirs)
-		printf("No redirections");
+		printf("No redirections\n");
 	while (redirs)
 	{
 		r = (t_redir *) redirs->content;
-		if (redir_type == INPUT)
+		if (r->type == INPUT)
 			redir_type = "INPUT";
-		else if (redir_type == HEREDOC)
+		else if (r->type == HEREDOC)
 			redir_type = "HERDOC";
-		else if (redir_type == OUTPUT)
+		else if (r->type == OUTPUT)
 			redir_type = "OUTPUT";
-		else if (redir_type == APPEND)
+		else if (r->type == APPEND)
 			redir_type = "APPEND";
 		else
-			redir_type = "UNKOWN"
-		printf("type=%s, name=%s\n", r->type, r->name);
+			redir_type = "UNKOWN";
+		printf("type=%s, name=%s\n", redir_type, r->name);
 		redirs = redirs->next;
 	}
 	
