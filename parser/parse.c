@@ -6,7 +6,7 @@
 /*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 10:17:17 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/06/03 13:23:10 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/06/03 17:35:59 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,11 +90,6 @@ int	parse_operator(const char *input, char *token, t_cmds *cmds,
 	}
 	else if (ft_strncmp("|", token, 2) == 0)
 	{
-		if (cmd_line->outfile)
-		{
-			printf("outfile already defined, no pipe afterwards allowed\n");
-			return (1);
-		}
 		ft_lstadd_back(&cmds->cmd_lst, ft_lstnew(cmds->current_cmd));
 		cmds->current_cmd
 			= new_smp_cmd(NULL, ft_calloc(2, sizeof (char *)), 0, 0);

@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 13:20:00 by chelmerd          #+#    #+#             */
 /*   Updated: 2022/06/01 16:37:53 by chelmerd         ###   ########.fr       */

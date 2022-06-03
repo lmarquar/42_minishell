@@ -6,7 +6,7 @@
 /*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 10:39:02 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/06/03 13:23:14 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/06/03 17:36:01 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,10 +69,11 @@ int	main(int argc, char *argv[], char *envp[])
 		bin->in = readline(SHELL_PROMT);
 		if (!bin->in)
 			bin->in = ft_strdup("exit");
-		add_history(bin->in);
 		init_cmd_line(&cmd_line);
 		if (parse(bin->in, &cmd_line, bin->env, bin) == 0)
 			execute(bin);
+		if (cmd_line.smp_cmds_start[0]->args[0])
+			add_history(bin->in);
 		clear_cmd_line(&cmd_line);
 		clear_pointer_arr(&bin->paths);
 		bin->paths = NULL;

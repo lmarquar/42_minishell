@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 12:52:54 by lmarquar          #+#    #+#             */
-/*   Updated: 2022/06/01 11:44:45 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/06/01 13:54:16 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
