@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 13:20:00 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/06/01 12:45:25 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/06/01 16:37:53 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,7 @@ int				is_dollarchr(char c);
 
 int				change_quote_state(int state, char c);
 int				has_unclosed_quotes(const char *s);
+int				contains_unquoted_ctrlchr(const char *s);
 
 // smp_cmd
 
@@ -145,12 +146,10 @@ char			**create_env_arr(t_env_var *env);
 t_smp_cmd		**create_cmd_arr(t_list *cmd_lst);
 void			clear_pointer_arr(char ***arr);
 
-//debug
+// handle_operators
 
-void			show_smp_cmd(void *cmd_ptr);
-void			show_cmd_line(t_cmd_line *cmd_line);
-void			print_text_chunks(t_list *chunks);
-void			print_path_arr(char **paths);
+int				handle_redirection(char **member, char *token);
+int				handle_heredoc(char **heredoc_delimiter, char *token);
 
 //builtins
 int				is_builtin(const char *s);

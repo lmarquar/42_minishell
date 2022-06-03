@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   quote.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chelmerd <chelmerd@student.42wolfsburg.    +#+  +:+       +#+        */
+/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 15:40:58 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/16 11:45:15 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/06/01 16:58:57 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,5 +47,22 @@ int	has_unclosed_quotes(const char *s)
 	}
 	if (q_state != NO_QUOTE)
 		return (1);
+	return (0);
+}
+
+int	contains_unquoted_ctrlchr(const char *s)
+{
+	int	quote_state;
+
+	if (!s)
+		return (0);
+	quote_state = change_quote_state(-1, *s);
+	while (*s)
+	{
+		quote_state += change_quote_state(quote_state, *s);
+		if (quote_state == NO_QUOTE && is_ctrlchr(*s))
+			return (1);
+		s++;
+	}
 	return (0);
 }
