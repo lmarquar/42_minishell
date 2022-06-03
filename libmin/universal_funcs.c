@@ -3,14 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   universal_funcs.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 12:57:06 by lmarquar          #+#    #+#             */
-/*   Updated: 2022/05/31 15:07:42 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/06/03 12:57:07 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libmin.h"
+
+int my_rl_go_on_nl(void)
+{
+	rl_replace_line("", 0);
+	write(1, "\n", 1);
+	rl_on_new_line();
+	return (0);
+}
 
 int	ft_strcmp(const char *s1, const char *s2)
 {

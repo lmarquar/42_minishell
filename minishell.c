@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 10:39:02 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/06/01 11:19:26 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/06/03 12:59:14 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,7 @@
 void	handle_signals(int signo)
 {
 	if (signo == SIGINT)
-	{
-		rl_replace_line("", 0);
-		write(1, "\n", 1);
-		rl_on_new_line();
-	}
+		my_rl_go_on_nl();
 	rl_redisplay();
 }
 
@@ -66,10 +62,10 @@ int	main(int argc, char *argv[], char *envp[])
 	(void) argc;
 	(void) argv;
 	init_bin(&bin, envp);
+	signal(SIGQUIT, SIG_IGN);
 	while (1)
 	{
 		signal(SIGINT, &handle_signals);
-		signal(SIGQUIT, SIG_IGN);
 		bin->in = readline(SHELL_PROMT);
 		if (!bin->in)
 			bin->in = ft_strdup("exit");
