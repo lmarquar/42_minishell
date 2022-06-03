@@ -6,14 +6,14 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 10:17:17 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/25 17:12:18 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/06/03 13:29:21 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
 static
-void	interpret_quotes(char **str, t_env_var *env, int exit_code)
+void	interpret_quotes(char **str, t_env_var *env, int exit_code, int expand)
 {
 	char			*result;
 	int				quote_state;
@@ -34,7 +34,8 @@ void	interpret_quotes(char **str, t_env_var *env, int exit_code)
 	}
 	if (text_chunk)
 		ft_lstadd_back(&text_chunks, ft_lstnew(text_chunk));
-	expansion(text_chunks, env, exit_code);
+	if (expand)
+		expansion(text_chunks, env, exit_code);
 	result = join_chunks(text_chunks);
 	ft_lstclear(&text_chunks, &clear_chunk);
 	free(*str);
@@ -55,7 +56,7 @@ int	parse_word(char *token, t_env_var *env, int exit_code, t_cmds *cmds)
 	}
 	if (token)
 	{
-		interpret_quotes(&token, env, exit_code);
+		interpret_quotes(&token, env, exit_code, 1);
 		if (!cmds->current_cmd->cmd)
 		{
 			cmds->current_cmd->cmd = token;
@@ -71,15 +72,21 @@ int	parse_operator(const char *input, char *token, t_cmds *cmds,
 					t_cmd_line *cmd_line)
 {
 	if (ft_strncmp("<", token, 2) == 0)
-		assign_token(&cmd_line->infile, next_token(input, 0));
+		return (handle_redirection(&cmd_line->infile, next_token(input, 0)));
 	else if (ft_strncmp("<<", token, 3) == 0)
-		assign_token(&cmd_line->heredoc_delimiter, next_token(input, 0));
+	{
+		return (handle_heredoc(&cmd_line->heredoc_delimiter, next_token(input, 0)));
+	}
 	else if (token[0] == '>')
 	{
-		assign_token(&cmd_line->outfile, next_token(input, 0));
 		cmd_line->append = 0;
+		if (handle_redirection(&cmd_line->outfile, next_token(input, 0)) != 0)
+			return (2);
+		printf("%s\n", cmd_line->outfile);
 		if (token[1] == '>')
+		{
 			cmd_line->append = 1;
+		}
 	}
 	else if (ft_strncmp("|", token, 2) == 0)
 	{
@@ -98,9 +105,20 @@ int	parse_operator(const char *input, char *token, t_cmds *cmds,
 }
 
 static
-void	package_info(t_cmd_line *cmd_line, t_bin *bin)
+int	package_info(t_cmd_line *cmd_line, t_bin *bin, int error)
 {
+	if (error)
+		return (error);
+	interpret_quotes(&cmd_line->infile, bin->env, bin->exit_code, 1);
+	interpret_quotes(&cmd_line->outfile, bin->env, bin->exit_code, 1);
+	interpret_quotes(&cmd_line->heredoc_delimiter, bin->env, bin->exit_code, 0);
 	cmd_line->smp_cmds_start = cmd_line->smp_cmds;
+	if (cmd_line->cmd_count > 1
+		&& !cmd_line->smp_cmds[cmd_line->cmd_count - 1]->cmd)
+	{
+		bin->exit_code = 2;
+		return (ft_error(2, "unexpected token at the end"));
+	}
 	bin->cmd_line = cmd_line;
 	if (bin->env_arr)
 	{
@@ -110,6 +128,7 @@ void	package_info(t_cmd_line *cmd_line, t_bin *bin)
 	if (!bin->cwd)
 		bin->cwd = getcwd(NULL, 0);
 	bin->paths = create_path_arr(find_in_env("PATH", 4, bin->env));
+	return (0);
 }
 
 int	parse(const char *input, t_cmd_line *cmd_line, t_env_var *env, t_bin *bin)
@@ -137,6 +156,6 @@ int	parse(const char *input, t_cmd_line *cmd_line, t_env_var *env, t_bin *bin)
 	ft_lstadd_back(&cmds.cmd_lst, ft_lstnew(cmds.current_cmd));
 	cmd_line->smp_cmds = create_cmd_arr(cmds.cmd_lst);
 	ft_lstclear(&cmds.cmd_lst, NULL);
-	package_info(cmd_line, bin);
+	error = package_info(cmd_line, bin, error);
 	return (error);
 }
