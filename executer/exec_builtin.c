@@ -6,16 +6,41 @@
 /*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 12:54:22 by lmarquar          #+#    #+#             */
-/*   Updated: 2022/05/31 17:10:41 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/06/04 23:03:41 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "execute.h"
 
+int	builtin_get_out_fd(t_list *redirs, int pipe_fd)
+{
+	int	fd;
+
+	fd = pipe_fd;
+	while (redirs)
+	{
+		if (((t_redir *)redirs->content)->type == OUTPUT)
+		{
+			if (fd != STDOUT_FILENO)
+				close(fd);
+			fd = open(((t_redir *)redirs->content)->name, O_CREAT | O_TRUNC | O_RDWR, 0777);
+		}
+		else if (((t_redir *)redirs->content)->type == APPEND)
+		{
+			if (fd != STDOUT_FILENO)
+				close(fd);
+			fd = open(((t_redir *)redirs->content)->name, O_CREAT | O_APPEND | O_RDWR, 0777);
+		}
+		redirs = redirs->next;
+	}
+	return (fd);
+}
+
 int	exec_builtin(t_bin *bin, char **args, int fdout)
 {
 	int	only_err_msg;
 
+	fdout = builtin_get_out_fd(bin->cmd_line->smp_cmds[0]->redirections, fdout);
 	only_err_msg = 0;
 	if (bin->cmd_line->pipe_count)
 		only_err_msg = 1;

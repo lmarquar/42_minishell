@@ -6,7 +6,7 @@
 /*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 12:55:02 by lmarquar          #+#    #+#             */
-/*   Updated: 2022/06/03 12:10:06 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/06/04 23:13:11 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,8 @@ int	exec_in_to_pipe(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 		pid[**i] = fork();
 		if (pid[**i] == 0)
 		{
-			close_ifn_inout(fd[5]);
 			close(fd[0]);
-			exec_el(bin->cmd_line->smp_cmds[0]->args, bin, fd[4], fd[1]);
+			exec_el(bin->cmd_line->smp_cmds[0]->args, bin, STDIN_FILENO, fd[1]);
 		}
 		bin->cmd_line->smp_cmds = bin->cmd_line->smp_cmds + 1;
 		(**i)++;
@@ -81,8 +80,6 @@ int	exec_pipe2_to_pipe1(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 		if (pid[**i] == 0)
 		{
 			close(fd[0]);
-			close_ifn_inout(fd[5]);
-			close_ifn_inout(fd[4]);
 			exec_el(bin->cmd_line->smp_cmds[0]->args, bin, fd[2], fd[1]);
 		}
 		bin->cmd_line->smp_cmds = bin->cmd_line->smp_cmds + 1;
@@ -101,14 +98,13 @@ int	exec_pipe_to_out(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 		i_fd = 2;
 	close(fd[1 + i_fd]);
 	if (bin->cmd_line->smp_cmds[0]->is_builtin)
-		exec_builtin(bin, bin->cmd_line->smp_cmds[0]->args, fd[5]);
+		exec_builtin(bin, bin->cmd_line->smp_cmds[0]->args, STDOUT_FILENO);
 	else
 	{
 		pid[**i] = fork();
 		if (pid[**i] == 0)
 		{
-			close_ifn_inout(fd[4]);
-			exec_el(bin->cmd_line->smp_cmds[0]->args, bin, fd[i_fd], fd[5]);
+			exec_el(bin->cmd_line->smp_cmds[0]->args, bin, fd[i_fd], STDOUT_FILENO);
 		}
 	}
 	close(fd[i_fd]);
@@ -137,7 +133,5 @@ int	exec_with_pipes(t_bin *bin, int *pid, int fd[])
 		exec_pipe2_to_pipe1(bin, pid, fd, &i);
 	}
 	exec_pipe_to_out(bin, pid, fd, &i);
-	close_ifn_inout(fd[4]);
-	close_ifn_inout(fd[5]);
 	return (0);
 }

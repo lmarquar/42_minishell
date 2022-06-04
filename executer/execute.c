@@ -6,52 +6,32 @@
 /*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/29 12:17:48 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/06/04 10:45:53 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/06/04 23:26:58 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "execute.h"
 
 static
-int	execute_init_vars(t_cmd_line **cmd_line, int (*fd)[], int **pid, int *exit)
+int	execute_init_vars(t_cmd_line **cmd_line, int **pid, int *exit)
 {
 	if ((*cmd_line)->heredoc_delimiter)
 		(*cmd_line)->pipe_count = (*cmd_line)->pipe_count + 1;
 	*pid = ft_calloc((*cmd_line)->pipe_count + 2, sizeof(int));
 	*exit = 0;
-	if ((*cmd_line)->infile)
-		(*fd)[4] = open((*cmd_line)->infile, O_RDONLY);
-	else
-		(*fd)[4] = STDIN_FILENO;
-	if ((*fd)[4] == -1)
-	{
-		perror("inputfile not found");
-		return (1);
-	}
-	if ((*cmd_line)->outfile && (*cmd_line)->append > 0)
-		(*fd)[5] = open((*cmd_line)->outfile, O_CREAT | O_APPEND | O_RDWR, 0777);
-	else if ((*cmd_line)->outfile)
-		(*fd)[5] = open((*cmd_line)->outfile, O_CREAT | O_TRUNC | O_RDWR, 0777);
-	else
-		(*fd)[5] = STDOUT_FILENO;
-	if ((*fd)[5] == -1)
-	{
-		perror("outputfile failed to be created");
-		return (1);
-	}
 	return (0);
 }
 
 static
-int	exec_in_to_out(t_bin *bin, int *pid, int fd[])
+int	exec_in_to_out(t_bin *bin, int *pid)
 {
 	if (bin->cmd_line->smp_cmds[0]->is_builtin)
-		exec_builtin(bin, bin->cmd_line->smp_cmds[0]->args, fd[5]);
+		exec_builtin(bin, bin->cmd_line->smp_cmds[0]->args, STDOUT_FILENO);
 	else
 	{
 		*pid = fork();
 		if (*pid == 0)
-			exec_el(bin->cmd_line->smp_cmds[0]->args, bin, fd[4], fd[5]);
+			exec_el(bin->cmd_line->smp_cmds[0]->args, bin, STDIN_FILENO, STDOUT_FILENO);
 	}
 	return (0);
 }
@@ -76,35 +56,54 @@ void	ignore_signals(void)
 	signal(SIGQUIT, SIG_IGN);
 }
 
+int	get_nmbr_of_outputs(t_smp_cmd **s_cmd_line)
+{
+	int	res;
+	int	i;
+
+	res = 0;
+	i = 0;
+	while (s_cmd_line[i])
+	{
+		if (((t_redir *)s_cmd_line[i]->redirections))
+		{
+			printf("redir type:%d\n", ((t_redir *)s_cmd_line[i]->redirections->content)->type);
+			res++;
+		}
+		i++;
+	}
+	return (res);
+}
+int exit_code2;
+
 int	execute(t_bin *bin)
 {
 	int	i;
-	int	fd[6];
+	int	fd[4];
 	int	exit_code;
 
 	if (!bin->cmd_line->smp_cmds[0]->cmd)
 		return (0);
-	while (bin->cmd_line->smp_cmds[0])
+	execute_init_vars(&bin->cmd_line, &(bin->pid), &exit_code);
+	if (!bin->cmd_line->pipe_count && bin->cmd_line->smp_cmds[0]->is_builtin == EXIT)
+		bin->exit_code = exec_exit(bin, bin->cmd_line->smp_cmds[0]->args, 0);
+	if (!bin->cmd_line->pipe_count)
+		exec_in_to_out(bin, bin->pid);
+	else
+		exec_with_pipes(bin, bin->pid, fd);
+	ignore_signals();
+	i = 0;
+	while (bin->pid[i])
 	{
-		i = 0;
-		execute_init_vars(&bin->cmd_line, &fd, &(bin->pid), &exit_code);
-		if (!bin->cmd_line->pipe_count)
-			exec_in_to_out(bin, bin->pid, fd);
-		else
-			exec_with_pipes(bin, bin->pid, fd);
-		ignore_signals();
-		while (bin->pid[i])
+		write(1, "pid\n", 4);
+		if (waitpid(bin->pid[i], &exit_code, 0) == -1)
 		{
-			if (waitpid(bin->pid[i], &exit_code, 0) == -1)
-			{
-				perror("waitpid");
-				continue ;
-			}
-			i++;
+			perror("waitpid");
+			continue ;
 		}
-		set_exit_code(bin, exit_code);
-		bin->cmd_line->smp_cmds = bin->cmd_line->smp_cmds + 1;
+		i++;
 	}
+	set_exit_code(bin, exit_code);
 	free(bin->pid);
 	return (0);
 }
