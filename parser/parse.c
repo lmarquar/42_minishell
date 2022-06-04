@@ -6,13 +6,12 @@
 /*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 10:17:17 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/06/04 10:48:34 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/06/04 10:56:36 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-static
 void	interpret_quotes(char **str, t_env_var *env, int exit_code, int expand)
 {
 	char			*result;
@@ -72,19 +71,18 @@ int	parse_operator(const char *input, char *token, t_cmds *cmds,
 					t_cmd_line *cmd_line)
 {
 	if (ft_strncmp("<", token, 2) == 0)
-		return (handle_redirection(&cmd_line->infile, next_token(input, 0)));
+		return (handle_redirection(cmds->current_cmd, next_token(input, 0), INPUT));
 	else if (ft_strncmp("<<", token, 3) == 0)
 	{
-		return (handle_heredoc(&cmd_line->heredoc_delimiter, next_token(input, 0)));
+		return (handle_redirection(cmds->current_cmd, next_token(input, 0), HEREDOC));
 	}
-	else if (token[0] == '>')
+	else if (ft_strncmp(">", token, 2) == 0)
 	{
-		cmd_line->append = 0;
-		if (handle_redirection(&cmd_line->outfile, next_token(input, 0)) != 0)
-			return (2);
-//		printf("%s\n", cmd_line->outfile);
-		if (token[1] == '>')
-			cmd_line->append = 1;
+		return (handle_redirection(cmds->current_cmd, next_token(input, 0), OUTPUT));
+	}
+	else if (ft_strncmp(">>", token, 3) == 0)
+	{
+		return (handle_redirection(cmds->current_cmd, next_token(input, 0), APPEND));
 	}
 	else if (ft_strncmp("|", token, 2) == 0)
 	{
@@ -107,9 +105,10 @@ int	package_info(t_cmd_line *cmd_line, t_bin *bin, int error)
 {
 	if (error)
 		return (error);
-	interpret_quotes(&cmd_line->infile, bin->env, bin->exit_code, 1);
-	interpret_quotes(&cmd_line->outfile, bin->env, bin->exit_code, 1);
-	interpret_quotes(&cmd_line->heredoc_delimiter, bin->env, bin->exit_code, 0);
+	show_cmd_line(cmd_line); // debug
+	// interpret_quotes(&cmd_line->infile, bin->env, bin->exit_code, 1);
+	// interpret_quotes(&cmd_line->outfile, bin->env, bin->exit_code, 1);
+	// interpret_quotes(&cmd_line->heredoc_delimiter, bin->env, bin->exit_code, 0);
 	cmd_line->smp_cmds_start = cmd_line->smp_cmds;
 	if (cmd_line->cmd_count > 1
 		&& !cmd_line->smp_cmds[cmd_line->cmd_count - 1]->cmd)
@@ -152,6 +151,7 @@ int	parse(const char *input, t_cmd_line *cmd_line, t_env_var *env, t_bin *bin)
 		token = next_token(input, 0);
 	}
 	ft_lstadd_back(&cmds.cmd_lst, ft_lstnew(cmds.current_cmd));
+	expand_redirections(cmds.cmd_lst, env, bin->exit_code);
 	cmd_line->smp_cmds = create_cmd_arr(cmds.cmd_lst);
 	ft_lstclear(&cmds.cmd_lst, NULL);
 	error = package_info(cmd_line, bin, error);
