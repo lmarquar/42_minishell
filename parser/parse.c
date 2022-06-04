@@ -6,7 +6,7 @@
 /*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 10:17:17 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/06/03 17:35:59 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/06/04 10:48:34 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,11 +82,9 @@ int	parse_operator(const char *input, char *token, t_cmds *cmds,
 		cmd_line->append = 0;
 		if (handle_redirection(&cmd_line->outfile, next_token(input, 0)) != 0)
 			return (2);
-		printf("%s\n", cmd_line->outfile);
+//		printf("%s\n", cmd_line->outfile);
 		if (token[1] == '>')
-		{
 			cmd_line->append = 1;
-		}
 	}
 	else if (ft_strncmp("|", token, 2) == 0)
 	{
