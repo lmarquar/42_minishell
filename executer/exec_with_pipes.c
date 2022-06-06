@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_with_pipes.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 12:55:02 by lmarquar          #+#    #+#             */
-/*   Updated: 2022/06/04 23:13:11 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/06/06 12:56:48 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	exec_in_to_pipe(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 {
-	if (bin->cmd_line->heredoc_delimiter)
+	if (0)
 	{
 		(*i)[1] = (*i)[1] - 1;
 		return (heredoc_handler(bin->cmd_line, fd[1]));

@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 12:54:48 by lmarquar          #+#    #+#             */
-/*   Updated: 2022/06/06 11:46:52 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/06/06 12:57:42 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,8 @@ int	heredoc_handler(t_cmd_line *cmd_line, int fdout)
 	int		pid;
 	int		p_exit;
 
-	delimiter = cmd_line->heredoc_delimiter;
+	(void) cmd_line;
+	delimiter = "here-d";
 	pid = fork();
 	if (pid == 0)
 	{

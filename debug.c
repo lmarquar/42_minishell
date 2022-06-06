@@ -2,7 +2,7 @@
 
 void	print_redirs(t_list *redirs)
 {
-	t_redir *r;
+	t_redir	*r;
 	char	*redir_type;
 
 	if (!redirs)
@@ -13,7 +13,7 @@ void	print_redirs(t_list *redirs)
 		if (r->type == INPUT)
 			redir_type = "INPUT";
 		else if (r->type == HEREDOC)
-			redir_type = "HERDOC";
+			redir_type = "HEREDOC";
 		else if (r->type == OUTPUT)
 			redir_type = "OUTPUT";
 		else if (r->type == APPEND)
@@ -23,7 +23,6 @@ void	print_redirs(t_list *redirs)
 		printf("type=%s, name=%s\n", redir_type, r->name);
 		redirs = redirs->next;
 	}
-	
 }
 
 void	show_smp_cmd(void *cmd_ptr)
@@ -39,6 +38,12 @@ void	show_smp_cmd(void *cmd_ptr)
 		a++;
 	}
 	printf("\targc:%zu\n", cmd->arg_count);
+	printf("\theredoc_delims:\n");
+	a = 0;
+	while (a < cmd->heredoc_count)
+	{
+		printf("\t\t%s\n", cmd->heredoc_delims[a++]);
+	}
 	print_redirs(cmd->redirections);
 }
 
@@ -57,8 +62,7 @@ void	show_cmds(t_smp_cmd **commands, size_t cmd_count)
 
 void	show_cmd_line(t_cmd_line *cmd_line)
 {
-	printf("cmdline:\n in:%s out:%s, cmd_count:%zu, pipe_count:%zu\n", cmd_line->infile, cmd_line->outfile, cmd_line->cmd_count, cmd_line->pipe_count);
-	printf(" append:%d, heredoc_delimiter:%s\n", cmd_line->append, cmd_line->heredoc_delimiter);
+	printf("cmdline:\ncmd_count:%zu, pipe_count:%zu\n", cmd_line->cmd_count, cmd_line->pipe_count);
 	show_cmds(cmd_line->smp_cmds, cmd_line->cmd_count);
 }
 

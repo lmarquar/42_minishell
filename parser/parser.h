@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 13:20:00 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/06/04 16:08:36 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/06/06 12:57:31 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,14 +49,10 @@ typedef struct s_smp_cmd
 
 typedef struct s_cmd_line
 {
-	char		*infile;
-	char		*outfile;
 	size_t		pipe_count;
 	size_t		cmd_count;
 	t_smp_cmd	**smp_cmds;
 	t_smp_cmd	**smp_cmds_start;
-	int			append;
-	char		*heredoc_delimiter;
 }	t_cmd_line;
 
 typedef struct s_bin

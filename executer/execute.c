@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/29 12:17:48 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/06/06 12:19:35 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/06/06 16:16:34 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 static
 int	execute_init_vars(t_cmd_line **cmd_line, int **pid, int *exit)
 {
-	if ((*cmd_line)->heredoc_delimiter)
-		(*cmd_line)->pipe_count = (*cmd_line)->pipe_count + 1;
+	// if ((*cmd_line)->cmheredoc_count)
+	// 	(*cmd_line)->pipe_count = (*cmd_line)->pipe_count + 1;
 	*pid = ft_calloc((*cmd_line)->pipe_count + 2, sizeof(int));
 	*exit = 0;
 	return (0);
@@ -74,7 +74,6 @@ int	get_nmbr_of_outputs(t_smp_cmd **s_cmd_line)
 	}
 	return (res);
 }
-int exit_code2;
 
 int	execute(t_bin *bin)
 {

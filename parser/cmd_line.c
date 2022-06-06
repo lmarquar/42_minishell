@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/06 14:44:32 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/25 16:31:19 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/06/06 12:57:58 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,10 @@
 
 void	init_cmd_line(t_cmd_line *cmd)
 {
-	cmd->infile = NULL;
-	cmd->outfile = NULL;
 	cmd->cmd_count = 1;
 	cmd->pipe_count = 0;
 	cmd->smp_cmds = NULL;
 	cmd->smp_cmds_start = NULL;
-	cmd->heredoc_delimiter = NULL;
-	cmd->append = 0;
 }
 
 void	assign_token(char **member, char *token)
@@ -37,13 +33,6 @@ void	clear_cmd_line(t_cmd_line *cmd)
 
 	if (!cmd)
 		return ;
-	i = 0;
-	if (cmd->infile)
-		free(cmd->infile);
-	if (cmd->outfile)
-		free(cmd->outfile);
-	if (cmd->heredoc_delimiter)
-		free(cmd->heredoc_delimiter);
 	i = 0;
 	while (cmd->smp_cmds_start && cmd->smp_cmds_start[i])
 	{

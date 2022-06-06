@@ -16,6 +16,7 @@ CFLAGS = -Wall -Wextra -Werror
 NAME = minishell
 NAME_LEAKS = minishell_leaks
 NAME_BONUS = minishell_bonus
+NAME_DEBUG = minishell_debug
 HEADER = minishell.h
 
 UNAME = $(shell uname -s)
@@ -45,35 +46,29 @@ SRCS_ENV		= $(addprefix env/, $(ENV))
 EXECUTER		= execute.c exec_funcs.c exec_el.c exec_with_pipes.c exec_builtin.c
 SRCS_EXECUTER	= $(addprefix executer/, $(EXECUTER))
 BONUS			= ft_split_pattern.c replace_ast_bonus.c
-SRCS_BONUS_DIR	= $(addprefix bonus/, $(BONUS))
-PARSER_BON		= $(subst nobonus,bonus,$(PARSER))
-SRCS_PARSER_BON	= $(addprefix parser/, $(PARSER_BON))
-SRCS_MANDATORY	= minishell.c $(SRCS_PARSER) $(SRCS_EXECUTER) $(SRCS_BUILTINS) $(SRCS_ENV) $(SRCS_LIBMIN)
-# OBJS_MANDATORY	= $(patsubst %.c, %.o, $(SRCS_MANDATORY))
-SRCS_BONUS		= minishell.c $(SRCS_PARSER_BON) $(SRCS_EXECUTER) $(SRCS_BUILTINS) $(SRCS_ENV) $(SRCS_LIBMIN) $(SRCS_BONUS_DIR) 
-
-all: $(NAME) $(NAME_BONUS)
-
-mandatory: $(NAME)
-
-bonus: $(NAME_BONUS)
-
-leaks: $(NAME_LEAKS)
+SRCS_BON_FILES	= $(addprefix bonus/, $(BONUS))
+SRCS_PARSER_BON	= $(subst nobonus,bonus,$(SRCS_PARSER))
+SRCS_MANDATORY	= minishell.c nodebug.c $(SRCS_PARSER) $(SRCS_EXECUTER) $(SRCS_BUILTINS) $(SRCS_ENV) $(SRCS_LIBMIN)
+SRCS_BONUS		= minishell.c nodebug.c $(SRCS_PARSER_BON) $(SRCS_EXECUTER) $(SRCS_BUILTINS) $(SRCS_ENV) $(SRCS_LIBMIN) $(SRCS_BON_FILES)
+SRCS_DEBUG		= $(subst nodebug,debug,$(SRCS_MANDATORY))
 
 
-$(NAME): $(SRCS_MANDATORY) $(LIBFT)
-	$(CC) $(CFLAGS) $(SRCS_MANDATORY) $(LIBFT) -o $@ $(INCLUDES) -lreadline $(RL_LIBARY)
+all: mandatory bonus leaks debug
 
-$(NAME_BONUS): $(SRCS_BONUS) $(LIBFT)
-	$(CC) $(CFLAGS) $(SRCS_MANDATORY) $(LIBFT) -o $@ $(INCLUDES) -lreadline $(RL_LIBARY)
+mandatory: 
+	make SRCS='$(SRCS_MANDATORY)' $(NAME)
 
-$(NAME_LEAKS): $(SRCS_MANDATORY) $(LIBFT)
-	$(CC) $(CFLAGS) -fsanitize=address $^ -o $@ $(INCLUDES) -lreadline $(RL_LIBARY)
+bonus: 
+	make SRCS='$(SRCS_BONUS)' $(NAME_BONUS)
 
-debug: clean
-debug: CFLAGS := $(CFLAGS) -g
-debug: SRCS_MANDATORY += debug.c
-debug: all
+leaks:
+	make CFLAGS='$(CFLAGS) -g -fsanitize=address' SRCS='$(SRCS_DEBUG)' $(NAME_LEAKS)
+
+debug:
+	make CFLAGS='$(CFLAGS) -g' SRCS='$(SRCS_DEBUG)' $(NAME_DEBUG)
+
+$(NAME) $(NAME_BONUS) $(NAME_LEAKS) $(NAME_DEBUG): $(SRCS) $(LIBFT)
+	$(CC) $(CFLAGS) $(SRCS) $(LIBFT) -o $@ $(INCLUDES) -lreadline $(RL_LIBARY)
 
 $(LIBFT):
 	make -C libft
@@ -83,19 +78,20 @@ show:
 	@echo $(OBJS_MANDATORY)
 
 clean:
-	rm -f $(OBJS_MANDATORY)
 	rm -rfd $(NAME).dSYM
 	rm -rfd $(NAME_BONUS).dSYM
 	rm -rfd $(NAME_LEAKS).dSYM
+	rm -rfd $(NAME_DEBUG).dSYM
 	make -C libft clean
 
 fclean: clean
 	rm -f $(NAME)
 	rm -f $(NAME_BONUS)
 	rm -f $(NAME_LEAKS)
+	rm -f $(NAME_DEBUG)
 	make -C libft fclean
 
 re: fclean
 	make all
 
-.PHONY: all clean fclean re show debug bonus
+.PHONY: all clean fclean re show debug bonus mandatory leaks
