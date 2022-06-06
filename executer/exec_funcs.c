@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_funcs.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 12:54:48 by lmarquar          #+#    #+#             */
-/*   Updated: 2022/06/06 11:46:52 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/06/06 12:31:05 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,14 +64,13 @@ int	append(int fdin, int fdout)
 	return (0);
 }
 
-int	heredoc_handler(t_cmd_line *cmd_line, int fdout)
+int	heredoc_handler(t_bin *bin, int fdout)
 {
 	char	*in;
 	char	*delimiter;
 	int		pid;
-	int		p_exit;
 
-	delimiter = cmd_line->heredoc_delimiter;
+	delimiter = bin->cmd_line->heredoc_delimiter;
 	pid = fork();
 	if (pid == 0)
 	{
@@ -93,14 +92,6 @@ int	heredoc_handler(t_cmd_line *cmd_line, int fdout)
 		exit(1);
 	}
 	signal(SIGINT, SIG_IGN);
-	p_exit = 0;
-	waitpid(pid, &p_exit, 0);
-	if (p_exit == 2)
-	{
-		rl_replace_line("", 0);
-		write(1, "\n", 1);
-		rl_on_new_line();
-		return (1);
-	}
+	waitpid(pid, &bin->exit_code, 0);
 	return (0);
 }
