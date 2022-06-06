@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 09:41:37 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/06/03 13:01:56 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/06/06 12:15:05 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@ t_smp_cmd	*new_smp_cmd(
 void	add_arg(t_smp_cmd **old_cmd, char *arg)
 {
 	t_smp_cmd	*old;
-	t_smp_cmd	*new;
 	char		**new_args;
 	size_t		i;
 
@@ -58,13 +57,11 @@ void	add_arg(t_smp_cmd **old_cmd, char *arg)
 		i++;
 	}
 	new_args[i] = arg;
-	new = new_smp_cmd(old->cmd, new_args, old->arg_count + 1, old->is_builtin);
 	free(old->args);
-	free(old);
-	*old_cmd = new;
+	old->args = new_args;
+	old->arg_count += 1;
 }
 
-//TODO: use it
 void	clear_smp_cmd(t_smp_cmd *cmd_ptr)
 {
 	t_smp_cmd	*cmd;

@@ -3,14 +3,38 @@
 /*                                                        :::      ::::::::   */
 /*   exec_funcs.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 12:54:48 by lmarquar          #+#    #+#             */
-/*   Updated: 2022/06/03 13:03:19 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/06/06 11:46:52 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "execute.h"
+
+int	get_out_fd(t_list *redirs, int pipe_fd)
+{
+	int	fd;
+
+	fd = pipe_fd;
+	while (redirs)
+	{
+		if (((t_redir *)redirs->content)->type == OUTPUT)
+		{
+			if (fd != STDOUT_FILENO)
+				close(fd);
+			fd = open(((t_redir *)redirs->content)->name, O_CREAT | O_TRUNC | O_RDWR, 0777);
+		}
+		else if (((t_redir *)redirs->content)->type == APPEND)
+		{
+			if (fd != STDOUT_FILENO)
+				close(fd);
+			fd = open(((t_redir *)redirs->content)->name, O_CREAT | O_APPEND | O_RDWR, 0777);
+		}
+		redirs = redirs->next;
+	}
+	return (fd);
+}
 
 void	close_ifn_inout(int fd)
 {

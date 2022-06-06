@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 10:39:02 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/06/03 17:36:01 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/06/06 12:12:28 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,10 +62,10 @@ int	main(int argc, char *argv[], char *envp[])
 	(void) argc;
 	(void) argv;
 	init_bin(&bin, envp);
-	signal(SIGQUIT, SIG_IGN);
 	while (1)
 	{
 		signal(SIGINT, &handle_signals);
+		signal(SIGQUIT, SIG_IGN);
 		bin->in = readline(SHELL_PROMT);
 		if (!bin->in)
 			bin->in = ft_strdup("exit");

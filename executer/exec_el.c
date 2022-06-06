@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_el.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/08 11:35:15 by leon              #+#    #+#             */
-/*   Updated: 2022/06/04 23:07:32 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/06/06 11:47:16 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,25 +50,6 @@ int	exec_with_paths(char **arg, t_bin *bin)
 	return (com_not_found_exit());
 }
 
-int	el_get_out_fd(t_list *redirs, int fd)
-{
-	while (redirs)
-	{
-		if (((t_redir *)redirs->content)->type == OUTPUT)
-		{
-			close(fd);
-			fd = open(((t_redir *)redirs->content)->name, O_CREAT | O_TRUNC | O_RDWR, 0777);	
-		}
-		else if (((t_redir *)redirs->content)->type == APPEND)
-		{
-			close(fd);
-			fd = open(((t_redir *)redirs->content)->name, O_CREAT | O_APPEND | O_RDWR, 0777);
-		}
-		redirs = redirs->next;
-	}
-	return (fd);
-}
-
 int	el_get_in_fd(t_list *redirs, int fd)
 {
 	while (redirs)
@@ -87,8 +68,8 @@ int	exec_el(char **arg, t_bin *bin, int fdin, int fdout)
 {
 	int		i;
 
-	//fdin = el_get_in_fd(bin->cmd_line->smp_cmds[0]->redirections, fdin);
-	fdout = el_get_out_fd(bin->cmd_line->smp_cmds[0]->redirections, fdout);
+	fdin = el_get_in_fd(bin->cmd_line->smp_cmds[0]->redirections, fdin);
+	fdout = get_out_fd(bin->cmd_line->smp_cmds[0]->redirections, fdout);
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
 	if (fdin != STDIN_FILENO)
