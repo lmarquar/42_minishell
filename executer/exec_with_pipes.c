@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 12:55:02 by lmarquar          #+#    #+#             */
-/*   Updated: 2022/06/06 12:56:48 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/06/06 16:18:49 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	exec_in_to_pipe(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 	if (0)
 	{
 		(*i)[1] = (*i)[1] - 1;
-		return (heredoc_handler(bin->cmd_line, fd[1]));
+		return (heredoc_handler(bin, fd[1]));
 	}
 	else if (bin->cmd_line->smp_cmds[0]->is_builtin)
 	{

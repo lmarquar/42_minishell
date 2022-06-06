@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 12:56:37 by lmarquar          #+#    #+#             */
-/*   Updated: 2022/06/06 11:47:02 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/06/06 12:29:47 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@
 int		execute(t_bin *bin);
 int		exec_with_pipes(t_bin *bin, int *pid, int fd[]);
 void	close_ifn_inout(int fd);
-int		heredoc_handler(t_cmd_line *cmd_line, int fdout);
+int		heredoc_handler(t_bin *bin, int fdout);
 int		append(int fdin, int fdout);
 int		exec_el(char **arg, t_bin *bin, int fdin, int fdout);
 

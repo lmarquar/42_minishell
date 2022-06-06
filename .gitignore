@@ -55,6 +55,8 @@ dkms.conf
 # Custom
 minishell
 minishell_bonus
+minishell_leaks
+minishell_debug
 *.pdf
 *.txt
 .DS_Store
