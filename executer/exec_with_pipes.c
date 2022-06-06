@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_with_pipes.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 12:55:02 by lmarquar          #+#    #+#             */
-/*   Updated: 2022/06/06 16:36:01 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/06/06 17:18:59 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,7 @@
 
 int	exec_in_to_pipe(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 {
-	if (0)
-	{
-		(*i)[1] = (*i)[1] - 1;
-		return (heredoc_handler(bin, fd[1]));
-	}
-	else if (bin->cmd_line->smp_cmds[0]->is_builtin)
+	if (bin->cmd_line->smp_cmds[0]->is_builtin)
 	{
 		exec_builtin(bin, bin->cmd_line->smp_cmds[0]->args, fd[1]);
 		bin->cmd_line->smp_cmds = bin->cmd_line->smp_cmds + 1;

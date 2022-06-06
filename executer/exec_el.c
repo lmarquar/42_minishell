@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_el.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/08 11:35:15 by leon              #+#    #+#             */
-/*   Updated: 2022/06/06 11:47:16 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/06/06 17:36:13 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,25 +50,61 @@ int	exec_with_paths(char **arg, t_bin *bin)
 	return (com_not_found_exit());
 }
 
-int	el_get_in_fd(t_list *redirs, int fd)
+int	contains_hdoc_or_in(t_list *redir)
 {
+	int type;
+
+	while(redir)
+	{
+		type =	((t_redir *)redir->content)->type;
+		if (type == HEREDOC || type == INPUT)
+			return (1);
+		redir = redir->next;
+	}
+	return (0);
+}
+
+int	el_get_in_fd(t_bin *bin, t_list *redirs, int fd)
+{
+	int	fdtmp;
+	char	*name;
+	int		type;
+	
+	fdtmp = fd;
 	while (redirs)
 	{
-		if (((t_redir *)redirs->content)->type == INPUT)
+		type = ((t_redir *)redirs->content)->type;
+		name = ((t_redir *)redirs->content)->name;
+		if (type == INPUT)
 		{
-			close(fd);
-			fd = open(((t_redir *)redirs->content)->name, O_RDONLY);
+			if (fdtmp != fd)
+				close(fdtmp);
+			fdtmp = open(name, O_RDONLY);
+		}
+		else if (type == HEREDOC)
+		{
+			if (fdtmp != fd)
+				close(fdtmp);
+			if (contains_hdoc_or_in(redirs->next))
+				dumb_heredoc_handler(bin, name);
+			else
+				fd = heredoc_handler(bin, name);
+			if (bin->exit_code == 2)
+				return (-1);
+			fdtmp = fd;
 		}
 		redirs = redirs->next;
 	}
-	return (fd);
+	return (fdtmp);
 }
 
 int	exec_el(char **arg, t_bin *bin, int fdin, int fdout)
 {
 	int		i;
 
-	fdin = el_get_in_fd(bin->cmd_line->smp_cmds[0]->redirections, fdin);
+	fdin = el_get_in_fd(bin, bin->cmd_line->smp_cmds[0]->redirections, fdin);
+	if (fdin == -1)
+		exit (2);
 	fdout = get_out_fd(bin->cmd_line->smp_cmds[0]->redirections, fdout);
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_funcs.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 12:54:48 by lmarquar          #+#    #+#             */
-/*   Updated: 2022/06/06 16:35:58 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/06/06 17:37:24 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,13 +64,46 @@ int	append(int fdin, int fdout)
 	return (0);
 }
 
-int	heredoc_handler(t_bin *bin, int fdout)
+int	heredoc_handler(t_bin *bin, char *delim)
 {
 	char	*in;
-	char	*delimiter;
+	int		pid;
+	int		fd[2];
+
+	if (pipe(fd) == -1)
+		return (1);
+	pid = fork();
+	if (pid == 0)
+	{
+		close(fd[0]);
+		signal(SIGINT, SIG_DFL);
+		while (1)
+		{
+			in = readline("> ");
+			if (!in)
+				exit(1);
+			if (ft_strcmp(delim, in))
+			{
+				free(in);
+				exit(0);
+			}
+			write(fd[1], in, ft_strlen(in));
+			write(fd[1], "\n", 1);
+			free(in);
+		}
+		exit(1);
+	}
+	close(fd[1]);
+	signal(SIGINT, SIG_IGN);
+	waitpid(pid, &bin->exit_code, 0);
+	return (fd[0]);
+}
+
+int	dumb_heredoc_handler(t_bin *bin, char *delim)
+{
+	char	*in;
 	int		pid;
 
-	delimiter = "here-d";
 	pid = fork();
 	if (pid == 0)
 	{
@@ -80,13 +113,11 @@ int	heredoc_handler(t_bin *bin, int fdout)
 			in = readline("> ");
 			if (!in)
 				exit(1);
-			if (ft_strcmp(delimiter, in))
+			if (ft_strcmp(delim, in))
 			{
 				free(in);
 				exit(0);
 			}
-			write(fdout, in, ft_strlen(in));
-			write(fdout, "\n", 1);
 			free(in);
 		}
 		exit(1);
