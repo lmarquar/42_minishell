@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/29 12:17:48 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/06/04 23:26:58 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/06/06 12:19:35 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,8 @@ int	execute(t_bin *bin)
 		}
 		i++;
 	}
+	if (exit_code == 2)
+		my_rl_go_on_nl();
 	set_exit_code(bin, exit_code);
 	free(bin->pid);
 	return (0);
