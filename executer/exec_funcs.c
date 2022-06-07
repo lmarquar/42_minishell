@@ -6,7 +6,7 @@
 /*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 12:54:48 by lmarquar          #+#    #+#             */
-/*   Updated: 2022/06/07 14:58:04 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/06/07 15:14:24 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	el_get_in_fd(t_bin *bin, t_list *redirs, int fd)
 	int		type;
 	
 	fdtmp = fd;
-	while (contains_hdoc_or_in(redirs))
+	while (contains_hdoc_or_in(redirs) && fdtmp != -1)
 	{
 		type = ((t_redir *)redirs->content)->type;
 		name = ((t_redir *)redirs->content)->name;
