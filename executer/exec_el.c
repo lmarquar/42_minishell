@@ -3,19 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   exec_el.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/08 11:35:15 by leon              #+#    #+#             */
-/*   Updated: 2022/06/06 17:36:13 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/06/07 13:10:21 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "execute.h"
 
-static int	com_not_found_exit(void)
+static int	com_not_found_exit(t_bin *bin)
 {
 	printf("Command couldn't be found\n");
-	exit(127);
+	clean_exit(bin, 127);
 	return (1);
 }
 
@@ -30,7 +30,7 @@ static int	exec_in_current_dir(char **arg, t_bin *bin)
 {
 	ft_putstr_fd("in exec in current dir\n", open("out.txt", O_CREAT));
 	execve(arg[0], arg, bin->env_arr);
-	return (com_not_found_exit());
+	return (com_not_found_exit(bin));
 }
 
 static
@@ -40,14 +40,13 @@ int	exec_with_paths(char **arg, t_bin *bin)
 	char	*cmd;
 
 	i = -1;
-	ft_putstr_fd("in exec in current dir\n", open("out.txt", O_CREAT));
 	while (bin->paths && bin->paths[++i])
 	{
 		cmd = ft_strjoin(bin->paths[i], arg[0]);
 		execve(cmd, arg, bin->env_arr);
 		free(cmd);
 	}
-	return (com_not_found_exit());
+	return (com_not_found_exit(bin));
 }
 
 int	contains_hdoc_or_in(t_list *redir)
@@ -69,7 +68,7 @@ int	el_get_in_fd(t_bin *bin, t_list *redirs, int fd)
 	int	fdtmp;
 	char	*name;
 	int		type;
-	
+
 	fdtmp = fd;
 	while (redirs)
 	{

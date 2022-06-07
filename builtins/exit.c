@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 12:52:54 by lmarquar          #+#    #+#             */
-/*   Updated: 2022/06/01 13:54:16 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/06/07 13:16:27 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 static int		is_numeric(const char *s);
 static void		clean_up(t_bin *bin);
-static void		clean_exit(t_bin *bin, int exit_code);
+void			clean_exit(t_bin *bin, int exit_code);
 
 /**
  * @brief exits the shell and returning the last exit_code or the first arg
@@ -47,7 +47,7 @@ int	exec_exit(t_bin *bin, char **args, int o_err_msg)
 	return (exit_code);
 }
 
-static void	clean_exit(t_bin *bin, int exit_code)
+void	clean_exit(t_bin *bin, int exit_code)
 {
 	clean_up(bin);
 	exit(exit_code);
