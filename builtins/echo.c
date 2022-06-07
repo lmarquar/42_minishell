@@ -3,25 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 12:52:45 by lmarquar          #+#    #+#             */
-/*   Updated: 2022/05/31 16:46:12 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/06/07 11:08:27 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtins.h"
 
-
-
 int	skip_n_flags(char **args)
 {
 	int	i;
-	int	n;
 	int	k;
 
 	i = 1;
-	n = 0;
 	while (args[i] && args[i][0] == '-')
 	{
 		k = 1;
@@ -29,7 +25,6 @@ int	skip_n_flags(char **args)
 			k++;
 		if (!args[i][k])
 		{
-			n = 1;
 			i++;
 		}
 		else
@@ -40,7 +35,7 @@ int	skip_n_flags(char **args)
 
 /**
  * @brief writes the arguments to the given filedescriptor
- * 
+ *
  * @param fdout default stdout
  * @param args options (-n for no newline) and arguments
  * @return always int 0

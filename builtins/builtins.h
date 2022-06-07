@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 15:36:23 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/31 17:09:32 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/06/07 13:10:10 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,5 +47,7 @@ int	exec_cd(char *dir, char **cwd, t_env_var *env_var, int o_err_msg);
 int	exec_export(int fdout, t_bin *bin, char **args, int o_err_msg);
 int	exec_echo(int fdout, char **args);
 int	exec_unset(char **unset_keys, t_bin *bin);
+
+void	clean_exit(t_bin *bin, int exit_code);
 
 #endif
