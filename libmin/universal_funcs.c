@@ -6,7 +6,7 @@
 /*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 12:57:06 by lmarquar          #+#    #+#             */
-/*   Updated: 2022/06/03 12:57:07 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/06/07 14:58:04 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,4 +75,13 @@ int	ft_strccmp(const char *s1, const char *s2, char c)
 	if (*s1 && *s2 == c)
 		return ((unsigned char)*s1);
 	return (0);
+}
+
+int	custom_error(int error_code, char *builtin_name, char *msg)
+{
+	ft_putstr_fd("minishell: ", 2);
+	ft_putstr_fd(builtin_name, 2);
+	ft_putstr_fd(": ", 2);
+	ft_putendl_fd(msg, 2);
+	return (error_code);
 }

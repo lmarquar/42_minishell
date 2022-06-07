@@ -6,7 +6,7 @@
 /*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/29 12:17:48 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/06/07 13:44:49 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/06/07 14:42:21 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ int	exec_in_to_out(t_bin *bin, int *pid)
 
 	fdin = STDIN_FILENO;
 	fdin = el_get_in_fd(bin, bin->cmd_line->smp_cmds[0]->redirections, fdin);
+	if (fdin == -1)
+		return (1);
 	if (bin->cmd_line->smp_cmds[0]->is_builtin)
 		exec_builtin(bin, bin->cmd_line->smp_cmds[0]->args, STDOUT_FILENO);
 	else
@@ -56,25 +58,6 @@ void	ignore_signals(void)
 {
 	signal(SIGINT, SIG_IGN);
 	signal(SIGQUIT, SIG_IGN);
-}
-
-int	get_nmbr_of_outputs(t_smp_cmd **s_cmd_line)
-{
-	int	res;
-	int	i;
-
-	res = 0;
-	i = 0;
-	while (s_cmd_line[i])
-	{
-		if (((t_redir *)s_cmd_line[i]->redirections))
-		{
-			printf("redir type:%d\n", ((t_redir *)s_cmd_line[i]->redirections->content)->type);
-			res++;
-		}
-		i++;
-	}
-	return (res);
 }
 
 int	execute(t_bin *bin)

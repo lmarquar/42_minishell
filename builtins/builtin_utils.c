@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 15:35:23 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/25 16:38:21 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/06/07 14:53:27 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,13 +30,4 @@ int	is_builtin(const char *s)
 		return (EXIT);
 	else
 		return (0);
-}
-
-int	builtin_error(int error_code, char *builtin_name, char *msg)
-{
-	ft_putstr_fd("minishell: ", 2);
-	ft_putstr_fd(builtin_name, 2);
-	ft_putstr_fd(": ", 2);
-	ft_putendl_fd(msg, 2);
-	return (error_code);
 }

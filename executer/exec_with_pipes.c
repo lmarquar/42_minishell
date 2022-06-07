@@ -6,7 +6,7 @@
 /*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 12:55:02 by lmarquar          #+#    #+#             */
-/*   Updated: 2022/06/07 13:43:34 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/06/07 14:37:13 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ int	exec_in_to_pipe(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 
 	fdin = STDIN_FILENO;
 	fdin = el_get_in_fd(bin, bin->cmd_line->smp_cmds[0]->redirections, STDIN_FILENO);
+	if (fdin == -1)
+		return (1);	
 	if (bin->cmd_line->smp_cmds[0]->is_builtin)
 	{
 		exec_builtin(bin, bin->cmd_line->smp_cmds[0]->args, fd[1]);
@@ -42,6 +44,8 @@ int	exec_pipe1_to_pipe2(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 {
 	close(fd[1]);
 	fd[0] = el_get_in_fd(bin, bin->cmd_line->smp_cmds[0]->redirections, fd[0]);
+	if (fd[0] == -1)
+		return (1);
 	if (bin->cmd_line->smp_cmds[0]->is_builtin)
 	{
 		exec_builtin(bin, bin->cmd_line->smp_cmds[0]->args, fd[3]);
@@ -69,6 +73,8 @@ int	exec_pipe2_to_pipe1(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 {
 	close(fd[3]);
 	fd[2] = el_get_in_fd(bin, bin->cmd_line->smp_cmds[0]->redirections, fd[0]);
+	if (fd[2] == -1)
+		return (1);
 	if (bin->cmd_line->smp_cmds[0]->is_builtin)
 	{
 		exec_builtin(bin, bin->cmd_line->smp_cmds[0]->args, fd[1]);
@@ -99,6 +105,8 @@ int	exec_pipe_to_out(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 		i_fd = 2;
 	close(fd[1 + i_fd]);
 	fd[i_fd] = el_get_in_fd(bin, bin->cmd_line->smp_cmds[0]->redirections, i_fd);
+	if (fd[i_fd] == -1)
+		return (1);	
 	if (bin->cmd_line->smp_cmds[0]->is_builtin)
 		exec_builtin(bin, bin->cmd_line->smp_cmds[0]->args, STDOUT_FILENO);
 	else

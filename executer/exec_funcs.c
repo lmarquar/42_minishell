@@ -6,7 +6,7 @@
 /*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 12:54:48 by lmarquar          #+#    #+#             */
-/*   Updated: 2022/06/07 13:37:04 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/06/07 14:58:04 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	el_get_in_fd(t_bin *bin, t_list *redirs, int fd)
 	int		type;
 	
 	fdtmp = fd;
-	while (redirs)
+	while (contains_hdoc_or_in(redirs))
 	{
 		type = ((t_redir *)redirs->content)->type;
 		name = ((t_redir *)redirs->content)->name;
@@ -50,13 +50,16 @@ int	el_get_in_fd(t_bin *bin, t_list *redirs, int fd)
 			if (contains_hdoc_or_in(redirs->next))
 				dumb_heredoc_handler(bin, name);
 			else
-				fd = heredoc_handler(bin, name);
+				fdtmp = heredoc_handler(bin, name);
 			if (bin->exit_code == 2)
 				return (-1);
-			fdtmp = fd;
 		}
 		redirs = redirs->next;
 	}
+	if (fdtmp == -1 && type == INPUT)
+		custom_error(-1, name, "No such file or directory");
+	else if (fdtmp == -1 && type == HEREDOC)
+		custom_error(-1, name, "heredoc execution failed");
 	return (fdtmp);
 }
 

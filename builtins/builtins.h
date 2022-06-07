@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 15:36:23 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/06/07 13:10:10 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/06/07 14:51:50 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@
 // utils
 
 int	is_builtin(const char *s);
-int	builtin_error(int error_code, char *builtin_name, char *msg);
 
 enum e_BUILTIN
 {
