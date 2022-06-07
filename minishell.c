@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 10:39:02 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/06/06 12:12:28 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/06/07 13:45:02 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,8 +72,8 @@ int	main(int argc, char *argv[], char *envp[])
 		init_cmd_line(&cmd_line);
 		if (parse(bin->in, &cmd_line, bin->env, bin) == 0)
 			execute(bin);
-		if (cmd_line.smp_cmds_start[0]->args[0])
-			add_history(bin->in);
+		// if (cmd_line.smp_cmds_start[0]->args[0])
+		add_history(bin->in);
 		clear_cmd_line(&cmd_line);
 		clear_pointer_arr(&bin->paths);
 		bin->paths = NULL;
