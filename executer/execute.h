@@ -6,7 +6,7 @@
 /*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 12:56:37 by lmarquar          #+#    #+#             */
-/*   Updated: 2022/06/06 17:24:33 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/06/07 13:38:03 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 # include "../libmin/libmin.h"
 
 int		execute(t_bin *bin);
+int		el_get_in_fd(t_bin *bin, t_list *redirs, int fd);
 int		exec_with_pipes(t_bin *bin, int *pid, int fd[]);
 void	close_ifn_inout(int fd);
 int		heredoc_handler(t_bin *bin, char *delim);

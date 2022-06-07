@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/29 12:17:48 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/06/06 16:16:34 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/06/07 13:44:49 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,6 @@
 static
 int	execute_init_vars(t_cmd_line **cmd_line, int **pid, int *exit)
 {
-	// if ((*cmd_line)->cmheredoc_count)
-	// 	(*cmd_line)->pipe_count = (*cmd_line)->pipe_count + 1;
 	*pid = ft_calloc((*cmd_line)->pipe_count + 2, sizeof(int));
 	*exit = 0;
 	return (0);
@@ -25,13 +23,17 @@ int	execute_init_vars(t_cmd_line **cmd_line, int **pid, int *exit)
 static
 int	exec_in_to_out(t_bin *bin, int *pid)
 {
+	int	fdin;
+
+	fdin = STDIN_FILENO;
+	fdin = el_get_in_fd(bin, bin->cmd_line->smp_cmds[0]->redirections, fdin);
 	if (bin->cmd_line->smp_cmds[0]->is_builtin)
 		exec_builtin(bin, bin->cmd_line->smp_cmds[0]->args, STDOUT_FILENO);
 	else
 	{
 		*pid = fork();
 		if (*pid == 0)
-			exec_el(bin->cmd_line->smp_cmds[0]->args, bin, STDIN_FILENO, STDOUT_FILENO);
+			exec_el(bin->cmd_line->smp_cmds[0]->args, bin, fdin, STDOUT_FILENO);
 	}
 	return (0);
 }

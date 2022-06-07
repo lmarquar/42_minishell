@@ -6,7 +6,7 @@
 /*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 12:55:02 by lmarquar          #+#    #+#             */
-/*   Updated: 2022/06/06 17:18:59 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/06/07 13:43:34 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,10 @@
 
 int	exec_in_to_pipe(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 {
+	int	fdin;
+
+	fdin = STDIN_FILENO;
+	fdin = el_get_in_fd(bin, bin->cmd_line->smp_cmds[0]->redirections, STDIN_FILENO);
 	if (bin->cmd_line->smp_cmds[0]->is_builtin)
 	{
 		exec_builtin(bin, bin->cmd_line->smp_cmds[0]->args, fd[1]);
@@ -26,7 +30,7 @@ int	exec_in_to_pipe(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 		if (pid[**i] == 0)
 		{
 			close(fd[0]);
-			exec_el(bin->cmd_line->smp_cmds[0]->args, bin, STDIN_FILENO, fd[1]);
+			exec_el(bin->cmd_line->smp_cmds[0]->args, bin, fdin, fd[1]);
 		}
 		bin->cmd_line->smp_cmds = bin->cmd_line->smp_cmds + 1;
 		(**i)++;
@@ -37,6 +41,7 @@ int	exec_in_to_pipe(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 int	exec_pipe1_to_pipe2(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 {
 	close(fd[1]);
+	fd[0] = el_get_in_fd(bin, bin->cmd_line->smp_cmds[0]->redirections, fd[0]);
 	if (bin->cmd_line->smp_cmds[0]->is_builtin)
 	{
 		exec_builtin(bin, bin->cmd_line->smp_cmds[0]->args, fd[3]);
@@ -63,6 +68,7 @@ int	exec_pipe1_to_pipe2(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 int	exec_pipe2_to_pipe1(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 {
 	close(fd[3]);
+	fd[2] = el_get_in_fd(bin, bin->cmd_line->smp_cmds[0]->redirections, fd[0]);
 	if (bin->cmd_line->smp_cmds[0]->is_builtin)
 	{
 		exec_builtin(bin, bin->cmd_line->smp_cmds[0]->args, fd[1]);
@@ -92,6 +98,7 @@ int	exec_pipe_to_out(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 	if (!(bin->cmd_line->pipe_count % 2))
 		i_fd = 2;
 	close(fd[1 + i_fd]);
+	fd[i_fd] = el_get_in_fd(bin, bin->cmd_line->smp_cmds[0]->redirections, i_fd);
 	if (bin->cmd_line->smp_cmds[0]->is_builtin)
 		exec_builtin(bin, bin->cmd_line->smp_cmds[0]->args, STDOUT_FILENO);
 	else
