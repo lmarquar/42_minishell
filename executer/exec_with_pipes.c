@@ -6,7 +6,7 @@
 /*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 12:55:02 by lmarquar          #+#    #+#             */
-/*   Updated: 2022/06/07 15:52:18 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/06/07 17:42:51 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,16 +14,17 @@
 
 int	exec_in_to_pipe(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 {
-	int	fdin;
+	int			fdin;
+	t_cmd_line	*cmd_line;
 
-	fdin = STDIN_FILENO;
-	fdin = el_handle_in_fd(bin, bin->cmd_line->smp_cmds[0]->redirections, STDIN_FILENO);
+	cmd_line = bin->cmd_line;
+	fdin = get_in_fd(bin, cmd_line->smp_cmds[0]->redirections, STDIN_FILENO);
 	if (fdin == -1)
-		return (1);	
-	if (bin->cmd_line->smp_cmds[0]->is_builtin)
+		return (1);
+	if (cmd_line->smp_cmds[0]->is_builtin)
 	{
-		exec_builtin(bin, bin->cmd_line->smp_cmds[0]->args, fd[1]);
-		bin->cmd_line->smp_cmds = bin->cmd_line->smp_cmds + 1;
+		exec_builtin(bin, cmd_line->smp_cmds[0]->args, fd[1]);
+		cmd_line->smp_cmds = cmd_line->smp_cmds + 1;
 		(*i)[1] = (*i)[1] - 1;
 	}
 	else
@@ -32,9 +33,9 @@ int	exec_in_to_pipe(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 		if (pid[**i] == 0)
 		{
 			close(fd[0]);
-			exec_el(bin->cmd_line->smp_cmds[0]->args, bin, fdin, fd[1]);
+			exec_el(cmd_line->smp_cmds[0]->args, bin, fdin, fd[1]);
 		}
-		bin->cmd_line->smp_cmds = bin->cmd_line->smp_cmds + 1;
+		cmd_line->smp_cmds = cmd_line->smp_cmds + 1;
 		(**i)++;
 	}
 	return (0);
@@ -43,7 +44,7 @@ int	exec_in_to_pipe(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 int	exec_pipe1_to_pipe2(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 {
 	close(fd[1]);
-	fd[0] = el_handle_in_fd(bin, bin->cmd_line->smp_cmds[0]->redirections, fd[0]);
+	fd[0] = get_in_fd(bin, bin->cmd_line->smp_cmds[0]->redirections, fd[0]);
 	if (fd[0] == -1)
 		return (1);
 	if (bin->cmd_line->smp_cmds[0]->is_builtin)
@@ -58,8 +59,6 @@ int	exec_pipe1_to_pipe2(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 		if (pid[**i] == 0)
 		{
 			close(fd[2]);
-			close_ifn_inout(fd[5]);
-			close_ifn_inout(fd[4]);
 			exec_el(bin->cmd_line->smp_cmds[0]->args, bin, fd[0], fd[3]);
 		}
 		bin->cmd_line->smp_cmds = bin->cmd_line->smp_cmds + 1;
@@ -72,7 +71,7 @@ int	exec_pipe1_to_pipe2(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 int	exec_pipe2_to_pipe1(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 {
 	close(fd[3]);
-	fd[2] = el_handle_in_fd(bin, bin->cmd_line->smp_cmds[0]->redirections, fd[0]);
+	fd[2] = get_in_fd(bin, bin->cmd_line->smp_cmds[0]->redirections, fd[0]);
 	if (fd[2] == -1)
 		return (1);
 	if (bin->cmd_line->smp_cmds[0]->is_builtin)
@@ -98,32 +97,33 @@ int	exec_pipe2_to_pipe1(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 
 int	exec_pipe_to_out(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 {
-	int	i_fd;
+	int			i_fd;
+	t_cmd_line	*cmd_line;
 
+	cmd_line = bin->cmd_line;
 	i_fd = 0;
-	if (!(bin->cmd_line->pipe_count % 2))
+	if (!(cmd_line->pipe_count % 2))
 		i_fd = 2;
 	close(fd[1 + i_fd]);
-	fd[i_fd] = el_handle_in_fd(bin, bin->cmd_line->smp_cmds[0]->redirections, i_fd);
+	fd[i_fd] = get_in_fd(bin, cmd_line->smp_cmds[0]->redirections, i_fd);
 	if (fd[i_fd] == -1)
-		return (1);	
-	if (bin->cmd_line->smp_cmds[0]->is_builtin)
-		exec_builtin(bin, bin->cmd_line->smp_cmds[0]->args, STDOUT_FILENO);
+		return (1);
+	if (cmd_line->smp_cmds[0]->is_builtin)
+		exec_builtin(bin, cmd_line->smp_cmds[0]->args, STDOUT_FILENO);
 	else
 	{
 		pid[**i] = fork();
 		if (pid[**i] == 0)
-		{
-			exec_el(bin->cmd_line->smp_cmds[0]->args, bin, fd[i_fd], STDOUT_FILENO);
-		}
+			exec_el(cmd_line->smp_cmds[0]->args, bin, fd[i_fd], STDOUT_FILENO);
 	}
 	close(fd[i_fd]);
 	return (0);
 }
 
-int	exec_with_pipes(t_bin *bin, int *pid, int fd[])
+int	exec_with_pipes(t_bin *bin, int *pid)
 {
 	size_t	i[2];
+	int		fd[4];
 
 	i[0] = 0;
 	i[1] = bin->cmd_line->pipe_count;
