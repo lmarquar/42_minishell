@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 12:52:57 by lmarquar          #+#    #+#             */
-/*   Updated: 2022/06/07 14:58:04 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/06/07 15:46:20 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,12 +107,13 @@ int	exec_export(int fdout, t_bin *bin, char **args, int o_err_msg)
 	if (!*args)
 		return (without_args(fdout, bin->env_arr));
 	i = -1;
-	while(args[++i])
+	while (args[++i])
 	{
 		env_var = get_env_from_str(args[i]);
 		if (!env_var)
 		{
-			bin->exit_code = custom_error(1, "export", "identifier is not valid");
+			bin->exit_code
+				= custom_error(1, "export", "identifier is not valid");
 			continue ;
 		}
 		if (o_err_msg)
