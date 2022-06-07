@@ -6,86 +6,11 @@
 /*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 12:54:48 by lmarquar          #+#    #+#             */
-/*   Updated: 2022/06/07 15:14:24 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/06/07 15:44:37 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "execute.h"
-
-int	contains_hdoc_or_in(t_list *redir)
-{
-	int type;
-
-	while(redir)
-	{
-		type =	((t_redir *)redir->content)->type;
-		if (type == HEREDOC || type == INPUT)
-			return (1);
-		redir = redir->next;
-	}
-	return (0);
-}
-
-int	el_get_in_fd(t_bin *bin, t_list *redirs, int fd)
-{
-	int	fdtmp;
-	char	*name;
-	int		type;
-	
-	fdtmp = fd;
-	while (contains_hdoc_or_in(redirs) && fdtmp != -1)
-	{
-		type = ((t_redir *)redirs->content)->type;
-		name = ((t_redir *)redirs->content)->name;
-		if (type == INPUT)
-		{
-			if (fdtmp != fd)
-				close(fdtmp);
-			fdtmp = open(name, O_RDONLY);
-		}
-		else if (type == HEREDOC)
-		{
-			if (fdtmp != fd)
-				close(fdtmp);
-			if (contains_hdoc_or_in(redirs->next))
-				dumb_heredoc_handler(bin, name);
-			else
-				fdtmp = heredoc_handler(bin, name);
-			if (bin->exit_code == 2)
-				return (-1);
-		}
-		redirs = redirs->next;
-	}
-	if (fdtmp == -1 && type == INPUT)
-		custom_error(-1, name, "No such file or directory");
-	else if (fdtmp == -1 && type == HEREDOC)
-		custom_error(-1, name, "heredoc execution failed");
-	return (fdtmp);
-}
-
-int	get_out_fd(t_list *redirs, int pipe_fd)
-{
-	int	fd;
-
-	fd = pipe_fd;
-	while (redirs)
-	{
-		if (((t_redir *)redirs->content)->type == OUTPUT)
-		{
-			if (fd != STDOUT_FILENO)
-				close(fd);
-			fd = open(((t_redir *)redirs->content)->name, O_CREAT | O_TRUNC | O_RDWR, 0777);
-		}
-		else if (((t_redir *)redirs->content)->type == APPEND)
-		{
-			if (fd != STDOUT_FILENO)
-				close(fd);
-			fd = open(((t_redir *)redirs->content)->name, O_CREAT | O_APPEND | O_RDWR, 0777);
-		}
-		redirs = redirs->next;
-	}
-	return (fd);
-}
 
 void	close_ifn_inout(int fd)
 {
