@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 13:20:00 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/06/06 12:57:31 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/06/07 14:56:09 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,8 @@ enum e_QUOTE
 int				parse(const char *input, t_cmd_line *cmd_line, t_env_var *env,
 					t_bin *bin);
 
-void			interpret_quotes(char **str, t_env_var *env, int exit_code, int expand);
+void			interpret_quotes(
+					char **str, t_env_var *env, int exit_code, int expand);
 
 //parse2
 
@@ -116,10 +117,7 @@ int				contains_unquoted_ctrlchr(const char *s);
 // smp_cmd
 
 t_smp_cmd		*new_smp_cmd(
-					char *cmd,
-					char **args,
-					size_t arg_count,
-					int is_builtin);
+					char *cmd, char **args, size_t arg_count, int is_builtin);
 void			add_arg(t_smp_cmd **old, char *arg);
 void			clear_smp_cmd(t_smp_cmd *cmd_ptr);
 
@@ -133,10 +131,7 @@ void			clear_cmd_line(t_cmd_line *cmd);
 
 t_text_chunk	*new_chunk(char *str, int expand);
 void			split_into_chunks(
-					t_list **chunks,
-					t_text_chunk **chunk,
-					int *state,
-					char *s);
+					t_list **chunks, t_text_chunk **chunk, int *state, char *s);
 size_t			sum_len(t_list *chunks);
 char			*join_chunks(t_list *chunks);
 void			clear_chunk(void *chk_ptr);
@@ -163,7 +158,8 @@ void			clear_pointer_arr(char ***arr);
 int				handle_redirection(t_smp_cmd *cmd, char *token, int type);
 t_redir			*new_redir(char *name, int type);
 void			clear_redir(void *redir);
-void			expand_redirections(t_list *smp_cmds, t_env_var *env, int exit_code);
+void			expand_redirections(
+					t_list *smp_cmds, t_env_var *env, int exit_code);
 
 //builtins
 int				is_builtin(const char *s);
@@ -172,6 +168,6 @@ int				is_builtin(const char *s);
 int				expand_wildcard_bonus(t_cmds *cmds, char *token);
 
 //debug
-void	show_cmd_line(t_cmd_line *cmd_line);
+void			show_cmd_line(t_cmd_line *cmd_line);
 
 #endif

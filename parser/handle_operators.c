@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/01 14:17:12 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/06/03 17:55:39 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/06/07 14:56:52 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,8 @@ void	expand_redirections(t_list *smp_cmds, t_env_var *env, int exit_code)
 		cmd = (t_smp_cmd *) smp_cmds->content;
 		redirs = cmd->redirections;
 		if (cmd->heredoc_count)
-			cmd->heredoc_delims = ft_calloc(cmd->heredoc_count + 1, sizeof(char *));
+			cmd->heredoc_delims
+				= ft_calloc(cmd->heredoc_count + 1, sizeof(char *));
 		i = 0;
 		while (redirs)
 		{
