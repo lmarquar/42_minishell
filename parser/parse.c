@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 10:17:17 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/06/07 16:29:56 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/06/08 18:03:21 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,10 @@ static
 int	package_info(t_cmd_line *cmd_line, t_bin *bin, int error)
 {
 	if (error)
+	{
+		bin->exit_code = error;
 		return (error);
+	}
 	show_cmd_line(cmd_line);
 	cmd_line->smp_cmds_start = cmd_line->smp_cmds;
 	if (cmd_line->cmd_count > 1
