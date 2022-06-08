@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/29 12:17:48 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/06/07 17:43:50 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/06/08 12:21:42 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,6 @@ void	exec_split(t_bin *bin)
 
 int	execute(t_bin *bin)
 {
-	int			i;
 	int			exit_code;
 	t_cmd_line	*cmd_line;
 
@@ -89,7 +88,6 @@ int	execute(t_bin *bin)
 		return (0);
 	exec_split(bin);
 	ignore_signals();
-	i = 0;
 	exit_code = wait_for_all_commands(bin->pid);
 	if (exit_code == 2)
 		my_rl_go_on_nl();
