@@ -1,12 +1,29 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_heredoc.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/06/08 16:08:12 by chelmerd          #+#    #+#             */
+/*   Updated: 2022/06/08 16:08:13 by chelmerd         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "execute.h"
 
 static
-void	exit_if_in_eq_delim(char *in, char *delim, t_bin *bin)
+void	exit_if_in_eq_delim(char *in, char *delim, t_bin *bin, int fd[])
 {
 	if (!in)
+	{
+		close(fd[0]);
+		close(fd[1]);
 		clean_exit(bin, 1);
+	}
 	if (ft_strcmp(delim, in))
 	{
+		close(fd[1]);
 		free(in);
 		clean_exit(bin, 0);
 	}
@@ -28,7 +45,7 @@ int	heredoc_handler(t_bin *bin, char *delim)
 		while (1)
 		{
 			in = readline("> ");
-			exit_if_in_eq_delim(in, delim, bin);
+			exit_if_in_eq_delim(in, delim, bin, fd);
 			write(fd[1], in, ft_strlen(in));
 			write(fd[1], "\n", 1);
 			free(in);
@@ -53,7 +70,13 @@ int	dumb_heredoc_handler(t_bin *bin, char *delim)
 		while (1)
 		{
 			in = readline("> ");
-			exit_if_in_eq_delim(in, delim, bin);
+			if (!in)
+				clean_exit(bin, 1);
+			if (ft_strcmp(delim, in))
+			{
+				free(in);
+				clean_exit(bin, 0);
+			}
 			free(in);
 		}
 		clean_exit(bin, 1);

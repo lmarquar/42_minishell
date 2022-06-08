@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_get_fds.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/06/08 16:08:08 by chelmerd          #+#    #+#             */
+/*   Updated: 2022/06/08 16:08:09 by chelmerd         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "execute.h"
 
 void	fdin_error(int type, char *name)
@@ -36,13 +48,11 @@ int	get_in_fd(t_bin *bin, t_list *redirs, int fd)
 	return (fdtmp);
 }
 
-int	get_out_fd(t_list *redirs, int pipe_fd)
+int	get_out_fd(t_list *redirs, int fd)
 {
-	int		fd;
 	int		type;
 	char	*name;
 
-	fd = pipe_fd;
 	while (redirs)
 	{
 		type = ((t_redir *)redirs->content)->type;

@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   exec_with_pipes.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 12:55:02 by lmarquar          #+#    #+#             */
-/*   Updated: 2022/06/07 17:42:51 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/06/08 16:07:10 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "execute.h"
 
-int	exec_in_to_pipe(t_bin *bin, int *pid, int fd[], size_t (*i)[])
+void	exec_in_to_pipe(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 {
 	int			fdin;
 	t_cmd_line	*cmd_line;
@@ -20,12 +20,11 @@ int	exec_in_to_pipe(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 	cmd_line = bin->cmd_line;
 	fdin = get_in_fd(bin, cmd_line->smp_cmds[0]->redirections, STDIN_FILENO);
 	if (fdin == -1)
-		return (1);
-	if (cmd_line->smp_cmds[0]->is_builtin)
+		decr_int_incr_ptr(&(*i)[1], (void ***)&cmd_line->smp_cmds);
+	else if (cmd_line->smp_cmds[0]->is_builtin)
 	{
 		exec_builtin(bin, cmd_line->smp_cmds[0]->args, fd[1]);
-		cmd_line->smp_cmds = cmd_line->smp_cmds + 1;
-		(*i)[1] = (*i)[1] - 1;
+		decr_int_incr_ptr(&(*i)[1], (void ***)&cmd_line->smp_cmds);
 	}
 	else
 	{
@@ -38,20 +37,22 @@ int	exec_in_to_pipe(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 		cmd_line->smp_cmds = cmd_line->smp_cmds + 1;
 		(**i)++;
 	}
-	return (0);
+	if (fdin != STDIN_FILENO)
+		close(fdin);
 }
 
 int	exec_pipe1_to_pipe2(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 {
-	close(fd[1]);
 	fd[0] = get_in_fd(bin, bin->cmd_line->smp_cmds[0]->redirections, fd[0]);
 	if (fd[0] == -1)
+	{
+		decr_int_incr_ptr(&(*i)[1], (void ***)&bin->cmd_line->smp_cmds);
 		return (1);
+	}
 	if (bin->cmd_line->smp_cmds[0]->is_builtin)
 	{
 		exec_builtin(bin, bin->cmd_line->smp_cmds[0]->args, fd[3]);
-		bin->cmd_line->smp_cmds = bin->cmd_line->smp_cmds + 1;
-		(*i)[1] = (*i)[1] - 1;
+		decr_int_incr_ptr(&(*i)[1], (void ***)&bin->cmd_line->smp_cmds);
 	}
 	else
 	{
@@ -64,21 +65,21 @@ int	exec_pipe1_to_pipe2(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 		bin->cmd_line->smp_cmds = bin->cmd_line->smp_cmds + 1;
 		(**i)++;
 	}
-	close(fd[0]);
 	return (0);
 }
 
 int	exec_pipe2_to_pipe1(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 {
-	close(fd[3]);
 	fd[2] = get_in_fd(bin, bin->cmd_line->smp_cmds[0]->redirections, fd[0]);
 	if (fd[2] == -1)
+	{
+		decr_int_incr_ptr(&(*i)[1], (void ***)&bin->cmd_line->smp_cmds);
 		return (1);
+	}
 	if (bin->cmd_line->smp_cmds[0]->is_builtin)
 	{
 		exec_builtin(bin, bin->cmd_line->smp_cmds[0]->args, fd[1]);
-		bin->cmd_line->smp_cmds = bin->cmd_line->smp_cmds + 1;
-		(*i)[1] = (*i)[1] - 1;
+		decr_int_incr_ptr(&(*i)[1], (void ***)&bin->cmd_line->smp_cmds);
 	}
 	else
 	{
@@ -91,7 +92,6 @@ int	exec_pipe2_to_pipe1(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 		bin->cmd_line->smp_cmds = bin->cmd_line->smp_cmds + 1;
 		(**i)++;
 	}
-	close(fd[2]);
 	return (0);
 }
 
@@ -104,8 +104,7 @@ int	exec_pipe_to_out(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 	i_fd = 0;
 	if (!(cmd_line->pipe_count % 2))
 		i_fd = 2;
-	close(fd[1 + i_fd]);
-	fd[i_fd] = get_in_fd(bin, cmd_line->smp_cmds[0]->redirections, i_fd);
+	fd[i_fd] = get_in_fd(bin, cmd_line->smp_cmds[0]->redirections, fd[i_fd]);
 	if (fd[i_fd] == -1)
 		return (1);
 	if (cmd_line->smp_cmds[0]->is_builtin)
@@ -129,19 +128,22 @@ int	exec_with_pipes(t_bin *bin, int *pid)
 	i[1] = bin->cmd_line->pipe_count;
 	if (pipe(&(fd[0])) == -1)
 		return (3);
-	if (exec_in_to_pipe(bin, pid, fd, &i))
-		return (1);
+	exec_in_to_pipe(bin, pid, fd, &i);
+	close(fd[1]);
 	while (i[0] < i[1])
 	{
 		if (pipe(&(fd[2])) == -1)
 			return (3);
 		exec_pipe1_to_pipe2(bin, pid, fd, &i);
+		close(fd[0]);
+		close(fd[3]);
 		if (i[0] >= i[1])
 			break ;
 		if (pipe(&(fd[0])) == -1)
 			return (3);
 		exec_pipe2_to_pipe1(bin, pid, fd, &i);
+		close(fd[2]);
+		close(fd[1]);
 	}
-	exec_pipe_to_out(bin, pid, fd, &i);
-	return (0);
+	return (exec_pipe_to_out(bin, pid, fd, &i));
 }

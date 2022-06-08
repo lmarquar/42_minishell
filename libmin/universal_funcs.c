@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   universal_funcs.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 12:57:06 by lmarquar          #+#    #+#             */
-/*   Updated: 2022/06/07 14:58:04 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/06/08 16:07:38 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libmin.h"
 
-int my_rl_go_on_nl(void)
+int	my_rl_go_on_nl(void)
 {
 	rl_replace_line("", 0);
 	write(1, "\n", 1);

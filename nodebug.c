@@ -1,9 +1,16 @@
-#include "minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   nodebug.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/06/08 16:08:03 by chelmerd          #+#    #+#             */
+/*   Updated: 2022/06/08 16:08:04 by chelmerd         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-void	print_redirs(t_list *redirs)
-{
-	(void) redirs;
-}
+#include "minishell.h"
 
 void	show_cmd_line(t_cmd_line *cmd_line)
 {

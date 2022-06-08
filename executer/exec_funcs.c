@@ -3,14 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   exec_funcs.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 12:54:48 by lmarquar          #+#    #+#             */
-/*   Updated: 2022/06/07 17:32:52 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/06/08 16:07:10 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "execute.h"
+
+size_t	decr_int_incr_ptr(size_t *i, void ***ptr)
+{
+	(*ptr) = (*ptr) + 1;
+	*i = *i - 1;
+	return (*i);
+}
 
 int	contains_hdoc_or_in(t_list *redir)
 {
