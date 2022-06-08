@@ -1,14 +1,14 @@
 #include "execute.h"
 
 static
-void	exit_if_in_eq_delim(char *in, char *delim)
+void	exit_if_in_eq_delim(char *in, char *delim, t_bin *bin)
 {
 	if (!in)
-		exit(1);
+		clean_exit(bin, 1);
 	if (ft_strcmp(delim, in))
 	{
 		free(in);
-		exit(0);
+		clean_exit(bin, 0);
 	}
 }
 
@@ -28,12 +28,12 @@ int	heredoc_handler(t_bin *bin, char *delim)
 		while (1)
 		{
 			in = readline("> ");
-			exit_if_in_eq_delim(in, delim);
+			exit_if_in_eq_delim(in, delim, bin);
 			write(fd[1], in, ft_strlen(in));
 			write(fd[1], "\n", 1);
 			free(in);
 		}
-		exit(1);
+		clean_exit(bin, 1);
 	}
 	close(fd[1]);
 	signal(SIGINT, SIG_IGN);
@@ -53,10 +53,10 @@ int	dumb_heredoc_handler(t_bin *bin, char *delim)
 		while (1)
 		{
 			in = readline("> ");
-			exit_if_in_eq_delim(in, delim);
+			exit_if_in_eq_delim(in, delim, bin);
 			free(in);
 		}
-		exit(1);
+		clean_exit(bin, 1);
 	}
 	signal(SIGINT, SIG_IGN);
 	waitpid(pid, &bin->exit_code, 0);
