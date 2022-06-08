@@ -3,22 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 12:51:24 by lmarquar          #+#    #+#             */
-/*   Updated: 2022/06/07 17:48:35 by lmarquar         ###   ########.fr       */
+/*   Updated: 2022/06/08 17:42:25 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtins.h"
 
-int	exec_cd(char *dir, char **cwd, t_env_var *env_var, int o_err_msg)
+static void	update_pwd(char *cwd, t_bin *bin);
+
+int	exec_cd(char *dir, char **cwd, t_bin *bin, int o_err_msg)
 {
 	int		i;
 	char	*curdir;
 
 	if (!dir)
-		dir = find_in_env("HOME", 4, env_var);
+		dir = find_in_env("HOME", 4, bin->env);
 	if (!dir)
 		return (custom_error(1, "cd", "HOME not set"));
 	i = chdir(dir);
@@ -34,8 +36,27 @@ int	exec_cd(char *dir, char **cwd, t_env_var *env_var, int o_err_msg)
 	{
 		free(*cwd);
 		*cwd = curdir;
+		update_pwd(*cwd, bin);
 	}
 	else
 		perror("getcwd");
 	return (0);
+}
+
+static
+void	update_pwd(char *cwd, t_bin *bin)
+{
+	char	**args;
+	char	*p;
+	size_t	size;
+
+	size = ft_strlen(cwd) + ft_strlen("PWD") + 2;
+	args = ft_calloc(2, sizeof (char *));
+	p = ft_calloc(size, sizeof (char));
+	ft_strlcpy(p, "PWD=", size);
+	ft_strlcat(p, cwd, size);
+	args[0] = p;
+	exec_export(1, bin, args, 0);
+	free(args);
+	free(p);
 }

@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 12:54:22 by lmarquar          #+#    #+#             */
-/*   Updated: 2022/06/06 11:47:25 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/06/08 17:37:31 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	exec_builtin(t_bin *bin, char **args, int fdout)
 	else if (bin->cmd_line->smp_cmds[0]->is_builtin == EXPORT)
 		bin->exit_code = exec_export(fdout, bin, &(args[1]), only_err_msg);
 	else if (bin->cmd_line->smp_cmds[0]->is_builtin == CD)
-		bin->exit_code = exec_cd(args[1], &bin->cwd, bin->env, only_err_msg);
+		bin->exit_code = exec_cd(args[1], &bin->cwd, bin, only_err_msg);
 	else if (bin->cmd_line->smp_cmds[0]->is_builtin == UNSET)
 		bin->exit_code = exec_unset(&args[1], bin);
 	else if (bin->cmd_line->smp_cmds[0]->is_builtin == EXIT)
