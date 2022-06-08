@@ -6,11 +6,14 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 13:12:58 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/05/31 15:07:42 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/06/07 16:10:05 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "env.h"
+
+static int	is_valid_identifier_chr(int c, int pos);
+static int	is_valid_key(char *s);
 
 t_env_var	*new_env_var(char *key, char *value)
 {
@@ -18,6 +21,13 @@ t_env_var	*new_env_var(char *key, char *value)
 
 	if (!key)
 		return (NULL);
+	if (!is_valid_key(key))
+	{
+		free(key);
+		if (value)
+			free(value);
+		return (NULL);
+	}
 	env = malloc(sizeof (t_env_var));
 	if (!env)
 		return (NULL);
@@ -93,36 +103,4 @@ int	is_valid_key(char *s)
 		i++;
 	}
 	return (1);
-}
-
-t_env_var	*get_env_from_str(char *env_str)
-{
-	char		*key;
-	size_t		key_size;
-	char		*val;
-	char		*val_ptr;
-
-	if (env_str[0] == '=')
-		return (NULL);
-	val_ptr = ft_strnstr(env_str, "=", ft_strlen(env_str));
-	if (!val_ptr)
-		return (new_env_var(ft_strdup(env_str), NULL));
-	val_ptr++;
-	key_size = val_ptr - env_str;
-	key = ft_calloc(key_size, sizeof (char));
-	if (!key)
-		return (NULL);
-	ft_strlcpy(key, env_str, key_size);
-	if (!is_valid_key(key))
-	{
-		free(key);
-		return (NULL);
-	}
-	val = ft_strdup(val_ptr);
-	if (!val)
-	{
-		free(key);
-		return (NULL);
-	}
-	return (new_env_var(key, val));
 }

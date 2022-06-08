@@ -1,5 +1,6 @@
 #include "minishell.h"
 
+static
 void	print_redirs(t_list *redirs)
 {
 	t_redir	*r;
@@ -25,6 +26,7 @@ void	print_redirs(t_list *redirs)
 	}
 }
 
+static
 void	show_smp_cmd(void *cmd_ptr)
 {
 	t_smp_cmd	*cmd;
@@ -47,6 +49,7 @@ void	show_smp_cmd(void *cmd_ptr)
 	print_redirs(cmd->redirections);
 }
 
+static
 void	show_cmds(t_smp_cmd **commands, size_t cmd_count)
 {
 	size_t	c;
@@ -54,7 +57,8 @@ void	show_cmds(t_smp_cmd **commands, size_t cmd_count)
 	c = 0;
 	while (c < cmd_count)
 	{
-		printf("simple Command #%zu:\n cmd:%s (is_builtin=%d)\n", c + 1, commands[c]->cmd, commands[c]->is_builtin);
+		printf("simple Command #%zu:\n cmd:%s (is_builtin=%d)\n",
+			c + 1, commands[c]->cmd, commands[c]->is_builtin);
 		show_smp_cmd(commands[c]);
 		c++;
 	}
@@ -62,11 +66,11 @@ void	show_cmds(t_smp_cmd **commands, size_t cmd_count)
 
 void	show_cmd_line(t_cmd_line *cmd_line)
 {
-	printf("cmdline:\ncmd_count:%zu, pipe_count:%zu\n", cmd_line->cmd_count, cmd_line->pipe_count);
+	printf("cmdline:\ncmd_count:%zu, pipe_count:%zu\n",
+		cmd_line->cmd_count, cmd_line->pipe_count);
 	show_cmds(cmd_line->smp_cmds, cmd_line->cmd_count);
 }
 
-// debug
 void	print_text_chunks(t_list *chunks)
 {
 	size_t			size;
@@ -81,20 +85,10 @@ void	print_text_chunks(t_list *chunks)
 		size = chunk->len + 1;
 		buffer = ft_calloc(size, sizeof (char));
 		ft_strlcpy(buffer, chunk->str, size);
-		printf("text_chunk[%zu]:%s, len:%zu, expand:%d|\n", i, buffer, chunk->len, chunk->expand);
+		printf("text_chunk[%zu]:%s, len:%zu, expand:%d|\n",
+			i, buffer, chunk->len, chunk->expand);
 		chunks = chunks->next;
 		free(buffer);
 		i++;
 	}
 }
-
-void	print_path_arr(char **paths)
-{
-	printf("paths\n");
-	while (paths && *paths)
-	{
-		printf("%s|\n", *paths);
-		paths++;
-	}
-}
-

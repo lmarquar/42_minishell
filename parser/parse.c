@@ -6,7 +6,7 @@
 /*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 10:17:17 by chelmerd          #+#    #+#             */
-/*   Updated: 2022/06/07 15:21:19 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/06/07 16:29:56 by chelmerd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,8 @@ int	parse_operator(const char *input, char *token, t_cmds *cmds,
 	else if (ft_strncmp("|", token, 2) == 0)
 	{
 		ft_lstadd_back(&cmds->cmd_lst, ft_lstnew(current));
-		current = new_smp_cmd(NULL, ft_calloc(2, sizeof (char *)), 0, 0);
+		cmds->current_cmd
+			= new_smp_cmd(NULL, ft_calloc(2, sizeof (char *)), 0, 0);
 		cmd_line->pipe_count++;
 		cmd_line->cmd_count++;
 	}

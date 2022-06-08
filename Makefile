@@ -41,7 +41,7 @@ PARSER			=	parse.c parse2.c special_character.c replace.c \
 SRCS_PARSER		= $(addprefix parser/, $(PARSER))
 BUILTINS		=	builtin_utils.c env.c exit.c echo.c export.c pwd.c unset.c cd.c
 SRCS_BUILTINS	= $(addprefix builtins/, $(BUILTINS))
-ENV				=	env.c env_list.c
+ENV				=	env.c env_list.c env_from_str.c
 SRCS_ENV		= $(addprefix env/, $(ENV))
 EXECUTER		= execute.c exec_funcs.c exec_el.c exec_with_pipes.c exec_builtin.c exec_get_fds.c exec_heredoc.c
 SRCS_EXECUTER	= $(addprefix executer/, $(EXECUTER))
@@ -55,10 +55,10 @@ SRCS_DEBUG		= $(subst nodebug,debug,$(SRCS_MANDATORY))
 
 all: mandatory bonus leaks debug
 
-mandatory: 
+mandatory:
 	make SRCS='$(SRCS_MANDATORY)' $(NAME)
 
-bonus: 
+bonus:
 	make SRCS='$(SRCS_BONUS)' $(NAME_BONUS)
 
 leaks:
