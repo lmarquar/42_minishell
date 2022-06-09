@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_with_pipes.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chelmerd <chelmerd@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: lmarquar <lmarquar@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/25 12:55:02 by lmarquar          #+#    #+#             */
-/*   Updated: 2022/06/08 16:07:10 by chelmerd         ###   ########.fr       */
+/*   Updated: 2022/06/09 10:06:40 by lmarquar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ int	exec_pipe1_to_pipe2(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 
 int	exec_pipe2_to_pipe1(t_bin *bin, int *pid, int fd[], size_t (*i)[])
 {
-	fd[2] = get_in_fd(bin, bin->cmd_line->smp_cmds[0]->redirections, fd[0]);
+	fd[2] = get_in_fd(bin, bin->cmd_line->smp_cmds[0]->redirections, fd[2]);
 	if (fd[2] == -1)
 	{
 		decr_int_incr_ptr(&(*i)[1], (void ***)&bin->cmd_line->smp_cmds);
